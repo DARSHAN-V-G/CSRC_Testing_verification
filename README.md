@@ -9,5 +9,3 @@
 | /auth/signup |   | pending |
 | /auth/login |   | pending |
 | /auth/forgotpassword |   | pending |
-
-
