@@ -29,7 +29,19 @@ const generateRefreshToken = (id) => {
   return token;
 }
 
+const generateSecurityCode = () => {
+  const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const numbers = '0123456789';
+  const length = 6;
+  let code = '';
+  for (let i = 0; i < length; i++) {
+    code += alphabets[Math.floor(Math.random() * alphabets.length)] + numbers[Math.floor(Math.random() * numbers.length)]
+  }
+  return code;
+}
+
 module.exports = {
   generateAccessToken,
-  generateRefreshToken
+  generateRefreshToken,
+  generateSecurityCode
 }

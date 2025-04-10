@@ -1,11 +1,17 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const UserModel = require('../models/UserModel');
+const UserSecurityCodeModel = require('../models/UserSecurityCodeModel');
+const { sendSecurityCodeEmail } = require('../utils/sendMail');
 const bcrypt = require('bcryptjs');
 const {
   generateAccessToken,
-  generateRefreshToken
+  generateRefreshToken,
+  generateSecurityCode
 } = require('../utils/userUtils');
+
+const ONE_HOUR = 60 * 60 * 1000;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 const registerController = async (req, res) => {
   const user = req.body;
@@ -16,7 +22,7 @@ const registerController = async (req, res) => {
       });
     }
 
-    const existingUser = await UserModel.findOne({ email: user.email });
+    const existingUser = await UserModel.findOne({ email: user.email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({
         message: 'User already exists'
@@ -25,7 +31,7 @@ const registerController = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const newUser = new UserModel({
-      email: user.email,
+      email: user.email.toLowerCase(),
       password: hashedPassword,
       role: 'temp'
     });
@@ -57,7 +63,7 @@ const registerController = async (req, res) => {
 const loginController = async (req, res) => {
   const user = req.body;
   try {
-    const checkUser = await UserModel.findOne({ email: user.email });
+    const checkUser = await UserModel.findOne({ email: user.email.toLowerCase() });
     if (!checkUser) {
       return res.status(404).json({
         message: 'User not found'
@@ -95,19 +101,153 @@ const loginController = async (req, res) => {
 }
 
 const logoutController = async (req, res) => {
-  res.clearCookie('accesstoken', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none'
-  });
-  res.clearCookie('refreshtoken', {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none'
-  });
-  return res.status(201).json({
-    message: 'User logged out successfully'
-  });
+  try {
+    res.clearCookie('accesstoken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
+    });
+    res.clearCookie('refreshtoken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
+    });
+    return res.status(201).json({
+      message: 'User logged out successfully'
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Failed to logout'
+    });
+  }
+}
+
+const generateSecurityCodeController = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await UserModel.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found'
+      });
+    }
+
+    const user_id = user._id;
+    const code = generateSecurityCode();
+    const userSecurityRecord = await UserSecurityCodeModel.findOne({ user_id });
+    if (!userSecurityRecord) {
+      const newUserSecurityCode = new UserSecurityCodeModel({
+        user_id: user_id,
+        code: code
+      });
+      await newUserSecurityCode.save();
+    } else {
+      userSecurityRecord.code = code;
+      userSecurityRecord.updatedAt = new Date();
+      await userSecurityRecord.save();
+    }
+    sendSecurityCodeEmail(email, code);
+    return res.status(200).json({
+      message: 'Security code created and mailed successfully'
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Failed to generate security code'
+    });
+  }
+}
+
+const verifySecurityCodeController = async (req, res) => {
+  const { email, code } = req.body;
+  try {
+    const userRecord = await UserModel.findOne({ email: email.toLowerCase() });
+    if (!userRecord) {
+      return res.status(404).json({
+        message: 'User not found'
+      });
+    }
+
+    const user_id = userRecord._id;
+    const securityRecord = await UserSecurityCodeModel.findOne({ user_id: user_id });
+    if (!securityRecord) {
+      return res.status(404).json({
+        message: 'Security code not found'
+      });
+    }
+
+    const NOW = Date.now();
+    const THEN = securityRecord.updatedAt.getTime();
+    if (NOW - THEN > ONE_HOUR) {
+      return res.status(400).json({
+        message: 'Security code expired'
+      });
+    }
+
+    const security_code = securityRecord.code;
+    if (security_code === code) {
+      return res.status(200).json({
+        message: 'Security code verified successfully'
+      });
+    } else {
+      return res.status(400).json({
+        message: 'Invalid security code'
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Failed to verify security code'
+    });
+  }
+}
+
+const resetPasswordController = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const userRecord = await UserModel.findOne({ email: email.toLowerCase() });
+    if (!userRecord) {
+      return res.status(404).json({
+        message: 'User not found'
+      });
+    }
+
+    const hasshedPassword = await bcrypt.hash(password, 10);
+    userRecord.password = hasshedPassword;
+    await userRecord.save();
+    return res.status(200).json({
+      message: 'Password reset successfully'
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Failed to reset password'
+    });
+  }
+}
+
+const getNewAccessTokenController = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshtoken;
+    const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+    const user_id = payload.id;
+    const accesstoken = generateAccessToken(user_id);
+    const refreshtoken = generateRefreshToken(user_id);
+    res.cookie('accesstoken', accesstoken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
+    });
+    res.cookie('refreshtoken', refreshtoken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
+    });
+    return res.status(201).json({
+      message: 'User logged in successfully'
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: 'Failed to get new access token'
+    });
+  }
 }
 
 module.exports = {
@@ -118,4 +258,4 @@ module.exports = {
   verifySecurityCodeController,
   resetPasswordController,
   getNewAccessTokenController
-}
+};
