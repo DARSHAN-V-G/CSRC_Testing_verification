@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/DARSHAN-V-G/CSRC_Testing_verification#readme",
   "dependencies": {
+    "cloudinary": "^1.41.3",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
-    "mongoose": "^8.13.2"
+    "mongoose": "^8.13.2",
+    "multer-storage-cloudinary": "^4.0.0"
   }
 }

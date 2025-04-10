@@ -4,7 +4,7 @@ const app = express()
 require('dotenv').config()
 
 app.get('/', (req, res) => {
-  res.status(200).json({message: "Hello deeban"});
+  res.status(200).json({message: "Time for deepun to evolve"});
 })
 
 app.listen(process.env.PORT, () => {
