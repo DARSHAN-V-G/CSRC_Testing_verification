@@ -1,10 +1,9 @@
-const express = require('express')
-
-const app = express()
-require('dotenv').config()
+const express = require('express');
+const app = express();
+require('dotenv').config();
 
 app.get('/', (req, res) => {
-  res.status(200).json({message: "Hello deeban"});
+  res.status(200).json({ message: "Hello deeban" });
 })
 
 app.listen(process.env.PORT, () => {
