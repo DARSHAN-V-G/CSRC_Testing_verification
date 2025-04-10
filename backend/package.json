@@ -1,14 +1,10 @@
 {
-  "name": "csrc_testing_verification",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "## Routes",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DARSHAN-V-G/CSRC_Testing_verification.git"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -18,9 +14,11 @@
   },
   "homepage": "https://github.com/DARSHAN-V-G/CSRC_Testing_verification#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "cloudinary": "^1.41.3",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "multer-storage-cloudinary": "^4.0.0"
   }
