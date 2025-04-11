@@ -12,7 +12,13 @@ const userAuthMiddleware = (req, res, next) => {
       });
     }
     const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
-    req.user_id = decoded.id;
+    if (typeof decoded === 'object' && 'id' in decoded) {
+      req.user_id = decoded.id;
+    } else {
+      return res.status(401).json({
+        message: 'Invalid token payload'
+      });
+    }
     next();
   } catch (err) {
     return res.status(401).json({

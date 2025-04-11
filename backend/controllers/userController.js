@@ -227,7 +227,12 @@ const getNewAccessTokenController = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshtoken;
     const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
-    const user_id = payload.id;
+    const user_id = typeof payload === 'object' && 'id' in payload ? payload.id : null;
+    if (!user_id) {
+      return res.status(400).json({
+        message: 'Invalid token payload'
+      });
+    }
     const accesstoken = generateAccessToken(user_id);
     const refreshtoken = generateRefreshToken(user_id);
     res.cookie('accesstoken', accesstoken, {
