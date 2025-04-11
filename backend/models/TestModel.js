@@ -14,6 +14,10 @@ const TestSchema = new Schema({
     pricePerUnit: {
         type: Number,
         required: true
+    },
+    quantity: {
+        type: Number,
+        required : true
     }
 },{timestamps: true});//as the name says, it adds timestamps to the schema
 
@@ -63,12 +67,9 @@ const reportSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.Decimal128, required: true 
     },
 
-  test: TestSchema
+  test: [TestSchema]
 }, {
   timestamps: true
 });
 
 module.exports = mongoose.model("Report", reportSchema);
-
-
-module.exports = mongoose.model('TestModel', TestSchema);
