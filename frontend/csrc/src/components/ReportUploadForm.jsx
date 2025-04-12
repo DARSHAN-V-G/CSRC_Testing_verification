@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './ReportUploadForm.css';
 
 const ReportUploadForm = () => {
   const [formData, setFormData] = useState({
@@ -15,96 +16,447 @@ const ReportUploadForm = () => {
     paid: false,
     payment_mode: '',
     prepared_by: '',
-    total_amount: '',
+    po_file: null,
+    total_amount: 0,
+    transaction_details: '',
+    transaction_date: '',
+    receipt_no: '',
+    bill_no: ''
   });
 
-  const [tests, setTests] = useState([
-    { title: '', unit: '', pricePerUnit: '', quantity: '' }
-  ]);
-
-  const [file, setFile] = useState(null);
+  const [tests, setTests] = useState([{
+    title: '',
+    unit: '',
+    pricePerUnit: 0,
+    quantity: 0
+  }]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked, files } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : 
+              type === 'file' ? files[0] : 
+              name === 'client_po_recieved_date' ? value :
+              value
     });
   };
 
   const handleTestChange = (index, e) => {
     const { name, value } = e.target;
     const updatedTests = [...tests];
-    updatedTests[index][name] = value;
+    updatedTests[index] = {
+      ...updatedTests[index],
+      [name]: name === 'pricePerUnit' || name === 'quantity' ? Number(value) : value
+    };
     setTests(updatedTests);
+    calculateTotalAmount(updatedTests);
   };
 
   const addTest = () => {
-    setTests([...tests, { title: '', unit: '', pricePerUnit: '', quantity: '' }]);
+    setTests([...tests, {
+      title: '',
+      unit: '',
+      pricePerUnit: 0,
+      quantity: 0
+    }]);
+  };
+
+  const removeTest = (index) => {
+    const updatedTests = tests.filter((_, i) => i !== index);
+    setTests(updatedTests);
+    calculateTotalAmount(updatedTests);
+  };
+
+  const calculateTotalAmount = (testList) => {
+    const subtotal = testList.reduce((sum, test) => {
+      return sum + (test.pricePerUnit * test.quantity || 0);
+    }, 0);
+    
+    const gstAmount = subtotal * 0.18;
+    const total = subtotal + gstAmount;
+    
+    setFormData(prev => ({
+      ...prev,
+      total_amount: total.toFixed(2)
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-
-    for (let key in formData) {
-      data.append(key, formData[key]);
-    }
-    data.append('test', JSON.stringify(tests));
-    if (file) data.append('file', file);
-
+    
     try {
-      console.log(data);
-      const response = await axios.post('http://localhost:4000/report/create', data);
-
-      alert('Report submitted successfully!');
+      const formDataToSend = new FormData();
+      
+      // Append all text fields
+      Object.keys(formData).forEach(key => {
+        if (key !== 'po_file') {
+          formDataToSend.append(key, formData[key]);
+        }
+      });
+      
+      // Append file
+      if (formData.po_file) {
+        formDataToSend.append('po_file', formData.po_file);
+      }
+      
+      // Append tests as JSON string
+      formDataToSend.append('test', JSON.stringify(tests));
+      
+      const response = await axios.post('http://localhost:8080/report/create', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        withCredentials: true
+      });
+      
+      alert('Report created successfully!');
       console.log(response.data);
-    } catch (err) {
-      console.error('Error uploading report:', err);
+      
+      // Reset form
+      setFormData({
+        ref_no: '',
+        department: '',
+        verified_flag: 0,
+        client_name: '',
+        client_po_no: '',
+        bill_to_be_sent_mail_address: '',
+        client_po_recieved_date: '',
+        gst_no: '',
+        faculty_incharge: '',
+        paid: false,
+        payment_mode: '',
+        prepared_by: '',
+        po_file: null,
+        total_amount: 0,
+        transaction_details: '',
+        transaction_date: '',
+        receipt_no: '',
+        bill_no: ''
+      });
+      setTests([{
+        title: '',
+        unit: '',
+        pricePerUnit: 0,
+        quantity: 0
+      }]);
+      
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert(`Error: ${error.response?.data?.message || 'Failed to create report'}`);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-xl border">
-      <h1 className="text-2xl font-bold mb-6 text-center">Report Upload - Bill Format</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <input name="ref_no" placeholder="Reference No" value={formData.ref_no} onChange={handleChange} className="input" required />
-          <input name="department" placeholder="Department" value={formData.department} onChange={handleChange} className="input" required />
-          <input name="client_name" placeholder="Client Name" value={formData.client_name} onChange={handleChange} className="input" required />
-          <input name="client_po_no" placeholder="Client PO No" value={formData.client_po_no} onChange={handleChange} className="input" required />
-          <input name="bill_to_be_sent_mail_address" placeholder="Billing Email" value={formData.bill_to_be_sent_mail_address} onChange={handleChange} className="input" required />
-          <input type="date" name="client_po_recieved_date" value={formData.client_po_recieved_date} onChange={handleChange} className="input" required />
-          <input name="gst_no" placeholder="GST No" value={formData.gst_no} onChange={handleChange} className="input" required />
-          <input name="faculty_incharge" placeholder="Faculty Incharge" value={formData.faculty_incharge} onChange={handleChange} className="input" required />
-          <input name="payment_mode" placeholder="Payment Mode" value={formData.payment_mode} onChange={handleChange} className="input" required />
-          <input name="prepared_by" placeholder="Prepared By" value={formData.prepared_by} onChange={handleChange} className="input" required />
-          <input name="total_amount" placeholder="Total Amount" value={formData.total_amount} onChange={handleChange} className="input" required />
-          <div className="flex items-center">
-            <label className="mr-2">Paid:</label>
-            <input type="checkbox" name="paid" checked={formData.paid} onChange={handleChange} />
+    <div className="report-form-container">
+      <h2>CSRC Testing Report Form</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-section">
+          <h3>Report Details</h3>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="ref_no">Reference No*</label>
+              <input
+                type="text"
+                id="ref_no"
+                name="ref_no"
+                value={formData.ref_no}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="department">Department*</label>
+              <input
+                type="text"
+                id="department"
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
         </div>
 
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-2">Test Items (Products)</h2>
-          {tests.map((test, index) => (
-            <div key={index} className="grid grid-cols-4 gap-4 mb-2">
-              <input name="title" placeholder="Title" value={test.title} onChange={(e) => handleTestChange(index, e)} className="input" required />
-              <input name="unit" placeholder="Unit" value={test.unit} onChange={(e) => handleTestChange(index, e)} className="input" required />
-              <input name="pricePerUnit" type="number" placeholder="Price/Unit" value={test.pricePerUnit} onChange={(e) => handleTestChange(index, e)} className="input" required />
-              <input name="quantity" type="number" placeholder="Quantity" value={test.quantity} onChange={(e) => handleTestChange(index, e)} className="input" required />
+        <div className="form-section">
+          <h3>Client Information</h3>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="client_name">Client Name*</label>
+              <input
+                type="text"
+                id="client_name"
+                name="client_name"
+                value={formData.client_name}
+                onChange={handleChange}
+                required
+              />
             </div>
-          ))}
-          <button type="button" onClick={addTest} className="mt-2 text-blue-600 hover:underline">+ Add Another Test</button>
+            <div className="form-group">
+              <label htmlFor="client_po_no">Client PO No*</label>
+              <input
+                type="text"
+                id="client_po_no"
+                name="client_po_no"
+                value={formData.client_po_no}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="bill_to_be_sent_mail_address">Billing Email Address*</label>
+              <input
+                type="email"
+                id="bill_to_be_sent_mail_address"
+                name="bill_to_be_sent_mail_address"
+                value={formData.bill_to_be_sent_mail_address}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="client_po_recieved_date">PO Received Date*</label>
+              <input
+                type="date"
+                id="client_po_recieved_date"
+                name="client_po_recieved_date"
+                value={formData.client_po_recieved_date}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="gst_no">GST No*</label>
+              <input
+                type="text"
+                id="gst_no"
+                name="gst_no"
+                value={formData.gst_no}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="po_file">PO File</label>
+              <input
+                type="file"
+                id="po_file"
+                name="po_file"
+                onChange={handleChange}
+                className="file-input"
+              />
+            </div>
+          </div>
+        </div>
+        
+        
+
+        <div className="form-section">
+          <h3>Test Details</h3>
+          <div className="test-table">
+            <div className="test-header">
+              <div>Title*</div>
+              <div>Unit*</div>
+              <div>Price Per Unit*</div>
+              <div>Quantity*</div>
+              <div>Amount</div>
+              <div>Action</div>
+            </div>
+            
+            {tests.map((test, index) => (
+              <div className="test-row" key={index}>
+                <div>
+                  <input
+                    type="text"
+                    name="title"
+                    value={test.title}
+                    onChange={(e) => handleTestChange(index, e)}
+                    required
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    name="unit"
+                    value={test.unit}
+                    onChange={(e) => handleTestChange(index, e)}
+                    required
+                  />
+                </div>
+                <div>
+                  <input
+                    type="number"
+                    name="pricePerUnit"
+                    value={test.pricePerUnit}
+                    onChange={(e) => handleTestChange(index, e)}
+                    required
+                  />
+                </div>
+                <div>
+                  <input
+                    type="number"
+                    name="quantity"
+                    value={test.quantity}
+                    onChange={(e) => handleTestChange(index, e)}
+                    required
+                  />
+                </div>
+                <div className="amount">
+                  ₹{(test.pricePerUnit * test.quantity).toFixed(2)}
+                </div>
+                <div>
+                  <button 
+                    type="button" 
+                    className="remove-btn"
+                    onClick={() => removeTest(index)}
+                    disabled={tests.length === 1}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+            
+            <button type="button" className="add-test-btn" onClick={addTest}>
+              Add Test
+            </button>
+          </div>
+
+          <div className="summary">
+            <div className="summary-row">
+              <div>Subtotal:</div>
+              <div>
+                ₹{tests.reduce((sum, test) => sum + (test.pricePerUnit * test.quantity || 0), 0).toFixed(2)}
+              </div>
+            </div>
+            <div className="summary-row">
+              <div>GST (18%):</div>
+              <div>
+                ₹{(tests.reduce((sum, test) => sum + (test.pricePerUnit * test.quantity || 0), 0) * 0.18).toFixed(2)}
+              </div>
+            </div>
+            <div className="summary-row total">
+              <div>Total Amount:</div>
+              <div>₹{formData.total_amount}</div>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-6">
-          <label className="block mb-1 font-medium">Upload PO File (PDF/Image)</label>
-          <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => setFile(e.target.files[0])} className="block" />
+        <div className="form-section">
+          <h3>Faculty & Payment Details</h3>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="faculty_incharge">Faculty In-charge*</label>
+              <input
+                type="text"
+                id="faculty_incharge"
+                name="faculty_incharge"
+                value={formData.faculty_incharge}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="payment_mode">Payment Mode*</label>
+              <select
+                id="payment_mode"
+                name="payment_mode"
+                value={formData.payment_mode}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Payment Mode</option>
+                <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option>
+                <option value="NEFT">NEFT</option>
+                <option value="UPI">UPI</option>
+                <option value="Not Paid">Not Paid</option>
+              </select>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="prepared_by">Prepared By*</label>
+              <input
+                type="text"
+                id="prepared_by"
+                name="prepared_by"
+                value={formData.prepared_by}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <div className="checkbox-group">
+                <input
+                  type="checkbox"
+                  id="paid"
+                  name="paid"
+                  checked={formData.paid}
+                  onChange={handleChange}
+                />
+                <label htmlFor="paid">Payment Received</label>
+              </div>
+            </div>
+          </div>
+          {formData.paid && (
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="transaction_details">Transaction Details</label>
+                <input
+                  type="text"
+                  id="transaction_details"
+                  name="transaction_details"
+                  value={formData.transaction_details}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="transaction_date">Transaction Date</label>
+                <input
+                  type="date"
+                  id="transaction_date"
+                  name="transaction_date"
+                  value={formData.transaction_date}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+          )}
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="receipt_no">Receipt No</label>
+              <input
+                type="text"
+                id="receipt_no"
+                name="receipt_no"
+                value={formData.receipt_no}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="bill_no">Bill No</label>
+              <input
+                type="text"
+                id="bill_no"
+                name="bill_no"
+                value={formData.bill_no}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
         </div>
-
-        <button type="submit" className="mt-6 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Submit Report</button>
+        <div className="form-actions">
+          <button type="submit" className="submit-btn">Create Report</button>
+          <button type="button" className="reset-btn" onClick={() => window.location.reload()}>
+            Reset Form
+          </button>
+        </div>
       </form>
     </div>
   );

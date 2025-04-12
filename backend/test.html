@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        #pdfViewer {
+            display: none;
+            width: 100%;
+            height: 800px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Generate Report</h1>
+    <form id="reportForm">
+        <label for="ref_no">Enter Ref No:</label>
+        <input type="text" id="ref_no" name="ref_no" required>
+        <button type="submit">Generate PDF</button>
+    </form>
+
+    <iframe id="pdfViewer"></iframe>
+
+    <script>
+        document.getElementById('reportForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const ref_no = document.getElementById('ref_no').value;
+            
+            if (!ref_no) {
+                alert("Please enter a Reference Number!");
+                return;
+            }
+
+            try {
+                // Make GET request to generate report
+                const response = await fetch(`http://localhost:4000/report/generate/${ref_no}`);
+                
+                if (!response.ok) {
+                    throw new Error('Report not found or error generating the PDF.');
+                }
+
+                // Convert the response to a Blob (PDF)
+                const pdfBlob = await response.blob();
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+
+                // Display PDF in iframe
+                const pdfViewer = document.getElementById('pdfViewer');
+                pdfViewer.src = pdfUrl;
+                pdfViewer.style.display = 'block';
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        });
+    </script>
+
+</body>
+</html>

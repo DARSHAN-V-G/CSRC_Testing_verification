@@ -1,0 +1,237 @@
+/* ReportUploadForm.css */
+
+.report-form-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 10px;
+  }
+  
+  .form-section {
+    margin-bottom: 30px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #f9f9f9;
+  }
+  
+  .form-section h3 {
+    font-size: 18px;
+    color: #0056b3;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+  }
+  
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-bottom: 10px;
+  }
+  
+  .form-group {
+    flex: 1;
+    max-width: 450px;
+    padding: 5;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="date"],
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  input[type="file"].file-input {
+    padding: 8px;
+    background-color: #f0f0f0;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: 25px;
+  }
+  
+  .checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+  }
+  
+  .checkbox-group label {
+    margin-bottom: 0;
+  }
+  
+  .test-table {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  
+  .test-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+    background-color: #0056b3;
+    color: white;
+    padding: 10px;
+    font-weight: 600;
+  }
+  
+  .test-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+    border-top: 1px solid #ddd;
+    padding: 8px 0;
+    align-items: center;
+  }
+  
+  .test-row input {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .amount {
+    font-weight: 600;
+    text-align: right;
+    padding-right: 10px;
+  }
+  
+  .add-test-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin: 10px;
+    font-weight: 600;
+  }
+  
+  .remove-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  .remove-btn:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  
+  .summary {
+    margin-top: 20px;
+    border-top: 2px dashed #ccc;
+    padding-top: 15px;
+  }
+  
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+  
+  .summary-row div:first-child {
+    font-weight: 600;
+  }
+  
+  .total {
+    font-size: 18px;
+    color: #0056b3;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .submit-btn {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .reset-btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .submit-btn:hover,
+  .add-test-btn:hover {
+    opacity: 0.9;
+  }
+  
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .test-header,
+    .test-row {
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+    }
+    
+    .test-header div:nth-child(5),
+    .test-header div:nth-child(6),
+    .test-row div:nth-child(5),
+    .test-row div:nth-child(6) {
+      display: none;
+    }
+    
+    .test-row {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .remove-btn {
+      grid-column: span 4;
+      width: 100%;
+      margin-top: 10px;
+    }
+  }

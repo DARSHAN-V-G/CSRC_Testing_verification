@@ -66,8 +66,19 @@ const reportSchema = new mongoose.Schema({
     total_amount: { 
         type: mongoose.Schema.Types.Decimal128, required: true 
     },
-
-  test: [TestSchema]
+    transaction_details:{
+        type:String
+    },
+    transaction_date:{
+        type:String
+    },
+    test: [TestSchema],
+    receipt_no:{
+        type:String
+    },
+    bill_no:{
+        
+    }
 }, {
   timestamps: true
 });

@@ -88,7 +88,7 @@ const fetchReports = async (req,res) =>{
 
 const fetchPoFile = async(req,res)=>{
   try{
-    const {ref_no} = req.params;
+    const ref_no = req.params.ref_no;
     const report = await reportSchema.findOne({ref_no:ref_no});
     if(!report){
       return res.status(404).json({
