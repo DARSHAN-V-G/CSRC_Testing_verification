@@ -1,5 +1,5 @@
 const reportSchema = require("../models/TestModel");
-
+const {flag} = require("../utils/reportUtils");
 const createReport = async (req, res) => {
     try {
       const {
@@ -59,6 +59,32 @@ const createReport = async (req, res) => {
     }
   };
 
+const fetchReports = async (req,res) =>{
+  try{
+    const dept = req.dept;
+    const role = req.role;
+    const reports = await reportSchema.find({
+      department:dept,
+      verified_flag:flag[role]
+    });
+    if(!reports){
+      return res.status(404).json({
+        message:"No reports found for the user"
+      })
+    }
+    return res.status(200).json({
+      message:"Reports fetched successfully",
+      reports
+    })
+  }catch(error){
+    res.status(500).json({
+      message:"Internal Server Error while fetching reports",
+      error: error
+    })
+  }
+}
+
 module.exports = {
-    createReport
+    createReport,
+    fetchReports
 }

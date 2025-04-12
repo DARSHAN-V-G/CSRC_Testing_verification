@@ -13,6 +13,8 @@ cloudinary.config({
       folder: "CSRC_PO",
       resource_type: "auto",
       format: file.mimetype.split("/")[1], 
+      type: "upload",
+      access_mode: "public",
     }),
   });
 
