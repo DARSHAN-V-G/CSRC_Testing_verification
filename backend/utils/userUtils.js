@@ -11,6 +11,33 @@ const validateEmail = (email) => {
   //to be done
 }
 
+const determineRoleFromEmail = (email) => {
+  if (!email) return 'temp';
+  if (email == 'spk.civil@psgtech.ac.in'){
+    return 'faculty'
+  }
+  email = email.toLowerCase();
+  
+  const localPart = email.split('@')[0];
+  
+  if (localPart.includes('.')) {
+    const firstPart = localPart.split('.')[0];
+    
+    if (firstPart === 'hod') {
+      return 'hod';
+    } else if (firstPart === 'dean') {
+      return 'dean';
+    } else if (firstPart === 'dept') {
+      return 'staff';
+    }
+  }
+  if(localPart=="csrc"){
+    return 'office'
+  }
+  
+  return 'temp';
+};
+
 const generateAccessToken = (id) => {
   const token = jwt.sign(
     { id: id },
@@ -43,5 +70,6 @@ const generateSecurityCode = () => {
 module.exports = {
   generateAccessToken,
   generateRefreshToken,
-  generateSecurityCode
+  generateSecurityCode,
+  determineRoleFromEmail
 }

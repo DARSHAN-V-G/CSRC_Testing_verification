@@ -7,7 +7,8 @@ const bcrypt = require('bcryptjs');
 const {
   generateAccessToken,
   generateRefreshToken,
-  generateSecurityCode
+  generateSecurityCode,
+  determineRoleFromEmail
 } = require('../utils/userUtils');
 
 const ONE_HOUR = 60 * 60 * 1000;
@@ -30,10 +31,16 @@ const registerController = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
+    const role = determineRoleFromEmail(user.email.toLowerCase());
+    if(role=='temp'){
+      return res.status(401).json({
+        message : "Invalid "
+      })
+    }
     const newUser = new UserModel({
       email: user.email.toLowerCase(),
       password: hashedPassword,
-      role: 'temp'
+      role: role
     });
 
     await newUser.save();
@@ -51,7 +58,8 @@ const registerController = async (req, res) => {
       sameSite: 'none'
     });
     return res.status(201).json({
-      message: 'User signed up successfully'
+      message: 'User signed up successfully',
+      newUser
     });
   } catch (err) {
     return res.status(500).json({

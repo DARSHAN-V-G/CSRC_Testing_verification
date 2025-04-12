@@ -1,4 +1,3 @@
-
 const flag = {
     "staff":0,
     "hod":1,
