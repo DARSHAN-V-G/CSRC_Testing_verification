@@ -1,5 +1,8 @@
 const reportSchema = require("../models/TestModel");
-const {flag} = require("../utils/reportUtils");
+const {
+  flag
+} = require("../utils/reportUtils");
+const { report } = require("../routes/userRoutes");
 const createReport = async (req, res) => {
     try {
       const {
@@ -20,6 +23,7 @@ const createReport = async (req, res) => {
       } = req.body;
       
       // Cloudinary file path
+      console.log(req.file.path);
       const po_file_url = req.file?.path || null;
   
       // Create new Report
@@ -41,13 +45,11 @@ const createReport = async (req, res) => {
         test: JSON.parse(test)
       });
       console.log("Saving Report");
-      console.log(report);
+      console.log(req.file);
       await report.save();
-  
       res.status(201).json({
         success: true,
         message: 'Report created successfully',
-        data: report
       });
     } catch (err) {
       console.error('Error creating report:', err);
@@ -84,7 +86,29 @@ const fetchReports = async (req,res) =>{
   }
 }
 
+const fetchPoFile = async(req,res)=>{
+  try{
+    const {ref_no} = req.params;
+    const report = await reportSchema.findOne({ref_no:ref_no});
+    if(!report){
+      return res.status(404).json({
+        message:"No reports found with given ref_no"
+      })
+    }
+    return res.status(200).json({
+      message:"PO File Fetched successfully",
+      po_file_url : report.po_file_url
+    })
+  }catch(error){
+    return res.status(500).json({
+      message:"Internal server error while fetching PO file",
+      error: error
+    })
+  }
+}
+
 module.exports = {
     createReport,
-    fetchReports
+    fetchReports,
+    fetchPoFile
 }

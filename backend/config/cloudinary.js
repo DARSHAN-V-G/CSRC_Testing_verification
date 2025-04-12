@@ -12,10 +12,11 @@ cloudinary.config({
     params: async (req, file) => ({
       folder: "CSRC_PO",
       resource_type: "auto",
-      format: file.mimetype.split("/")[1], 
-      type: "upload",
-      access_mode: "public",
+      format: file.mimetype.split("/")[1],
+      access_mode: "authenticated",
     }),
   });
+  
+
 
 module.exports = {cloudinary,storage}

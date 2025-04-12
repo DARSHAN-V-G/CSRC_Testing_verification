@@ -7,6 +7,7 @@ const flag = {
     "office":4
 }
 
+
 module.exports={
     flag
 }
