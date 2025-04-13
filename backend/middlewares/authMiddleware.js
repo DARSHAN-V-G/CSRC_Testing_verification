@@ -5,7 +5,7 @@ const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 
 const userAuthMiddleware = (req, res, next) => {
   try {
-    const token = req.cookies?.accesstoken;
+    const token = req.cookies.accesstoken;
     if (!token) {
       return res.status(401).json({
         message: 'No token provided in middleware'
