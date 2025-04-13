@@ -14,6 +14,12 @@ const {
 const ONE_HOUR = 60 * 60 * 1000;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
+const checkStatus = async(req,res)=>{
+  return res.status(200).json({
+    message:"The token is still valid"
+  })
+}
+
 const registerController = async (req, res) => {
   const user = req.body;
   try {
@@ -325,6 +331,7 @@ const verifyRegisterSecurityCodeController = async (req, res) => {
 }
 
 module.exports = {
+  checkStatus,
   registerController,
   loginController,
   logoutController,

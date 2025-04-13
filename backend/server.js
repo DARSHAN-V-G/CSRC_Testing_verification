@@ -17,7 +17,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/auth/user', userRoutes);
-app.use('/report',userAuthMiddleware,reportRoutes);
+app.use('/report',reportRoutes);
 connectDB();
 
 app.get('/', (req, res) => {

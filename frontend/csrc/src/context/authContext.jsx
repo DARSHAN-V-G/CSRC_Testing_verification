@@ -1,12 +1,20 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import Cookies from 'js-cookie';
 import { userAPI } from '../api/API';
 
-const AuthContext = createContext();
+// Create the context
+const AuthContext = createContext(null);
 
-export const useAuth = () => useContext(AuthContext);
+// Create the useAuth hook
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
 
-export const AuthProvider = ({ children }) => {
+// Create the provider component
+export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -14,17 +22,45 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const email = Cookies.get('userEmail');
-        const role = Cookies.get('userRole');
-
+        console.log("Inside Authcontext");
+        
+        // Get stored user info from localStorage
+        const email = localStorage.getItem('userEmail');
+        const role = localStorage.getItem('userRole');
+        
         if (email && role) {
-          setIsAuthenticated(true);
-          setUser({ email, role });
+          try {
+            // Try to validate with server
+            const statusResponse = await userAPI.status();
+            setIsAuthenticated(true);
+            setUser({ email, role });
+          } catch (error) {
+            if (error.response && error.response.status === 401) {
+              try {
+                // Token expired, try to refresh
+                const refreshResponse = await userAPI.getnewaccesstoken();
+                setIsAuthenticated(true);
+                setUser({ email, role });
+              } catch (refreshError) {
+                console.error('Token refresh Failed:', refreshError);
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userRole');
+                setIsAuthenticated(false);
+                setUser(null);
+              }
+            } else {
+              // Other error
+              localStorage.removeItem('userEmail');
+              localStorage.removeItem('userRole');
+              setIsAuthenticated(false);
+              setUser(null);
+            }
+          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);
-        Cookies.remove('userEmail');
-        Cookies.remove('userRole');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userRole');
         setIsAuthenticated(false);
         setUser(null);
       } finally {
@@ -51,13 +87,13 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await userAPI.verify({ email, code });
       const { role } = response.data;
-
-      Cookies.set('userEmail', email, { expires: 7 });
-      Cookies.set('userRole', role, { expires: 7 });
-
+      
+      // Store in localStorage
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userRole', role);
+      
       setIsAuthenticated(true);
       setUser({ email, role });
-
       return { success: true, role };
     } catch (error) {
       return {
@@ -66,14 +102,17 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
+
   const login = async (credentials) => {
     try {
       const response = await userAPI.login(credentials);
       const { email, role } = response.data.user;
-      console.log(email,role)
-      Cookies.set('userEmail', email, { expires: 7 });
-      Cookies.set('userRole', role, { expires: 7 });
-
+      console.log(email, role);
+      
+      // Store in localStorage
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userRole', role);
+      
       setIsAuthenticated(true);
       setUser({ email, role });
 
@@ -93,8 +132,10 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout API call failed:', error);
     } finally {
-      Cookies.remove('userEmail');
-      Cookies.remove('userRole');
+      // Clear localStorage
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userRole');
+      
       setIsAuthenticated(false);
       setUser(null);
     }
@@ -125,4 +166,4 @@ export const AuthProvider = ({ children }) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+}

@@ -8,7 +8,7 @@ const userAuthMiddleware = (req, res, next) => {
     const token = req.cookies?.accesstoken;
     if (!token) {
       return res.status(401).json({
-        message: 'No token provided'
+        message: 'No token provided in middleware'
       });
     }
     const decoded = jwt.verify(token, JWT_ACCESS_SECRET);

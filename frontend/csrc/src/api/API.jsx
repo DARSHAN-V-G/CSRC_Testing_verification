@@ -33,7 +33,22 @@ export const userAPI = {
   login: (credentials) => API.post('/auth/user/login', credentials),
   signup: (credentials) => API.post('/auth/user/register', credentials),
   verify: (payload) => API.post('/auth/user/register/verify', payload),
-  logout: () => API.post('/auth/user/logout')
+  logout: () => API.post('/auth/user/logout'),
+  status : ()=>API.get('/auth/user/status'),
+  getnewaccesstoken : ()=>API.post('/auth/user/getnewaccesstoken')
 }
 
+export const reportAPI = {
+  create: (formData) => API.post('/report/create', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  // Add other report-related API methods here
+  fetch: (verified) => API.get(`/report/fetch/${verified}`),
+  verify: (ref_no) => API.post(`/report/verify/${ref_no}`),
+  reject: (ref_no) => API.post(`/report/reject/${ref_no}`),
+  generate: (ref_no) => API.get(`/report/generate/${ref_no}`, { responseType: 'blob' }),
+};
 
+export default API;

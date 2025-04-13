@@ -1,8 +1,10 @@
 import React, { useState ,useEffect} from 'react';
 import axios from 'axios';
 import './ReportUploadForm.css';
-import Cookies from 'js-cookie';
+import { useAuth } from '../context/authContext';
+import { reportAPI } from '../api/API';
 const ReportUploadForm = () => {
+  const {user} = useAuth();
   const [formData, setFormData] = useState({
     ref_no: '',
     department: '',
@@ -79,8 +81,7 @@ const ReportUploadForm = () => {
   };
 
   const generateRefNo = () => {
-    // Get email from cookies
-    const userEmail = Cookies.get('userEmail');
+    const userEmail = user?.email;
     if (!userEmail) return '';
     
     const domainPart = userEmail.split('.')[1].split('@')[0].toUpperCase();
@@ -99,7 +100,7 @@ const ReportUploadForm = () => {
   };
 
   const findDepartment = () => {
-    let email = Cookies.get('userEmail').toLowerCase();
+    let email = user?.email;
     if (!email) return "";
     email = email.toLowerCase();
     let part = email.split('.')[1];
@@ -127,8 +128,6 @@ const ReportUploadForm = () => {
         'textile': 'TEXTILE TECHNOLOGY',
         'ac':"Test department",
     };
-  
-  // Check if the local part matches any key in the department map
   return departmentMap[part] || null;
 };
 
@@ -167,12 +166,7 @@ const ReportUploadForm = () => {
       // Append tests as JSON string
       formDataToSend.append('test', JSON.stringify(tests));
       console.log(formData);
-      const response = await axios.post('http://localhost:4000/report/create', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        withCredentials: true
-      });
+      const response = await reportAPI.create(formDataToSend);
       
       alert('Report created successfully!');
       console.log(response.data);

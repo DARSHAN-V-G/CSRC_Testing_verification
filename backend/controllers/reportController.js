@@ -1,13 +1,18 @@
-const { ref } = require("pdfkit");
 const reportSchema = require("../models/TestModel");
 const userSchema = require("../models/UserModel");
-const { report } = require("../routes/userRoutes");
 const {
   flag,
   findDepartment
 } = require("../utils/reportUtils");
 const createReport = async (req, res) => {
     try {
+      const user_id = req.user_id;
+      const user = await userSchema.findById(user_id);
+      if(!user){
+        return res.status(401).json({
+          messsage:"User not found"
+        })
+      }
       const {
         ref_no,
         department,
