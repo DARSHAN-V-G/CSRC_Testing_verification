@@ -1,17 +1,26 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './pages/Homepage.jsx';
-
-
-import ProtectedRoute from './components/ProtectedRoute.jsx';
-//refer protectedRoute from codopoly admin portal
+import { BrowserRouter as Router, Routes, Route,Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/authContext.jsx';
+import CreateReportPage from './pages/CreatReport.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import ProtectedRoute from './pages/ProtectedRoute.jsx';
 const AppRouter = () => {
     return (
+      <AuthProvider>
         <Router>
-            <Routes>
-                <Route path='/' element={<HomePage/>}/>
-             </Routes>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            
+            {/* Protected Routes for different roles */}
+            <Route element={<ProtectedRoute requiredRoles={['staff']} />}>
+              <Route path="/createReport" element={<CreateReportPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
         </Router>
+      </AuthProvider>
     );
-};
-
-export default AppRouter;
+  };
+  
+  export default AppRouter;

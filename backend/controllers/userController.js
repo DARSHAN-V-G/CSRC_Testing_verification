@@ -59,7 +59,7 @@ const registerController = async (req, res) => {
     });
     return res.status(201).json({
       message: 'User signed up successfully',
-      newUser
+      user : newUser
     });
   } catch (err) {
     return res.status(500).json({
@@ -98,7 +98,8 @@ const loginController = async (req, res) => {
       sameSite: 'none'
     });
     return res.status(201).json({
-      message: 'User logged in successfully'
+      message: 'User logged in successfully',
+      user : checkUser
     });
 
   } catch (err) {
