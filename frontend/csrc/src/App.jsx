@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/authContext.jsx';
 import CreateReportPage from './pages/CreatReport.jsx';
-import RegisterPage from './pages/RegisterPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import ForgotPassword from './pages/ForgotPassword.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
 const AppRouter = () => {
   return (
@@ -10,7 +11,8 @@ const AppRouter = () => {
       <Router>
         <Routes>
           {/* Public Routes */}
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
 

@@ -107,7 +107,7 @@ export function AuthProvider({ children }) {
     try {
       const response = await userAPI.login(credentials);
       const { email, role } = response.data.user;
-      console.log(email, role);
+      console.log(email,  role);
       
       // Store in localStorage
       localStorage.setItem('userEmail', email);
@@ -154,6 +154,43 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // --- Forgot Password Functions ---
+  const requestResetCode = async ({ email }) => {
+    try {
+      const res = await userAPI.requestResetCode({ email });
+      return { success: true, message: res.data.message };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to send reset code'
+      };
+    }
+  };
+
+  const verifyResetCode = async ({ email, code }) => {
+    try {
+      const res = await userAPI.verifyResetCode({ email, code });
+      return { success: true, message: res.data.message };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Invalid reset code'
+      };
+    }
+  };
+
+  const resetPassword = async ({ email, password }) => {
+    try {
+      const res = await userAPI.resetPassword({ email, password });
+      return { success: true, message: res.data.message };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Password reset failed'
+      };
+    }
+  };
+
   const value = {
     isAuthenticated,
     isLoading,
@@ -162,7 +199,10 @@ export function AuthProvider({ children }) {
     verifyAndLogin,
     login,
     logout,
-    getRedirectPath
+    getRedirectPath,
+    requestResetCode,
+    verifyResetCode,
+    resetPassword
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
