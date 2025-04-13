@@ -14,7 +14,6 @@ const findDepartment = (email) => {
     // Extract the part before '@'
     let part = email.split('.')[1];
     part = part.split('@')[0];
-    console.log(part)
     const departmentMap = {
         'afd': 'APPAREL AND FASHION DESIGN',
         'amcs': 'APPLIED MATHEMATICS AND COMPUTATIONAL SCIENCES',
@@ -41,7 +40,6 @@ const findDepartment = (email) => {
   return departmentMap[part] || null;
 };
 
-console.log(findDepartment("hod.bme@psgtech.ac.in"))
 module.exports={
     flag,
     findDepartment
