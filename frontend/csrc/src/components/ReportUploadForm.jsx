@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ReportUploadForm.css';
 import Cookies from 'js-cookie';
@@ -29,7 +29,7 @@ const ReportUploadForm = () => {
     setFormData(prev => ({
       ...prev,
       ref_no: generatedRefNo,
-      department:dept
+      department: dept
     }));
   }, []);
   const [tests, setTests] = useState([{
@@ -45,10 +45,10 @@ const ReportUploadForm = () => {
     const { name, value, type, checked, files } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : 
-              type === 'file' ? files[0] : 
-              name === 'client_po_recieved_date' ? value :
-              value
+      [name]: type === 'checkbox' ? checked :
+        type === 'file' ? files[0] :
+          name === 'client_po_recieved_date' ? value :
+            value
     });
   };
 
@@ -82,19 +82,19 @@ const ReportUploadForm = () => {
     // Get email from cookies
     const userEmail = Cookies.get('userEmail');
     if (!userEmail) return '';
-    
+
     const domainPart = userEmail.split('.')[1].split('@')[0].toUpperCase();
 
     const now = new Date();
     const year = now.getFullYear().toString().slice(-2);
-    const month = String(now.getMonth() + 1).padStart(2, '0'); 
+    const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
-    const dateString = `${year}${month}${day}`; 
+    const dateString = `${year}${month}${day}`;
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-    const milli  = String(now.getMilliseconds()).padStart(2,'0');
-    const timeString = `${hours}${minutes}${seconds}${milli}`; 
+    const milli = String(now.getMilliseconds()).padStart(2, '0');
+    const timeString = `${hours}${minutes}${seconds}${milli}`;
     return `REF_${domainPart}_${dateString}${timeString}`;
   };
 
@@ -106,40 +106,40 @@ const ReportUploadForm = () => {
     part = part.split('@')[0];
     console.log(part);
     const departmentMap = {
-        'afd': 'APPAREL AND FASHION DESIGN',
-        'amcs': 'APPLIED MATHEMATICS AND COMPUTATIONAL SCIENCES',
-        'apsc': 'APPLIED SCIENCE',
-        'auto': 'AUTOMOBILE ENGINEERING',
-        'bme': 'BIOMEDICAL ENGINEERING',
-        'bio': 'BIOTECHNOLOGY',
-        'civil': 'CIVIL ENGINEERING',
-        'mca': 'COMPUTER APPLICATIONS',
-        'cse': 'COMPUTER SCIENCE & ENGINEERING',
-        'eee': 'ELECTRICAL & ELECTRONICS ENGINEERING',
-        'ece': 'ELECTRONICS & COMMUNICATION ENGINEERING',
-        'fashion': 'FASHION TECHNOLOGY',
-        'it': 'INFORMATION TECHNOLOGY',
-        'ice': 'INSTRUMENTATION & CONTROL ENGINEERING',
-        'mech': 'MECHANICAL ENGINEERING',
-        'metal': 'METALLURGICAL ENGINEERING',
-        'prod': 'PRODUCTION ENGINEERING',
-        'rae': 'ROBOTICS & AUTOMATION ENGINEERING',
-        'textile': 'TEXTILE TECHNOLOGY',
-        'ac':"Test department",
+      'afd': 'APPAREL AND FASHION DESIGN',
+      'amcs': 'APPLIED MATHEMATICS AND COMPUTATIONAL SCIENCES',
+      'apsc': 'APPLIED SCIENCE',
+      'auto': 'AUTOMOBILE ENGINEERING',
+      'bme': 'BIOMEDICAL ENGINEERING',
+      'bio': 'BIOTECHNOLOGY',
+      'civil': 'CIVIL ENGINEERING',
+      'mca': 'COMPUTER APPLICATIONS',
+      'cse': 'COMPUTER SCIENCE & ENGINEERING',
+      'eee': 'ELECTRICAL & ELECTRONICS ENGINEERING',
+      'ece': 'ELECTRONICS & COMMUNICATION ENGINEERING',
+      'fashion': 'FASHION TECHNOLOGY',
+      'it': 'INFORMATION TECHNOLOGY',
+      'ice': 'INSTRUMENTATION & CONTROL ENGINEERING',
+      'mech': 'MECHANICAL ENGINEERING',
+      'metal': 'METALLURGICAL ENGINEERING',
+      'prod': 'PRODUCTION ENGINEERING',
+      'rae': 'ROBOTICS & AUTOMATION ENGINEERING',
+      'textile': 'TEXTILE TECHNOLOGY',
+      'ac': "Test department",
     };
-  
-  // Check if the local part matches any key in the department map
-  return departmentMap[part] || null;
-};
+
+    // Check if the local part matches any key in the department map
+    return departmentMap[part] || null;
+  };
 
   const calculateTotalAmount = (testList) => {
     const subtotal = testList.reduce((sum, test) => {
       return sum + (test.pricePerUnit * test.quantity || 0);
     }, 0);
-    
+
     const gstAmount = subtotal * 0.18;
     const total = subtotal + gstAmount;
-    
+
     setFormData(prev => ({
       ...prev,
       total_amount: total.toFixed(2)
@@ -148,22 +148,22 @@ const ReportUploadForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const formDataToSend = new FormData();
-      
+
       // Append all text fields
       Object.keys(formData).forEach(key => {
         if (key !== 'po_file') {
           formDataToSend.append(key, formData[key]);
         }
       });
-      
+
       // Append file
       if (formData.po_file) {
         formDataToSend.append('po_file', formData.po_file);
       }
-      
+
       // Append tests as JSON string
       formDataToSend.append('test', JSON.stringify(tests));
       console.log(formData);
@@ -173,10 +173,10 @@ const ReportUploadForm = () => {
         },
         withCredentials: true
       });
-      
+
       alert('Report created successfully!');
       console.log(response.data);
-      
+
       // Reset form
       setFormData({
         ref_no: generateRefNo(),
@@ -204,7 +204,7 @@ const ReportUploadForm = () => {
         pricePerUnit: 0,
         quantity: 0
       }]);
-      
+
     } catch (error) {
       console.error('Error submitting form:', error);
       alert(`Error: ${error.response?.data?.message || 'Failed to create report'}`);
@@ -307,8 +307,8 @@ const ReportUploadForm = () => {
             </div>
           </div>
         </div>
-        
-        
+
+
 
         <div className="form-section">
           <h3>Test Details</h3>
@@ -321,7 +321,7 @@ const ReportUploadForm = () => {
               <div>Amount</div>
               <div>Action</div>
             </div>
-            
+
             {tests.map((test, index) => (
               <div className="test-row" key={index}>
                 <div>
@@ -364,8 +364,8 @@ const ReportUploadForm = () => {
                   ₹{(test.pricePerUnit * test.quantity).toFixed(2)}
                 </div>
                 <div>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="remove-btn"
                     onClick={() => removeTest(index)}
                     disabled={tests.length === 1}
@@ -375,7 +375,7 @@ const ReportUploadForm = () => {
                 </div>
               </div>
             ))}
-            
+
             <button type="button" className="add-test-btn" onClick={addTest}>
               Add Test
             </button>
