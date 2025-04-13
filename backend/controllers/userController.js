@@ -82,8 +82,8 @@ const loginController = async (req, res) => {
         message: 'Invalid password'
       });
     }
-
-    if (!user.isVerified) {
+    const isVerified = user.isVerified;
+    if (isVerified) {
       return res.status(401).json({
         message: 'User not verified'
       });
@@ -91,6 +91,7 @@ const loginController = async (req, res) => {
 
     const accesstoken = generateAccessToken(checkUser._id);
     const refreshtoken = generateRefreshToken(checkUser._id);
+
     res.cookie('accesstoken', accesstoken, {
       httpOnly: true,
       secure: true,
