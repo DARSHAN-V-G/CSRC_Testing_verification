@@ -142,11 +142,12 @@ export function AuthProvider({ children }) {
   };
 
   const getRedirectPath = () => {
+    console.log(user);
     if (!user || !user.role) return '/login';
 
     switch (user.role.toLowerCase()) {
       case 'staff':
-        return '/createReport';
+        return '/dashboard';
       case 'faculty':
         return '/checkPayment';
       default:

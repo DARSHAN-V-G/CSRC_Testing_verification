@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use('/auth/user', userRoutes);
-app.use('/report', reportRoutes);
+app.use('/report',userAuthMiddleware, reportRoutes);
 connectDB();
 
 app.get('/', (req, res) => {

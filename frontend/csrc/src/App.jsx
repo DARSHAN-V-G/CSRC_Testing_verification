@@ -20,7 +20,6 @@ const AppRouter = () => {
           <Route element={<ProtectedRoute requiredRoles={['staff']} />}>
             <Route path="/createReport" element={<CreateReportPage />} />
           </Route>
-          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -17,7 +17,7 @@ const {userAuthMiddleware} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-router.post('/create',userAuthMiddleware,upload.single("file"),createReport);
+router.post('/create',upload.single("po_file"),createReport);
 // body is the reportSchema
 router.get('/fetch/:verified',fetchReports);
 // params should include the variable , verified = true or false
