@@ -3,7 +3,7 @@ import { AuthProvider } from './context/authContext.jsx';
 import CreateReportPage from './pages/CreatReport.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import Dashboard from './pages/Dashboard.jsx';
-import ForgotPassword from './pages/ForgotPassword.jsx';
+import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
 const AppRouter = () => {
   return (
@@ -11,7 +11,7 @@ const AppRouter = () => {
       <Router>
         <Routes>
           {/* Public Routes */}
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
