@@ -69,8 +69,8 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await userAPI.login(credentials);
-      const { email, role } = response.data;
-
+      const { email, role } = response.data.user;
+      console.log(email,role)
       Cookies.set('userEmail', email, { expires: 7 });
       Cookies.set('userRole', role, { expires: 7 });
 

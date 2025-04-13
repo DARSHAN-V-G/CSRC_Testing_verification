@@ -8,15 +8,16 @@ const cors = require('cors');
 require('dotenv').config();
 
 app.use(cors({
-  origin:'*',
-  methods:['GET','POST','PUT','DELETE','PATCH','OPTIONS'],
-  allowedHeaders:['Content-type','Authorization']
-}))
+  origin: true, // Allow all origins (equivalent to '*')
+  credentials: true, // Allow cookies to be sent with requests
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+}));
 
 app.use(express.json());
 
 app.use('/auth/user', userRoutes);
-app.use('/report',reportRoutes);
+app.use('/report',userAuthMiddleware,reportRoutes);
 connectDB();
 
 app.get('/', (req, res) => {

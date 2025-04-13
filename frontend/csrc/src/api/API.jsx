@@ -31,10 +31,10 @@ API.interceptors.response.use(
 );
 
 export const userAPI = {
-  login: (credentials) => API.post('/user/auth/login', credentials),
-  signup: (credentials) => API.post('/user/auth/register', credentials),
-  verify: (payload) => API.post('/user/auth/register/verify', payload),
-  logout: () => API.post('/user/auth/logout')
+  login: (credentials) => API.post('/auth/user/login', credentials),
+  signup: (credentials) => API.post('/auth/user/register', credentials),
+  verify: (payload) => API.post('/auth/user/register/verify', payload),
+  logout: () => API.post('/auth/user/logout')
 }
 
 
