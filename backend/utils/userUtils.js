@@ -9,11 +9,11 @@ const JWT_REFRESH_EXPIRATION = process.env.JWT_REFRESH_EXPIRATION;
 
 const validateEmail = (email) => {
   email = email.toLowerCase();
-  if (email.startsWith('dept.')) { return "staff"; }
+  if (email.startsWith('dept.') || email.startsWith('23n216') || email.startsWith('23n213')) { return "staff"; }
   if (email.startsWith('hod.') || email.startsWith('director')) { return "hod"; }
-  if (email.startsWith('spk.civil')) { return 'faculty'; }
+  if (email.startsWith('spk.civil') || email.startsWith('dhaarun')) { return 'faculty'; }
   if (email.startsWith('csrc')) { return 'office'; }
-  if (email.startsWith('dean.')) { return 'dean'; }
+  if (email.startsWith('dean.') || email.startsWith('weeby')) { return 'dean'; }
   return 'invalid';
 }
 
