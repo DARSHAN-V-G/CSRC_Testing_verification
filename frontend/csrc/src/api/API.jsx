@@ -6,7 +6,7 @@ const API = axios.create({
   timeout: 30000,
   withCredentials: true,
 });
-//runs before each request to backend
+
 API.interceptors.request.use(
   (config) => {
     return config;
@@ -16,7 +16,6 @@ API.interceptors.request.use(
   }
 );
 
-//run after each response from backend
 API.interceptors.response.use(
   (response) => {
     return response;

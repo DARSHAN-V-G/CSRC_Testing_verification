@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import axios from 'axios';
 import './ReportUploadForm.css';
-
+import Cookies from 'js-cookie';
 const ReportUploadForm = () => {
   const [formData, setFormData] = useState({
     ref_no: '',
@@ -23,13 +23,23 @@ const ReportUploadForm = () => {
     receipt_no: '',
     bill_no: ''
   });
-
+  useEffect(() => {
+    const generatedRefNo = generateRefNo();
+    const dept = findDepartment();
+    setFormData(prev => ({
+      ...prev,
+      ref_no: generatedRefNo,
+      department:dept
+    }));
+  }, []);
   const [tests, setTests] = useState([{
     title: '',
     unit: '',
     pricePerUnit: 0,
     quantity: 0
   }]);
+
+
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -68,6 +78,60 @@ const ReportUploadForm = () => {
     calculateTotalAmount(updatedTests);
   };
 
+  const generateRefNo = () => {
+    // Get email from cookies
+    const userEmail = Cookies.get('userEmail');
+    if (!userEmail) return '';
+    
+    const domainPart = userEmail.split('.')[1].split('@')[0].toUpperCase();
+
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2);
+    const month = String(now.getMonth() + 1).padStart(2, '0'); 
+    const day = String(now.getDate()).padStart(2, '0');
+    const dateString = `${year}${month}${day}`; 
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const milli  = String(now.getMilliseconds()).padStart(2,'0');
+    const timeString = `${hours}${minutes}${seconds}${milli}`; 
+    return `REF_${domainPart}_${dateString}${timeString}`;
+  };
+
+  const findDepartment = () => {
+    let email = Cookies.get('userEmail').toLowerCase();
+    if (!email) return "";
+    email = email.toLowerCase();
+    let part = email.split('.')[1];
+    part = part.split('@')[0];
+    console.log(part);
+    const departmentMap = {
+        'afd': 'APPAREL AND FASHION DESIGN',
+        'amcs': 'APPLIED MATHEMATICS AND COMPUTATIONAL SCIENCES',
+        'apsc': 'APPLIED SCIENCE',
+        'auto': 'AUTOMOBILE ENGINEERING',
+        'bme': 'BIOMEDICAL ENGINEERING',
+        'bio': 'BIOTECHNOLOGY',
+        'civil': 'CIVIL ENGINEERING',
+        'mca': 'COMPUTER APPLICATIONS',
+        'cse': 'COMPUTER SCIENCE & ENGINEERING',
+        'eee': 'ELECTRICAL & ELECTRONICS ENGINEERING',
+        'ece': 'ELECTRONICS & COMMUNICATION ENGINEERING',
+        'fashion': 'FASHION TECHNOLOGY',
+        'it': 'INFORMATION TECHNOLOGY',
+        'ice': 'INSTRUMENTATION & CONTROL ENGINEERING',
+        'mech': 'MECHANICAL ENGINEERING',
+        'metal': 'METALLURGICAL ENGINEERING',
+        'prod': 'PRODUCTION ENGINEERING',
+        'rae': 'ROBOTICS & AUTOMATION ENGINEERING',
+        'textile': 'TEXTILE TECHNOLOGY',
+        'ac':"Test department",
+    };
+  
+  // Check if the local part matches any key in the department map
+  return departmentMap[part] || null;
+};
+
   const calculateTotalAmount = (testList) => {
     const subtotal = testList.reduce((sum, test) => {
       return sum + (test.pricePerUnit * test.quantity || 0);
@@ -102,8 +166,8 @@ const ReportUploadForm = () => {
       
       // Append tests as JSON string
       formDataToSend.append('test', JSON.stringify(tests));
-      
-      const response = await axios.post('http://localhost:8080/report/create', formDataToSend, {
+      console.log(formData);
+      const response = await axios.post('http://localhost:4000/report/create', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
@@ -115,8 +179,8 @@ const ReportUploadForm = () => {
       
       // Reset form
       setFormData({
-        ref_no: '',
-        department: '',
+        ref_no: generateRefNo(),
+        department: findDepartment(),
         verified_flag: 0,
         client_name: '',
         client_po_no: '',
@@ -155,26 +219,16 @@ const ReportUploadForm = () => {
           <h3>Report Details</h3>
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="ref_no">Reference No*</label>
-              <input
-                type="text"
-                id="ref_no"
-                name="ref_no"
-                value={formData.ref_no}
-                onChange={handleChange}
-                required
-              />
+              <label htmlFor="ref_no">Reference No :</label>
+              <div className="ref-number-display">{formData.ref_no}</div>
+              {/* Hidden input to ensure the ref_no is submitted with the form */}
+              <input type="hidden" name="ref_no" value={formData.ref_no} />
             </div>
             <div className="form-group">
-              <label htmlFor="department">Department*</label>
-              <input
-                type="text"
-                id="department"
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                required
-              />
+              <label htmlFor="department">Department :</label>
+              <div className="ref-number">{formData.department}</div>
+              {/* Hidden input to ensure the ref_no is submitted with the form */}
+              <input type="hidden" name="ref_no" value={formData.department} />
             </div>
           </div>
         </div>
