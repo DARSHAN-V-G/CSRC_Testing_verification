@@ -39,7 +39,7 @@ const generateRefreshToken = (id) => {
 const generateSecurityCode = () => {
   const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const numbers = '0123456789';
-  const length = 6;
+  const length = 3;
   let code = '';
   for (let i = 0; i < length; i++) {
     code += alphabets[Math.floor(Math.random() * alphabets.length)] + numbers[Math.floor(Math.random() * numbers.length)]
