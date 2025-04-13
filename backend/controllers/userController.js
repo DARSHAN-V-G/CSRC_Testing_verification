@@ -52,6 +52,7 @@ const registerController = async (req, res) => {
       code: code,
       updatedAt: new Date()
     });
+    await newSecurityRecord.save();
     sendSecurityCodeEmail(user.email.toLowerCase(), code);
 
     return res.status(201).json({
