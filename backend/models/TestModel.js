@@ -62,7 +62,7 @@ const reportSchema = new mongoose.Schema({
     },
     po_file_url: { 
         type: String 
-    }, // Cloudinary URL
+    }, 
     total_amount: { 
         type: mongoose.Schema.Types.Decimal128, required: true 
     },
@@ -77,7 +77,10 @@ const reportSchema = new mongoose.Schema({
         type:String
     },
     bill_no:{
-        
+        type:String
+    },
+    rejected_by:{
+        type:String
     }
 }, {
   timestamps: true
