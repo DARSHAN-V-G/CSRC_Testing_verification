@@ -8,7 +8,7 @@ const {
   generateAccessToken,
   generateRefreshToken,
   generateSecurityCode,
-  determineRoleFromEmail
+  validateEmail
 } = require('../utils/userUtils');
 
 const ONE_HOUR = 60 * 60 * 1000;
@@ -31,10 +31,10 @@ const registerController = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
-    const role = determineRoleFromEmail(user.email.toLowerCase());
-    if(role=='temp'){
+    const role = validateEmail(user.email.toLowerCase());
+    if (role == 'invalid') {
       return res.status(401).json({
-        message : "Invalid "
+        message: "Invalid "
       })
     }
     const newUser = new UserModel({

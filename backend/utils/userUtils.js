@@ -8,35 +8,15 @@ const JWT_ACCESS_EXPIRATION = process.env.JWT_ACCESS_EXPIRATION;
 const JWT_REFRESH_EXPIRATION = process.env.JWT_REFRESH_EXPIRATION;
 
 const validateEmail = (email) => {
-  //to be done
+  email = email.toLowerCase();
+  if (email.startsWith('dept.')) { return "staff"; }
+  if (email.startsWith('hod.') || email.startsWith('director')) { return "hod"; }
+  if (email.startsWith('spk.civil')) { return 'faculty'; }
+  if (email.startsWith('csrc')) { return 'office'; }
+  if (email.startsWith('dean.')) { return 'dean'; }
+  return 'invalid';
 }
 
-const determineRoleFromEmail = (email) => {
-  if (!email) return 'temp';
-  if (email == 'spk.civil@psgtech.ac.in'){
-    return 'faculty'
-  }
-  email = email.toLowerCase();
-  
-  const localPart = email.split('@')[0];
-  
-  if (localPart.includes('.')) {
-    const firstPart = localPart.split('.')[0];
-    
-    if (firstPart === 'hod') {
-      return 'hod';
-    } else if (firstPart === 'dean') {
-      return 'dean';
-    } else if (firstPart === 'dept') {
-      return 'staff';
-    }
-  }
-  if(localPart=="csrc"){
-    return 'office'
-  }
-  
-  return 'temp';
-};
 
 const generateAccessToken = (id) => {
   const token = jwt.sign(
@@ -71,5 +51,5 @@ module.exports = {
   generateAccessToken,
   generateRefreshToken,
   generateSecurityCode,
-  determineRoleFromEmail
+  validateEmail
 }
