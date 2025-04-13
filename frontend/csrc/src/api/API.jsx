@@ -6,7 +6,7 @@ const API = axios.create({
   timeout: 30000,
   withCredentials: true,
 });
-
+//runs before each request to backend
 API.interceptors.request.use(
   (config) => {
     return config;
@@ -16,6 +16,7 @@ API.interceptors.request.use(
   }
 );
 
+//run after each response from backend
 API.interceptors.response.use(
   (response) => {
     return response;
@@ -33,7 +34,11 @@ export const userAPI = {
   login: (credentials) => API.post('/auth/user/login', credentials),
   signup: (credentials) => API.post('/auth/user/register', credentials),
   verify: (payload) => API.post('/auth/user/register/verify', payload),
-  logout: () => API.post('/auth/user/logout')
+  logout: () => API.post('/auth/user/logout'),
+
+  requestResetCode: (payload) => API.post('/auth/user/generatecode', payload),
+  verifyResetCode: (payload) => API.post('/auth/user/verifycode', payload),
+  resetPassword: (payload) => API.post('/auth/user/resetpassword', payload),
 }
 
 
