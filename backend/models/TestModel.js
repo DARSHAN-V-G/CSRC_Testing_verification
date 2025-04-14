@@ -19,8 +19,7 @@ const testSchema = new Schema({
         type: Number
     },
     department : {
-        type:String,
-        required : true
+        type:String
     }
 },{timestamps: true});//as the name says, it adds timestamps to the schema
 

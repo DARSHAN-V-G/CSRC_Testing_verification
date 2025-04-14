@@ -212,7 +212,15 @@
       gap: 10px;
     }
     
-    .test-header,
+    .test-header {
+      display: grid;
+      grid-template-columns: 30% 15% 15% 15% 15% 10%;
+      gap: 5px;
+      padding: 10px 0;
+      font-weight: bold;
+      border-bottom: 2px solid #ddd;
+      background-color: #f8f9fa;
+    }
     .test-row {
       grid-template-columns: 2fr 1fr 1fr 1fr;
     }
@@ -234,4 +242,126 @@
       width: 100%;
       margin-top: 10px;
     }
+  }
+
+  .searchable-test-dropdown {
+    position: relative;
+    width: 100%;
+  }
+  
+  .searchable-test-dropdown input[type="text"] {
+    width: 87%;
+    padding: 10px;
+    margin:5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .test-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .dropdown-item.selected {
+    background-color: #e7f3ff;
+    color: #0056b3;
+  }
+  
+  .dropdown-no-results {
+    padding: 10px;
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+  }
+  
+  /* For GST percentage input */
+  .gst-input-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .gst-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .gst-input {
+    width: 70px;
+    padding: 6px 25px 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: right;
+  }
+  
+  .gst-symbol {
+    position: absolute;
+    right: 10px;
+    font-weight: bold;
+  }
+  
+  /* Loading overlay */
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #0056b3;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Make the unit and pricePerUnit fields look disabled since they're readonly */
+  input[readonly] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+  }
+  
+  .form-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
   }
