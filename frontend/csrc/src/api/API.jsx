@@ -55,4 +55,11 @@ export const reportAPI = {
   generate: (ref_no) => API.get(`/report/generate/${ref_no}`, { responseType: 'blob' }),
 };
 
+export const TestAPI = {
+  fetchAll: () => API.get('/test/all'),
+  addTest: (testData) => API.post('/test/add', testData),
+  updateTest: (id, testData) => API.put(`/test/update/${id}`, testData),
+  deleteTest: (id) => API.delete(`/test/delete/${id}`)
+}
+
 export default API;

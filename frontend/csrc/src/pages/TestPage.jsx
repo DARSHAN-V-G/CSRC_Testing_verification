@@ -3,6 +3,7 @@ import AddTest from '../components/TestComponents/AddTest';
 import UpdateTest from '../components/TestComponents/UpdateTest';
 import DeleteTest from '../components/TestComponents/DeleteTest';
 import './TestPage.css';
+import { TestAPI } from '../api/API';
 
 const TestPage = () => {
   const [tests, setTests] = useState([]);
@@ -37,18 +38,9 @@ const TestPage = () => {
     try {
       setLoading(true);
       
-      // Make API call to fetch all tests
-      const response = await fetch('http://localhost:4000/test/all', {
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch tests');
-      }
-      
-      const data = await response.json();
-      setTests(data.tests);
-      setFilteredTests(data.tests);
+      const response = await TestAPI.fetchAll();
+      setTests(response.data.tests);
+      setFilteredTests(response.data.tests);
       setError('');
     } catch (err) {
       setError('Error loading tests. Please try again later.');

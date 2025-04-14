@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './TestForms.css';
-
+import { TestAPI } from '../../api/API';
 const AddTest = ({ onAddSuccess }) => {
   const [test, setTest] = useState({
     title: '',
@@ -123,21 +123,8 @@ const AddTest = ({ onAddSuccess }) => {
       };
       
       // Make API call to add test
-      const response = await fetch('http://localhost:4000/test/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(testData),
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to add test');
-      }
-      
-      const result = await response.json();
+      const response = await TestAPI.addTest(testData);
+      const result = response.data;
       
       // Reset the form
       setTest({

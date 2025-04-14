@@ -15,17 +15,7 @@ const DeleteTest = ({ test, onCancel, onDeleteSuccess }) => {
       setIsDeleting(true);
       setError('');
       
-      // Make API call to delete test
-      const response = await fetch(`http://localhost:4000/test/delete/${test._id}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to delete test');
-      }
-      
+      await TestAPI.deleteTest(test._id);
       // Notify parent component
       if (onDeleteSuccess) {
         onDeleteSuccess(test._id);

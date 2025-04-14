@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './TestForms.css';
+import { TestAPI } from '../../api/API';
 
 const UpdateTest = ({ test, onCancel, onUpdateSuccess }) => {
   const [formData, setFormData] = useState({
@@ -137,21 +138,8 @@ const UpdateTest = ({ test, onCancel, onUpdateSuccess }) => {
       };
       
       // Make API call to update test
-      const response = await fetch(`http://localhost:4000/test/update/${test._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(testData),
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to update test');
-      }
-      
-      const result = await response.json();
+      const response = await TestAPI.updateTest(test._id, testData);
+      const result = response.data;
       
       // Notify parent component
       if (onUpdateSuccess) {
