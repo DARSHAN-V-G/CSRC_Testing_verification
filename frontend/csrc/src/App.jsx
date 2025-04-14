@@ -10,11 +10,14 @@ import ReportList from './components/fetchReport/ReportList.jsx';
 import ReportDetailPage from './components/fetchReport/ReportDetailPage.jsx';
 import TestPage from './pages/TestPage.jsx';
 import CheckPaymentPage from './components/checkPayment/CheckPaymentPage.jsx'; // Import the new page
+import PaymentDetailPage from './components/checkPayment/PaymentDetailPage.jsx';
+import Header from './components/common/Header.jsx';
 
 const AppRouter = () => {
   return (
     <AuthProvider>
       <Router>
+        <Header /> {/* Add the Header component */}
         <Routes>
           {/* Public Routes */}
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -30,6 +33,7 @@ const AppRouter = () => {
             <Route path="/createReport" element={<CreateReportPage />} />
             <Route path="/tests" element={<TestPage />} />
             <Route path="/checkPayment" element={<CheckPaymentPage />} /> {/* New route */}
+            <Route path="/checkPayment/report/:id" element={<PaymentDetailPage />} /> {/* New route for PaymentDetailPage */}
           </Route>
         </Routes>
       </Router>

@@ -106,11 +106,12 @@ const fetchReports = async (req, res) => {
         paid: false,
       });
     } else if (user.role == "faculty") {
+      console.log('In fetchreports');
       if (!verified) {
         reports = await Report.find({
+          verified_flag: { $gte: 1 },
           paid: true,
           paymentVerified: false,
-          verified_flag: { $gte: 1 },
         });
       } else {
         reports = await Report.find({
@@ -118,6 +119,7 @@ const fetchReports = async (req, res) => {
           paymentVerified: true,
         });
       }
+      console.log('Reports:', reports);
     } else {
       let flg = flag[user.role];
       if (verified) {
@@ -183,9 +185,9 @@ const verifyReport = async (req, res) => {
     const report = await Report.findOne({ ref_no: ref_no });
 
 
-    if (user.role == "staff") {
+    if (user.role == "staff" || user.role == 'faculty') {
       return res.status(401).json({
-        message: "Staffs doesn't have permission to verify the reports"
+        message: "Staffs/faculty doesn't have permission to verify the reports"
       })
     }
     if (!report) {
@@ -220,9 +222,9 @@ const rejectReport = async (req, res) => {
       })
     }
     const user = await userSchema.findById(user_id);
-    if (user.role == "staff") {
+    if (user.role == "staff" || user.role == "faculty") {
       return res.status(401).json({
-        message: "Staff can't reject any reports"
+        message: "Staff/faculty can't reject any reports"
       })
     }
 
@@ -396,16 +398,16 @@ const fetchTest = async (req, res) => {
   }
 }
 
-const fetchReject = async(req, res) => {
+const fetchReject = async (req, res) => {
   try {
     const reports = await Report.find({ rejected_by: { $ne: null } });
-    
+
     if (!reports || reports.length === 0) {
       return res.status(404).json({
         message: "No rejected reports found"
       });
     }
-    
+
     return res.status(200).json({
       message: "Rejected reports fetched successfully",
       reports
@@ -421,47 +423,47 @@ const fetchReject = async(req, res) => {
 const updateRejectedReport = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     if (!req.user) {
       return res.status(401).json({
         message: "Unauthorized access"
       });
     }
-    
+
     const report = await Report.findById(id);
-    
+
     if (!report) {
       return res.status(404).json({
         message: "Report not found"
       });
     }
-    
+
     // Check if report was actually rejected
     if (report.rejected_by === null) {
       return res.status(400).json({
         message: "This report was not rejected"
       });
     }
-    
+
     // Update the report data from request body
     const updateData = req.body;
-    
+
     // Reset rejection status
     updateData.rejected_by = null;
     updateData.verified_flag = 0; // Reset verification flag
-    
+
     // Update the report
     const updatedReport = await Report.findByIdAndUpdate(
       id,
       updateData,
       { new: true }
     );
-    
+
     return res.status(200).json({
       message: "Report updated successfully",
       report: updatedReport
     });
-    
+
   } catch (error) {
     return res.status(500).json({
       message: "Internal server error while updating report",

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { reportAPI } from '../../api/API';
 import './CheckPaymentPage.css';
 
@@ -16,8 +17,15 @@ const CheckPaymentPage = () => {
     setLoading(true);
     try {
       const isVerified = activeTab === 'verified';
-      const response = await reportAPI.fetch(isVerified);
-      setReports(response.data.reports);
+      const response = await reportAPI.fetch(isVerified); // Fetch reports based on payment verification status
+
+      // Format Decimal128 values in the reports
+      const formattedReports = response.data.reports.map((report) => ({
+        ...report,
+        total_amount: formatDecimal(report.total_amount),
+      }));
+
+      setReports(formattedReports);
       setError(null);
     } catch (err) {
       console.error('Error fetching reports:', err);
@@ -27,26 +35,11 @@ const CheckPaymentPage = () => {
     }
   };
 
-  const handleVerifyPayment = async (ref_no) => {
-    try {
-      await reportAPI.verifyPayment(ref_no);
-      alert('Payment verified successfully!');
-      fetchReports();
-    } catch (err) {
-      console.error('Error verifying payment:', err);
-      alert('Failed to verify payment. Please try again.');
+  const formatDecimal = (value) => {
+    if (typeof value === 'object' && value.$numberDecimal) {
+      return parseFloat(value.$numberDecimal).toFixed(2); // Convert Decimal128 to a number
     }
-  };
-
-  const handleRejectPayment = async (ref_no) => {
-    try {
-      await reportAPI.rejectPayment(ref_no);
-      alert('Payment rejected successfully!');
-      fetchReports();
-    } catch (err) {
-      console.error('Error rejecting payment:', err);
-      alert('Failed to reject payment. Please try again.');
-    }
+    return parseFloat(value).toFixed(2); // Handle regular numbers
   };
 
   return (
@@ -97,22 +90,11 @@ const CheckPaymentPage = () => {
                 <p className="department">{report.department}</p>
                 <p className="total-amount">Total: ₹{report.total_amount}</p>
               </div>
-              {!report.paymentVerified && (
-                <div className="report-card-actions">
-                  <button
-                    className="verify-button"
-                    onClick={() => handleVerifyPayment(report.ref_no)}
-                  >
-                    Verify Payment
-                  </button>
-                  <button
-                    className="reject-button"
-                    onClick={() => handleRejectPayment(report.ref_no)}
-                  >
-                    Reject Payment
-                  </button>
-                </div>
-              )}
+              <div className="report-card-footer">
+                <Link to={`/checkPayment/report/${report._id}`} className="view-button">
+                  View Details
+                </Link>
+              </div>
             </div>
           ))}
         </div>
