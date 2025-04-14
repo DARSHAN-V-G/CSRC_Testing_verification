@@ -43,15 +43,10 @@ export function AuthProvider({ children }) {
                 setUser({ email, role });
               } catch (refreshError) {
                 console.error('Token refresh Failed:', refreshError);
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('userRole');
                 setIsAuthenticated(false);
                 setUser(null);
               }
             } else {
-              // Other error
-              localStorage.removeItem('userEmail');
-              localStorage.removeItem('userRole');
               setIsAuthenticated(false);
               setUser(null);
             }
@@ -59,8 +54,6 @@ export function AuthProvider({ children }) {
         }
       } catch (error) {
         console.error('Auth check failed:', error);
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('userRole');
         setIsAuthenticated(false);
         setUser(null);
       } finally {
@@ -87,11 +80,6 @@ export function AuthProvider({ children }) {
     try {
       const response = await userAPI.verify({ email, code });
       const { role } = response.data;
-      
-      // Store in localStorage
-      localStorage.setItem('userEmail', email);
-      localStorage.setItem('userRole', role);
-      
       setIsAuthenticated(true);
       setUser({ email, role });
       return { success: true, role };
@@ -108,10 +96,6 @@ export function AuthProvider({ children }) {
       const response = await userAPI.login(credentials);
       const { email, role } = response.data.user;
       console.log(email,  role);
-      
-      // Store in localStorage
-      localStorage.setItem('userEmail', email);
-      localStorage.setItem('userRole', role);
       
       setIsAuthenticated(true);
       setUser({ email, role });
@@ -132,10 +116,7 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error('Logout API call failed:', error);
     } finally {
-      // Clear localStorage
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('userRole');
-      
+
       setIsAuthenticated(false);
       setUser(null);
     }
@@ -144,10 +125,10 @@ export function AuthProvider({ children }) {
   const getRedirectPath = () => {
     console.log(user);
     if (!user || !user.role) return '/login';
-
+    return '/dashboard';
     switch (user.role.toLowerCase()) {
       case 'staff':
-        return '/createReport';
+        return '/dashboard';
       case 'faculty':
         return '/checkPayment';
       default:
