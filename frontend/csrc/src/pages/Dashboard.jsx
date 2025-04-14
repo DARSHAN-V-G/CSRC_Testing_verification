@@ -40,6 +40,11 @@ const Dashboard = () => {
               Create Report
             </button>
           )}
+          {user?.role === 'dean' && (
+            <button onClick={() => navigate('/reports')} className="dashboard-button">
+              Check Reports
+            </button>
+          )}
           {user?.role === 'faculty' && (
             <button onClick={() => navigate('/checkPayment')} className="dashboard-button">
               Check Payment

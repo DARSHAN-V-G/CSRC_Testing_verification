@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { reportAPI } from '../../api/API';
-import ReportCard from './reportCard';
+import ReportCard from './ReportCard';
 import './ReportList.css';
 
 const ReportList = () => {
@@ -31,15 +31,15 @@ const ReportList = () => {
   return (
     <div className="report-list-container">
       <h2>CSRC Testing Reports</h2>
-      
+
       <div className="report-tabs">
-        <button 
+        <button
           className={`tab-button ${activeTab === 'pending' ? 'active' : ''}`}
           onClick={() => setActiveTab('pending')}
         >
           Pending Reports
         </button>
-        <button 
+        <button
           className={`tab-button ${activeTab === 'verified' ? 'active' : ''}`}
           onClick={() => setActiveTab('verified')}
         >

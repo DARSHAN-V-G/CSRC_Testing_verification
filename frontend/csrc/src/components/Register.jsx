@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
 import { useAuth } from '../context/authContext';
@@ -12,9 +12,19 @@ const Register = () => {
     password: '',
     code: ''
   });
-  const [step, setStep] = useState(1); // Step 1: Register, Step 2: Verify
+
+  const [step, setStep] = useState(1);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // 👇 Load email from localStorage if verification was pending
+  useEffect(() => {
+    const pendingEmail = localStorage.getItem('pendingVerificationEmail');
+    if (pendingEmail) {
+      setFormData((prev) => ({ ...prev, email: pendingEmail }));
+      setStep(2);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +42,8 @@ const Register = () => {
 
     setLoading(false);
     if (res.success) {
+      // 👇 Save to localStorage for persistence
+      localStorage.setItem('pendingVerificationEmail', formData.email);
       setStep(2);
     } else {
       setError(res.message);
@@ -50,6 +62,8 @@ const Register = () => {
 
     setLoading(false);
     if (res.success) {
+      // 👇 Clear verification state
+      localStorage.removeItem('pendingVerificationEmail');
       navigate(getRedirectPath());
     } else {
       setError(res.message);
@@ -104,7 +118,13 @@ const Register = () => {
           )}
 
           <button type="submit" className="register-button" disabled={loading}>
-            {loading ? (step === 1 ? 'Registering...' : 'Verifying...') : (step === 1 ? 'Register' : 'Verify')}
+            {loading
+              ? step === 1
+                ? 'Registering...'
+                : 'Verifying...'
+              : step === 1
+                ? 'Register'
+                : 'Verify'}
           </button>
         </form>
 
@@ -117,3 +137,4 @@ const Register = () => {
 };
 
 export default Register;
+

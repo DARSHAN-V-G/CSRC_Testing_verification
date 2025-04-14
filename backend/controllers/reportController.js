@@ -10,169 +10,190 @@ const {
   findDepartment
 } = require("../utils/reportUtils");
 const createReport = async (req, res) => {
-    try {
-      const user_id = req.user_id;
-      const user = await userSchema.findById(user_id);
-      if(!user){
-        return res.status(401).json({
-          messsage:"User not found"
-        })
-      }
-      const {
-        ref_no,
-        department,
-        verified_flag,
-        client_name,
-        client_po_no,
-        bill_to_be_sent_mail_address,
-        client_po_recieved_date,
-        gst_no,
-        faculty_incharge,
-        paid,
-        payment_mode,
-        prepared_by,
-        total_amount,
-        test
-      } = req.body;
-      
-      // Cloudinary file path
-      console.log(req.file.path);
-      const po_file_url = req.file?.path || null;
-  
-      // Create new Report
-      const report = new Report({
-        ref_no,
-        department,
-        verified_flag,
-        client_name,
-        client_po_no,
-        bill_to_be_sent_mail_address,
-        client_po_recieved_date,
-        gst_no,
-        faculty_incharge,
-        paid,
-        payment_mode,
-        prepared_by,
-        po_file_url,
-        total_amount,
-        test: JSON.parse(test)
-      });
-      console.log("Saving Report");
-      console.log(req.file);
-      await report.save();
-      res.status(201).json({
-        success: true,
-        message: 'Report created successfully',
-      });
-    } catch (err) {
-      console.error('Error creating report:', err);
-      res.status(500).json({
-        success: false,
-        message: 'Server Error',
-        error: err.message
-      });
+  try {
+    const user_id = req.user_id;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(401).json({
+        messsage: "User not found"
+      })
     }
-  };
+    const {
+      ref_no,
+      department,
+      verified_flag,
+      client_name,
+      client_po_no,
+      bill_to_be_sent_mail_address,
+      client_po_recieved_date,
+      gst_no,
+      faculty_incharge,
+      paid,
+      payment_mode,
+      prepared_by,
+      total_amount,
+      test
+    } = req.body;
 
-const fetchReports = async (req,res) =>{
-  try{
+    // Cloudinary file path
+    console.log(req.file.path);
+    const po_file_url = req.file?.path || null;
+
+    // Create new Report
+    const report = new Report({
+      ref_no,
+      department,
+      verified_flag,
+      client_name,
+      client_po_no,
+      bill_to_be_sent_mail_address,
+      client_po_recieved_date,
+      gst_no,
+      faculty_incharge,
+      paid,
+      payment_mode,
+      prepared_by,
+      po_file_url,
+      total_amount,
+      test: JSON.parse(test)
+    });
+    console.log("Saving Report");
+    console.log(req.file);
+    await report.save();
+    res.status(201).json({
+      success: true,
+      message: 'Report created successfully',
+    });
+  } catch (err) {
+    console.error('Error creating report:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+      error: err.message
+    });
+  }
+};
+
+const fetchReports = async (req, res) => {
+  try {
     const user_id = req.user_id;
     const user = await userSchema.findById(user_id);
     const verified = req.params.verified === "true";
-    if(!user){
+    if (!user) {
       return res.status(404).json({
-        message:"User Not Found !"
+        message: "User Not Found !"
       })
     }
     let reports = null;
-    if (user.role=="hod"){
-        const dept = findDepartment(user.email);
-        
-        let flg = 0;
-        if(verified){
-            flg=1;
-        }
+    if (user.role == "hod") {
+      const dept = findDepartment(user.email);
+      if (verified) {
         reports = await Report.find({
-          department:dept,
-          verified_flag:flg
+          department: dept,
+          verified_flag: 0
         });
-        if(!reports){
-          return res.status(404).json({
-            message:"No reports found for the user"
-          })
-        }
-    }else if(user.role=="staff"){
-        const dept = findDepartment(user.email);
-          reports = await Report.find({
-            department:dept,
-            verified_flag:0
-          });
-          if(!reports){
-            return res.status(404).json({
-              message:"No reports found for the user"
-            })
-          }
-    }else{
-        let flg = flag[user.role];
-        if(!verified){
-          flg-=1;
-        }
+      }
+      else {
         reports = await Report.find({
-          verified_flag:flag
+          department: dept,
+          verified_flag: { $gte: 1 }
         });
+      }
+      if (!reports) {
+        return res.status(404).json({
+          message: "No reports found for the user"
+        });
+      }
+    } else if (user.role == "staff") {
+      const dept = findDepartment(user.email);
+      reports = await Report.find({
+        department: dept,
+        paid: false,
+      });
+      if (!reports) {
+        return res.status(404).json({
+          message: "No reports found for the user"
+        });
+      }
+    } else if (user.role == "faculty") {
+      if (!verified) {
+        reports = await Report.find({
+          paid: true,
+          verified_flag: 1,
+        });
+      } else {
+        reports = await Report.find({
+          paid: true,
+          verified_flag: { $gte: 2 },
+        });
+      }
+      if (!reports) {
+        return res.status(404).json({
+          message: "No reports found for the user"
+        });
+      }
+    } else {
+      let flg = flag[user.role];
+      console.log(flg);
+      if (!verified) {
+        flg -= 1;
+      }
+      reports = await Report.find({
+        verified_flag: flg
+      });
     }
     return res.status(200).json({
-      message:"Reports fetched successfully",
+      message: "Reports fetched successfully",
       reports
     })
-    
-    
-  }catch(error){
+
+
+  } catch (error) {
     res.status(500).json({
-      message:"Internal Server Error while fetching reports",
+      message: "Internal Server Error while fetching reports",
       error: error
     })
   }
 }
 
-const fetchPoFile = async(req,res)=>{
-  try{
+const fetchPoFile = async (req, res) => {
+  try {
     const ref_no = req.params.ref_no;
-    const report = await Report.findOne({ref_no:ref_no});
-    if(!report){
+    const report = await Report.findOne({ ref_no: ref_no });
+    if (!report) {
       return res.status(404).json({
-        message:"No reports found with given ref_no"
+        message: "No reports found with given ref_no"
       })
     }
     return res.status(200).json({
-      message:"PO File Fetched successfully",
-      po_file_url : report.po_file_url
+      message: "PO File Fetched successfully",
+      po_file_url: report.po_file_url
     })
-  }catch(error){
+  } catch (error) {
     return res.status(500).json({
-      message:"Internal server error while fetching PO file",
+      message: "Internal server error while fetching PO file",
       error: error
     })
   }
 }
 
-const verifyReport = async(req,res) =>{
-  try{
+const verifyReport = async (req, res) => {
+  try {
     const ref_no = req.body.ref_no;
-    if(!ref_no){
+    if (!ref_no) {
       return res.status(404).json({
         message: "Reference Number required for rejection"
       })
     }
     const user_id = req.user_id;
     const user = await userSchema.findById(user_id);
-  
-    const report = await Report.findOne({ ref_no:ref_no });
-    
-    
-    if(user.role=="staff"){
+
+    const report = await Report.findOne({ ref_no: ref_no });
+
+
+    if (user.role == "staff") {
       return res.status(401).json({
-        message : "Staffs doesn't have permission to verify the reports"
+        message: "Staffs doesn't have permission to verify the reports"
       })
     }
     if (!report) {
@@ -182,80 +203,131 @@ const verifyReport = async(req,res) =>{
     }
     report.verified_flag += 1;
     await report.save();
-    
+
     return res.status(200).json({
       message: "Report verified successfully"
     });
-  }catch(err){
+  } catch (err) {
     return res.status(500).json({
-      message : "Internal server while verifying reports",
-      error : err
+      message: "Internal server while verifying reports",
+      error: err
     })
   }
 }
 
-const rejectReport = async(req,res)=>{
-  try{
+const rejectReport = async (req, res) => {
+  try {
     const user_id = req.user_id;
     const ref_no = req.body.ref_no;
-    if(!ref_no){
+    if (!ref_no) {
       return res.status(404).json({
         message: "Reference Number required for rejection"
       })
     }
     const user = await userSchema.findById(user_id);
-    if(user.role=="staff"){
+    if (user.role == "staff") {
       console.log("Staff trying to verify report")
       return res.status(401).json({
-        message:"Staff can't reject any reports"
+        message: "Staff can't reject any reports"
       })
     }
-    
-    const report = await Report.findOne({ref_no : ref_no});
+
+    const report = await Report.findOne({ ref_no: ref_no });
     report.rejected_by = user.role;
     report.verified_flag = 0;
     await report.save();
     return res.status(200).json({
-      message : "Report rejected successfully"
+      message: "Report rejected successfully"
     })
-  }catch(err){
+  } catch (err) {
     return res.status(500).json({
-      message:"Internal Server error while rejecting report",
-      error : err
+      message: "Internal Server error while rejecting report",
+      error: err
     })
   }
 }
 
-const fetchReportById = async(req,res)=>{
-  try{
+const fetchReportById = async (req, res) => {
+  try {
     const report_id = req.params.id;
-    if(!report_id){
+    if (!report_id) {
       return res.status(404).json({
-        message : "Report id is required"
+        message: "Report id is required"
       })
     }
     const report = await Report.findById(report_id);
-    if(!report){
+    if (!report) {
       return res.status(404).json({
-        message : "No reports with given report ID"
+        message: "No reports with given report ID"
       });
     }
     return res.status(200).json({
-      message : "Report fetched successfully",
+      message: "Report fetched successfully",
       report
     })
-  }catch(error){
+  } catch (error) {
 
   }
 }
 
 
+const addTest = async (req, res) => {
+  try {
+    const test = req.body;
+    const exists = await Test.find({ title: test.title, department: test.department });
+    if (exists) {
+      return res.status(400).json({
+        message: "Test Already exists"
+      })
+    }
+    const SaveTest = new Test(test);
+    await SaveTest.save();
+    return res.status(200).json({
+      message: "Test Saved successfully"
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: "Error while add Tests",
+      error: error
+    })
+  }
+}
+
+const fetchTest = async (req, res) => {
+  try {
+    const dept = req.params.department;
+    if (!dept) {
+      return res.status(404).json({
+        message: "Department is required for fetching Tests"
+      })
+    }
+    const test = await Test.find({
+      department: dept
+    })
+    if (!test) {
+      return res.status(404).json({
+        message: "No Test found for the given department"
+      })
+    }
+    return res.status(200).json({
+      message: "Tests fetched successfully",
+      test
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal Server While fetching Test",
+      error: error
+    })
+  }
+}
 
 module.exports = {
-    createReport,
-    fetchReports,
-    fetchPoFile,
-    verifyReport,
-    rejectReport,
-    fetchReportById,
+  createReport,
+  fetchReports,
+  fetchPoFile,
+  verifyReport,
+  rejectReport,
+  fetchReportById,
+  addTest,
+  fetchTest
 }

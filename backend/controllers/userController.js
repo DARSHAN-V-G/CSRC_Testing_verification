@@ -14,9 +14,9 @@ const {
 const ONE_HOUR = 60 * 60 * 1000;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
-const checkStatus = async(req,res)=>{
+const checkStatus = async (req, res) => {
   return res.status(200).json({
-    message:"The token is still valid"
+    message: "The token is still valid"
   })
 }
 
@@ -88,8 +88,8 @@ const loginController = async (req, res) => {
         message: 'Invalid password'
       });
     }
-    const isVerified = user.isVerified;
-    if (isVerified) {
+    const isVerified = checkUser.isVerified;
+    if (!isVerified) {
       return res.status(401).json({
         message: 'User not verified'
       });
