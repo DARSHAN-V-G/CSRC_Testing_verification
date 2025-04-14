@@ -87,7 +87,7 @@ const fetchReports = async (req, res) => {
     let reports = null;
     if (user.role == "hod") {
       const dept = findDepartment(user.email);
-      if (verified) {
+      if (!verified) {
         reports = await Report.find({
           department: dept,
           verified_flag: 0
@@ -99,22 +99,12 @@ const fetchReports = async (req, res) => {
           verified_flag: { $gte: 1 }
         });
       }
-      if (!reports) {
-        return res.status(404).json({
-          message: "No reports found for the user"
-        });
-      }
     } else if (user.role == "staff") {
       const dept = findDepartment(user.email);
       reports = await Report.find({
         department: dept,
         paid: false,
       });
-      if (!reports) {
-        return res.status(404).json({
-          message: "No reports found for the user"
-        });
-      }
     } else if (user.role == "faculty") {
       if (!verified) {
         reports = await Report.find({
@@ -127,27 +117,28 @@ const fetchReports = async (req, res) => {
           verified_flag: { $gte: 2 },
         });
       }
-      if (!reports) {
-        return res.status(404).json({
-          message: "No reports found for the user"
-        });
-      }
     } else {
       let flg = flag[user.role];
-      console.log(flg);
-      if (!verified) {
-        flg -= 1;
+      if (verified) {
+        reports = await Report.find({
+          verified_flag: { $gte: flg }
+        });
+      } else {
+        flg = flg - 1;
+        reports = await Report.find({
+          verified_flag: flg
+        });
       }
-      reports = await Report.find({
-        verified_flag: flg
+    }
+    if (!reports) {
+      return res.status(404).json({
+        message: "No reports found for the user"
       });
     }
     return res.status(200).json({
       message: "Reports fetched successfully",
       reports
-    })
-
-
+    });
   } catch (error) {
     res.status(500).json({
       message: "Internal Server Error while fetching reports",
