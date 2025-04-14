@@ -40,3 +40,25 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Ensure the app container takes up the full height of the viewport */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* The header stays at the top */
+.sub-header {
+  flex-shrink: 0; /* Prevent the header from shrinking */
+}
+
+/* The content container takes up the remaining space */
+.content-container {
+  flex-grow: 1; /* Allow the content to grow and fill the remaining space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #f5f5f5; /* Optional: Add a background color */
+}

@@ -24,7 +24,7 @@ const ReportUploadForm = () => {
     bill_no: '',
     gst_percent: 18 // Default GST percentage
   });
-  
+
   const [tests, setTests] = useState([{
     title: '',
     unit: '',
@@ -32,11 +32,11 @@ const ReportUploadForm = () => {
     quantity: 0,
     testId: '' // To store the selected test's ID
   }]);
-  
+
   const [availableTests, setAvailableTests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   // For search dropdown
   const [searchTerms, setSearchTerms] = useState(['']);
   const [showDropdowns, setShowDropdowns] = useState([false]);
@@ -52,7 +52,7 @@ const ReportUploadForm = () => {
       ref_no: generatedRefNo,
       department: dept
     }));
-    
+
     // Fetch available tests
     fetchAvailableTests();
   }, []);
@@ -61,7 +61,7 @@ const ReportUploadForm = () => {
   useEffect(() => {
     const newFilteredTests = searchTerms.map((term, index) => {
       if (!term.trim()) return availableTests;
-      return availableTests.filter(test => 
+      return availableTests.filter(test =>
         test.title.toLowerCase().includes(term.toLowerCase())
       );
     });
@@ -72,8 +72,8 @@ const ReportUploadForm = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       dropdownRefs.current.forEach((ref, index) => {
-        if (ref && !ref.contains(event.target) && 
-            searchInputRefs.current[index] && !searchInputRefs.current[index].contains(event.target)) {
+        if (ref && !ref.contains(event.target) &&
+          searchInputRefs.current[index] && !searchInputRefs.current[index].contains(event.target)) {
           const newShowDropdowns = [...showDropdowns];
           newShowDropdowns[index] = false;
           setShowDropdowns(newShowDropdowns);
@@ -103,7 +103,7 @@ const ReportUploadForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
-    
+
     if (name === 'gst_percent') {
       // Update GST percentage and recalculate total
       const newGstPercent = parseFloat(value) || 0;
@@ -126,23 +126,23 @@ const ReportUploadForm = () => {
   const handleTestChange = (index, e) => {
     const { name, value } = e.target;
     const updatedTests = [...tests];
-    
+
     updatedTests[index] = {
       ...updatedTests[index],
       [name]: name === 'pricePerUnit' || name === 'quantity' ? Number(value) : value
     };
-    
+
     setTests(updatedTests);
     calculateTotalAmount(updatedTests, formData.gst_percent);
   };
 
   const handleTestSearch = (index, e) => {
     const term = e.target.value;
-    
+
     const newSearchTerms = [...searchTerms];
     newSearchTerms[index] = term;
     setSearchTerms(newSearchTerms);
-    
+
     const newShowDropdowns = [...showDropdowns];
     newShowDropdowns[index] = true;
     setShowDropdowns(newShowDropdowns);
@@ -158,14 +158,14 @@ const ReportUploadForm = () => {
       testId: test._id,
       quantity: updatedTests[index].quantity || 1 // Set default quantity to 1 if not set
     };
-    
+
     setTests(updatedTests);
     calculateTotalAmount(updatedTests, formData.gst_percent);
-    
+
     const newSearchTerms = [...searchTerms];
     newSearchTerms[index] = test.title;
     setSearchTerms(newSearchTerms);
-    
+
     const newShowDropdowns = [...showDropdowns];
     newShowDropdowns[index] = false;
     setShowDropdowns(newShowDropdowns);
@@ -186,16 +186,16 @@ const ReportUploadForm = () => {
       quantity: 0,
       testId: ''
     }]);
-    
+
     // Add an empty string to searchTerms array for the new test
     setSearchTerms([...searchTerms, '']);
-    
+
     // Add a false value to showDropdowns array for the new test
     setShowDropdowns([...showDropdowns, false]);
-    
+
     // Initialize the filtered tests for the new row
     setFilteredTests([...filteredTests, availableTests]);
-    
+
     // Make sure refs are updated - this will be handled by useEffect
     searchInputRefs.current = [...searchInputRefs.current, null];
     dropdownRefs.current = [...dropdownRefs.current, null];
@@ -204,17 +204,17 @@ const ReportUploadForm = () => {
   const removeTest = (index) => {
     const updatedTests = tests.filter((_, i) => i !== index);
     setTests(updatedTests);
-    
+
     // Update search terms and show dropdowns arrays
     const newSearchTerms = searchTerms.filter((_, i) => i !== index);
     setSearchTerms(newSearchTerms);
-    
+
     const newShowDropdowns = showDropdowns.filter((_, i) => i !== index);
     setShowDropdowns(newShowDropdowns);
-    
+
     const newFilteredTests = filteredTests.filter((_, i) => i !== index);
     setFilteredTests(newFilteredTests);
-    
+
     calculateTotalAmount(updatedTests, formData.gst_percent);
   };
 
@@ -303,12 +303,12 @@ const ReportUploadForm = () => {
 
       // Prepare tests data - remove testId before sending
       const testsToSend = tests.map(({ testId, ...rest }) => rest);
-      
+
       // Append tests as JSON string
       formDataToSend.append('test', JSON.stringify(testsToSend));
       console.log(formData);
       const response = await reportAPI.create(formDataToSend);
-      
+
       alert('Report created successfully!');
       console.log(response.data);
 
@@ -354,9 +354,9 @@ const ReportUploadForm = () => {
   return (
     <div className="report-form-container">
       <h2>CSRC Testing Report Form</h2>
-      
+
       {error && <div className="form-error">{error}</div>}
-      
+
       <form onSubmit={handleSubmit}>
         <div className="form-section">
           <h3>Report Details</h3>
@@ -477,14 +477,14 @@ const ReportUploadForm = () => {
                     required
                   />
                   {showDropdowns[index] && filteredTests[index] && (
-                    <div 
-                      className="dropdown-menu test-dropdown" 
+                    <div
+                      className="dropdown-menu test-dropdown"
                       ref={el => dropdownRefs.current[index] = el}
                     >
                       {filteredTests[index]?.length > 0 ? (
                         filteredTests[index].map((availableTest) => (
-                          <div 
-                            key={availableTest._id} 
+                          <div
+                            key={availableTest._id}
                             className={`dropdown-item ${test.testId === availableTest._id ? 'selected' : ''}`}
                             onClick={() => handleTestSelect(index, availableTest)}
                           >
@@ -496,10 +496,10 @@ const ReportUploadForm = () => {
                       )}
                     </div>
                   )}
-                  <input 
-                    type="hidden" 
-                    name="testId" 
-                    value={test.testId || ''} 
+                  <input
+                    type="hidden"
+                    name="testId"
+                    value={test.testId || ''}
                   />
                 </div>
                 <div>
@@ -510,7 +510,7 @@ const ReportUploadForm = () => {
                     onChange={(e) => handleTestChange(index, e)}
                     readOnly
                     required
-                    style={{ margin: '3px' ,width:'70%'}}
+                    style={{ margin: '3px', width: '70%' }}
                   />
                 </div>
                 <div>
@@ -521,7 +521,7 @@ const ReportUploadForm = () => {
                     onChange={(e) => handleTestChange(index, e)}
                     readOnly
                     required
-                    style={{ margin: '3px' ,width:'70%'}}
+                    style={{ margin: '3px', width: '70%' }}
                   />
                 </div>
                 <div>
@@ -532,10 +532,10 @@ const ReportUploadForm = () => {
                     onChange={(e) => handleTestChange(index, e)}
                     required
                     min="1"
-                    style={{ margin: '3px' ,width:'60%'}}
+                    style={{ margin: '3px', width: '60%' }}
                   />
                 </div>
-                <div className="amount" style={{ paddingRight: '20px' ,width:'70%',textAlign:"center"}}>
+                <div className="amount" style={{ paddingRight: '20px', width: '70%', textAlign: "center" }}>
                   ₹{(test.pricePerUnit * test.quantity).toFixed(2)}
                 </div>
                 <div>
@@ -544,7 +544,7 @@ const ReportUploadForm = () => {
                     className="remove-btn"
                     onClick={() => removeTest(index)}
                     disabled={tests.length === 1}
-                    
+
                   >
                     Remove
                   </button>

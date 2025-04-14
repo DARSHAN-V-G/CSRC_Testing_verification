@@ -55,11 +55,11 @@ const ReportDetailPage = () => {
     try {
       setLoading(true);
       const response = await reportAPI.generate(report.ref_no);
-      
+
       // Convert the response to a Blob
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const newPdfUrl = URL.createObjectURL(pdfBlob);
-      
+
       setPdfUrl(newPdfUrl);
       setShowPdf(true);
       setLoading(false);
@@ -78,7 +78,7 @@ const ReportDetailPage = () => {
         const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
         const url = URL.createObjectURL(pdfBlob);
         setPdfUrl(url);
-        
+
         // Create download link
         const link = document.createElement('a');
         link.href = url;
@@ -153,7 +153,7 @@ const ReportDetailPage = () => {
         </button>
         <h2>Report Details: {report.ref_no}</h2>
       </div>
-      
+
       {showPdf ? (
         <div className="pdf-viewer-container">
           <div className="pdf-header">
@@ -162,8 +162,8 @@ const ReportDetailPage = () => {
               Close Preview
             </button>
           </div>
-          <iframe 
-            src={pdfUrl} 
+          <iframe
+            src={pdfUrl}
             className="pdf-frame"
             title="PDF Viewer"
           />
@@ -171,7 +171,7 @@ const ReportDetailPage = () => {
       ) : (
         <ReportDetailView report={report} />
       )}
-      
+
       <div className="report-actions">
         <div className="file-actions">
           <button className="view-po-button" onClick={handleViewPO}>
@@ -184,7 +184,7 @@ const ReportDetailPage = () => {
             Download Report PDF
           </button>
         </div>
-        
+
         <div className="verification-actions">
           <button className="verify-button" onClick={handleVerify}>
             Verify Report

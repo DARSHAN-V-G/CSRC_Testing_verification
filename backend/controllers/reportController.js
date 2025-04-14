@@ -106,17 +106,20 @@ const fetchReports = async (req, res) => {
         paid: false,
       });
     } else if (user.role == "faculty") {
+      console.log('In fetchreports');
       if (!verified) {
         reports = await Report.find({
+          verified_flag: { $gte: 1 },
           paid: true,
-          verified_flag: 1,
+          paymentVerified: false,
         });
       } else {
         reports = await Report.find({
           paid: true,
-          verified_flag: { $gte: 2 },
+          paymentVerified: true,
         });
       }
+      console.log('Reports:', reports);
     } else {
       let flg = flag[user.role];
       if (verified) {
@@ -182,9 +185,9 @@ const verifyReport = async (req, res) => {
     const report = await Report.findOne({ ref_no: ref_no });
 
 
-    if (user.role == "staff") {
+    if (user.role == "staff" || user.role == 'faculty') {
       return res.status(401).json({
-        message: "Staffs doesn't have permission to verify the reports"
+        message: "Staffs/faculty doesn't have permission to verify the reports"
       })
     }
     if (!report) {
@@ -193,6 +196,9 @@ const verifyReport = async (req, res) => {
       });
     }
     report.verified_flag += 1;
+    if (user.role == "hod" && report.paid == false) {
+      report.verified_flag += 1;
+    }
     await report.save();
 
     return res.status(200).json({
@@ -210,23 +216,25 @@ const rejectReport = async (req, res) => {
   try {
     const user_id = req.user_id;
     const ref_no = req.body.ref_no;
-    const reason = req.body.reason;
     if (!ref_no) {
       return res.status(404).json({
         message: "Reference Number required for rejection"
       })
     }
     const user = await userSchema.findById(user_id);
-    if (user.role == "staff") {
+    if (user.role == "staff" || user.role == "faculty") {
       return res.status(401).json({
-        message: "Staff can't reject any reports"
+        message: "Staff/faculty can't reject any reports"
       })
     }
 
     const report = await Report.findOne({ ref_no: ref_no });
+    if (!report) {
+      return res.status(404).json({
+        message: "Report not found"
+      });
+    }
     report.rejected_by = user.role;
-    report.rejected_reason = reason;
-    report.rejected_date = new Date(Date.now());
     report.verified_flag = 0;
     await report.save();
     return res.status(200).json({
@@ -235,6 +243,82 @@ const rejectReport = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       message: "Internal Server error while rejecting report",
+      error: err
+    })
+  }
+}
+
+const verifyPayment = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+    const ref_no = req.body.ref_no;
+    if (!ref_no) {
+      return res.status(404).json({
+        message: "Reference Number required for verification"
+      })
+    }
+    const user = await userSchema.findById(user_id);
+    if (user.role != "faculty") {
+      console.log(`${user.role} trying to verify report`);
+      return res.status(401).json({
+        message: `${user.role} can't verify any reports`
+      })
+    }
+    const report = await Report.findOne({ ref_no: ref_no });
+    if (!report) {
+      return res.status(404).json({
+        message: "Report not found"
+      });
+    }
+
+    report.paymentVerified = true;
+    report.verified_flag += 1;
+    await report.save();
+
+    return res.status(200).json({
+      message: "Report verified successfully"
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal Server error while verifying payment",
+      error: err
+    })
+  }
+}
+
+const rejectPayment = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+    const ref_no = req.body.ref_no;
+    if (!ref_no) {
+      return res.status(404).json({
+        message: "Reference Number required for rejection"
+      })
+    }
+    const user = await userSchema.findById(user_id);
+    if (user.role != "faculty") {
+      console.log(`${user.role} trying to reject payments in report`);
+      return res.status(401).json({
+        message: `${user.role} can't reject any payments in reports`
+      })
+    }
+    const report = await Report.findOne({ ref_no: ref_no });
+    if (!report) {
+      return res.status(404).json({
+        message: "Report not found"
+      });
+    }
+    report.rejected_by = user.role;
+    report.verified_flag = 0;
+
+    await report.save();
+
+    return res.status(200).json({
+      message: "Report rejected successfully"
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal Server error while rejecting payment",
       error: err
     })
   }
@@ -264,21 +348,20 @@ const fetchReportById = async (req, res) => {
 }
 
 
-const fetchReject = async(req, res) => {
+const fetchReject = async (req, res) => {
   try {
-    console.log("In report fetching");
-    const reports = await Report.find({ rejected_by: { $ne: null } }); 
+    const reports = await Report.find({ rejected_by: { $ne: null } });
+    
     if (!reports || reports.length === 0) {
       return res.status(404).json({
         message: "No rejected reports found"
       });
     }
-    
+
     return res.status(200).json({
       message: "Rejected reports fetched successfully",
       reports
     });
-
   } catch (error) {
     return res.status(500).json({
       message: "Internal server error while fetching rejected reports",
@@ -290,49 +373,47 @@ const fetchReject = async(req, res) => {
 const updateRejectedReport = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     if (!req.user) {
       return res.status(401).json({
         message: "Unauthorized access"
       });
     }
-    
+
     const report = await Report.findById(id);
-    
+
     if (!report) {
       return res.status(404).json({
         message: "Report not found"
       });
     }
-    
+
     // Check if report was actually rejected
     if (report.rejected_by === null) {
       return res.status(400).json({
         message: "This report was not rejected"
       });
     }
-    
+
     // Update the report data from request body
     const updateData = req.body;
-    
+
     // Reset rejection status
     updateData.rejected_by = null;
-    updateData.rejection_reason = null;
-    updateData.rejection_date = null;
     updateData.verified_flag = 0; // Reset verification flag
-    
+
     // Update the report
     const updatedReport = await Report.findByIdAndUpdate(
       id,
       updateData,
       { new: true }
     );
-    
+
     return res.status(200).json({
       message: "Report updated successfully",
       report: updatedReport
     });
-    
+
   } catch (error) {
     return res.status(500).json({
       message: "Internal server error while updating report",
@@ -348,6 +429,8 @@ module.exports = {
   fetchPoFile,
   verifyReport,
   rejectReport,
+  verifyPayment,
+  rejectPayment,
   fetchReportById,
   fetchReject,
   updateRejectedReport
