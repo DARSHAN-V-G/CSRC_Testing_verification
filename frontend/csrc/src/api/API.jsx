@@ -52,6 +52,8 @@ export const reportAPI = {
   fetch: (verified) => API.get(`/report/fetch/${verified}`),
   verify: (ref_no) => API.post('/report/verify',{ref_no}),
   reject: (ref_no) => API.post('/report/reject',{ref_no}),
+  verifyPayment: (ref_no) => API.post('/report/verify_payment',{ref_no}),
+  rejectPayment: (ref_no) => API.post('/report/reject_payment',{ref_no}),
   generate: (ref_no) => API.get(`/report/generate/${ref_no}`, { responseType: 'blob' }),
   fetchReject : () => API.get('/report/fetchReject'),
 };

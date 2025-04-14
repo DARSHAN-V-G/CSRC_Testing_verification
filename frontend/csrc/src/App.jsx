@@ -9,6 +9,8 @@ import ProtectedRoute from './pages/ProtectedRoute.jsx';
 import ReportList from './components/fetchReport/ReportList.jsx';
 import ReportDetailPage from './components/fetchReport/ReportDetailPage.jsx';
 import TestPage from './pages/TestPage.jsx';
+import CheckPaymentPage from './components/checkPayment/CheckPaymentPage.jsx'; // Import the new page
+
 const AppRouter = () => {
   return (
     <AuthProvider>
@@ -27,6 +29,7 @@ const AppRouter = () => {
             <Route path="/report/:id" element={<ReportDetailPage />} />
             <Route path="/createReport" element={<CreateReportPage />} />
             <Route path="/tests" element={<TestPage />} />
+            <Route path="/checkPayment" element={<CheckPaymentPage />} /> {/* New route */}
           </Route>
         </Routes>
       </Router>
