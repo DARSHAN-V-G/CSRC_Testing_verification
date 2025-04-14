@@ -1,5 +1,7 @@
 const PDFDocument = require("pdfkit");
-const reportSchema = require("../models/TestModel");
+const {
+  Report
+} = require("../models/TestModel");
 
 function formatCurrency(num) {
     return Number(num).toFixed(2);
@@ -13,7 +15,7 @@ const generateReport = async (req, res) => {
         message: "Reference Number is required",
       });
     }
-    const report = await reportSchema.findOne({ ref_no: ref_no });
+    const report = await Report.findOne({ ref_no: ref_no });
     if (!report) return res.status(404).json({ message: "Report not found" });
 
     const doc = new PDFDocument({ margin: 50 });

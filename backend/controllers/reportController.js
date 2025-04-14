@@ -1,5 +1,10 @@
-const reportSchema = require("../models/TestModel");
+
 const userSchema = require("../models/UserModel");
+const {
+  Report,
+  Test
+} = require("../models/TestModel");
+const { report } = require("../routes/userRoutes");
 const {
   flag,
   findDepartment
@@ -35,7 +40,7 @@ const createReport = async (req, res) => {
       const po_file_url = req.file?.path || null;
   
       // Create new Report
-      const report = new reportSchema({
+      const report = new Report({
         ref_no,
         department,
         verified_flag,
@@ -87,7 +92,7 @@ const fetchReports = async (req,res) =>{
         if(verified){
             flg=1;
         }
-        reports = await reportSchema.find({
+        reports = await Report.find({
           department:dept,
           verified_flag:flg
         });
@@ -98,7 +103,7 @@ const fetchReports = async (req,res) =>{
         }
     }else if(user.role=="staff"){
         const dept = findDepartment(user.email);
-          reports = await reportSchema.find({
+          reports = await Report.find({
             department:dept,
             verified_flag:0
           });
@@ -112,7 +117,7 @@ const fetchReports = async (req,res) =>{
         if(!verified){
           flg-=1;
         }
-        reports = await reportSchema.find({
+        reports = await Report.find({
           verified_flag:flag
         });
     }
@@ -133,7 +138,7 @@ const fetchReports = async (req,res) =>{
 const fetchPoFile = async(req,res)=>{
   try{
     const ref_no = req.params.ref_no;
-    const report = await reportSchema.findOne({ref_no:ref_no});
+    const report = await Report.findOne({ref_no:ref_no});
     if(!report){
       return res.status(404).json({
         message:"No reports found with given ref_no"
@@ -162,7 +167,7 @@ const verifyReport = async(req,res) =>{
     const user_id = req.user_id;
     const user = await userSchema.findById(user_id);
   
-    const report = await reportSchema.findOne({ ref_no:ref_no });
+    const report = await Report.findOne({ ref_no:ref_no });
     
     
     if(user.role=="staff"){
@@ -192,20 +197,21 @@ const verifyReport = async(req,res) =>{
 const rejectReport = async(req,res)=>{
   try{
     const user_id = req.user_id;
-    const ref_no = req.ref_no;
+    const ref_no = req.body.ref_no;
     if(!ref_no){
       return res.status(404).json({
         message: "Reference Number required for rejection"
       })
     }
     const user = await userSchema.findById(user_id);
-    if(user.role=="Staff"){
+    if(user.role=="staff"){
+      console.log("Staff trying to verify report")
       return res.status(401).json({
         message:"Staff can't reject any reports"
       })
     }
     
-    const report = await reportSchema.findOne({ref_no : ref_no});
+    const report = await Report.findOne({ref_no : ref_no});
     report.rejected_by = user.role;
     report.verified_flag = 0;
     await report.save();
@@ -220,10 +226,86 @@ const rejectReport = async(req,res)=>{
   }
 }
 
+const fetchReportById = async(req,res)=>{
+  try{
+    const report_id = req.params.id;
+    if(!report_id){
+      return res.status(404).json({
+        message : "Report id is required"
+      })
+    }
+    const report = await Report.findById(report_id);
+    if(!report){
+      return res.status(404).json({
+        message : "No reports with given report ID"
+      });
+    }
+    return res.status(200).json({
+      message : "Report fetched successfully",
+      report
+    })
+  }catch(error){
+
+  }
+}
+
+const addTest = async(req,res)=>{
+  try{
+    const test = req.body;
+    const exists = await Test.find({title : test.title,department:test.department});
+    if(exists){
+      return res.status(400).json({
+        message : "Test Already exists"
+      })
+    }
+    const SaveTest = new Test(test);
+    await SaveTest.save();
+    return res.status(200).json({
+      message:"Test Saved successfully"
+    })
+  }catch(error){
+    res.status(500).json({
+      message:"Error while add Tests",
+      error: error
+    })
+  }
+}
+
+const fetchTest = async(req,res) =>{
+  try{
+    const dept = req.params.department;
+    if(!dept){
+      return res.status(404).json({
+        message : "Department is required for fetching Tests"
+      })
+    }
+    const test = await Test.find({
+      department:dept
+    })
+    if(!test){
+      return res.status(404).json({
+        message :"No Test found for the given department"
+      })
+    }
+    return res.status(200).json({
+      message : "Tests fetched successfully",
+      test
+    })
+  }catch(error){
+    return res.status(500).json({
+      message : "Internal Server While fetching Test",
+      error : error
+    })
+  }
+}
+
 module.exports = {
     createReport,
     fetchReports,
     fetchPoFile,
     verifyReport,
-    rejectReport
+    rejectReport,
+    fetchReportById,
+    addTest,
+    fetchTest
 }

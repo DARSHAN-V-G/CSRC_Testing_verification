@@ -1,0 +1,230 @@
+.report-detail-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .report-detail-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .back-button {
+    background-color: transparent;
+    border: none;
+    color: #0056b3;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 20px;
+    padding: 5px 0;
+  }
+  
+  .back-button:hover {
+    text-decoration: underline;
+  }
+  
+  .report-detail-header h2 {
+    margin: 0;
+    color: #333;
+    flex-grow: 1;
+  }
+  
+  .report-actions {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .view-po-button,
+  .download-pdf-button,
+  .verify-button,
+  .reject-button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: none;
+  }
+  
+  .view-po-button {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .view-po-button:hover {
+    background-color: #5a6268;
+  }
+  
+  .download-pdf-button {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .download-pdf-button:hover {
+    background-color: #218838;
+  }
+  
+  .verification-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .verify-button {
+    background-color: #0056b3;
+    color: white;
+  }
+  
+  .verify-button:hover {
+    background-color: #003d7a;
+  }
+  
+  .reject-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .reject-button:hover {
+    background-color: #bd2130;
+  }
+  
+  .loading-container,
+  .error-container,
+  .not-found-container {
+    text-align: center;
+    padding: 50px 20px;
+  }
+  
+  .loading-container .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #0056b3;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .error-container,
+  .not-found-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #eee;
+  }
+  
+  .error-container h3,
+  .not-found-container h3 {
+    color: #dc3545;
+    margin-bottom: 15px;
+  }
+  
+  .error-container button,
+  .not-found-container button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+  
+  @media (max-width: 768px) {
+    .report-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .verification-actions {
+      flex-direction: column;
+    }
+  }
+
+  /* Add these styles to ReportDetailPage.css */
+
+.pdf-viewer-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.pdf-header {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pdf-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.close-pdf-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.close-pdf-button:hover {
+  background-color: #5a6268;
+}
+
+.pdf-frame {
+  width: 100%;
+  height: 600px;
+  border: none;
+}
+
+.view-report-button {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.view-report-button:hover {
+  background-color: #138496;
+}
+
+.file-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .file-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .pdf-frame {
+    height: 400px;
+  }
+}

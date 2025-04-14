@@ -33,7 +33,8 @@ const findDepartment = (email) => {
         'metal': 'METALLURGICAL ENGINEERING',
         'prod': 'PRODUCTION ENGINEERING',
         'rae': 'ROBOTICS & AUTOMATION ENGINEERING',
-        'textile': 'TEXTILE TECHNOLOGY'
+        'textile': 'TEXTILE TECHNOLOGY',
+        'ac': "Test department",
     };
   
   // Check if the local part matches any key in the department map

@@ -5,6 +5,8 @@ import LoginPage from './pages/LoginPage.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx';
 import ProtectedRoute from './pages/ProtectedRoute.jsx';
+import ReportList from './components/fetchReport/ReportList.jsx';
+import ReportDetailPage from './components/fetchReport/ReportDetailPage.jsx';
 const AppRouter = () => {
   return (
     <AuthProvider>
@@ -17,9 +19,11 @@ const AppRouter = () => {
           <Route path="/" element={<Navigate to="/login" replace />} />
 
           {/* Protected Routes for different roles */}
-          <Route element={<ProtectedRoute requiredRoles={['staff']} />}>
-            <Route path="/createReport" element={<CreateReportPage />} />
-          </Route>
+          <Route element={<ProtectedRoute />}>
+    <Route path="/reports" element={<ReportList />} />
+    <Route path="/report/:id" element={<ReportDetailPage />} />
+    <Route path="/createReport" element={<CreateReportPage />} />
+  </Route>
         </Routes>
       </Router>
     </AuthProvider>

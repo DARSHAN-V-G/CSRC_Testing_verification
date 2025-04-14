@@ -22,8 +22,8 @@ API.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      console.error("Authentication failed. Redirecting to login...");
-
+      console.error(error.response.data.message);
+      console.error(error.response.data.error);
     }
     return Promise.reject(error);
   }
@@ -35,7 +35,10 @@ export const userAPI = {
   verify: (payload) => API.post('/auth/user/register/verify', payload),
   logout: () => API.post('/auth/user/logout'),
   status : ()=>API.get('/auth/user/status'),
-  getnewaccesstoken : ()=>API.post('/auth/user/getnewaccesstoken')
+  getnewaccesstoken : ()=>API.post('/auth/user/getnewaccesstoken'),
+  requestResetCode: (payload) => API.post('/auth/user/generatecode', payload),
+  verifyResetCode: (payload) => API.post('/auth/user/verifycode', payload),
+  resetPassword: (payload) => API.post('/auth/user/resetpassword', payload),
 }
 
 export const reportAPI = {
@@ -45,9 +48,10 @@ export const reportAPI = {
     }
   }),
   // Add other report-related API methods here
+  getById: (id) => API.get(`/report/${id}`), // You'll need to add this endpoint in your backend
   fetch: (verified) => API.get(`/report/fetch/${verified}`),
-  verify: (ref_no) => API.post(`/report/verify/${ref_no}`),
-  reject: (ref_no) => API.post(`/report/reject/${ref_no}`),
+  verify: (ref_no) => API.post('/report/verify',{ref_no}),
+  reject: (ref_no) => API.post('/report/reject',{ref_no}),
   generate: (ref_no) => API.get(`/report/generate/${ref_no}`, { responseType: 'blob' }),
 };
 

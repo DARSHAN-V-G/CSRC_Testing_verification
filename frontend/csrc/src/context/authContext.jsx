@@ -147,7 +147,7 @@ export function AuthProvider({ children }) {
 
     switch (user.role.toLowerCase()) {
       case 'staff':
-        return '/dashboard';
+        return '/createReport';
       case 'faculty':
         return '/checkPayment';
       default:

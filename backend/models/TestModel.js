@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const TestSchema = new Schema({
+const testSchema = new Schema({
     title: {
         type: String,
         required: true
@@ -16,7 +16,10 @@ const TestSchema = new Schema({
         required: true
     },
     quantity: {
-        type: Number,
+        type: Number
+    },
+    department : {
+        type:String,
         required : true
     }
 },{timestamps: true});//as the name says, it adds timestamps to the schema
@@ -72,7 +75,7 @@ const reportSchema = new mongoose.Schema({
     transaction_date:{
         type:String
     },
-    test: [TestSchema],
+    test: [testSchema],
     receipt_no:{
         type:String
     },
@@ -86,4 +89,11 @@ const reportSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model("Report", reportSchema);
+const Test = mongoose.model("Test", testSchema);
+const Report = mongoose.model("Report", reportSchema);
+
+// Export both models as an object
+module.exports = {
+  Test,
+  Report
+};
