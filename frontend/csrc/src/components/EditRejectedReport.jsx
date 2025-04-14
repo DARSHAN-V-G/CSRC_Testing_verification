@@ -42,7 +42,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
         payment_mode: report.payment_mode || '',
         prepared_by: report.prepared_by || '',
         gst_percent: report.gst_percent || 18,
-        total_amount: report.total_amount || 0
+        total_amount: parseFloat(String(report.total_amount)) || 0
       });
       
       if (report.test && report.test.length > 0) {
@@ -397,6 +397,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
                     onChange={(e) => handleTestChange(index, e)}
                     readOnly
                     required
+                    style={{ margin: '3px', width: '70%' }}
                   />
                 </div>
                 <div>
@@ -407,6 +408,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
                     onChange={(e) => handleTestChange(index, e)}
                     readOnly
                     required
+                    style={{ margin: '3px', width: '70%' }}
                   />
                 </div>
                 <div>
@@ -419,7 +421,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
                     min="1"
                   />
                 </div>
-                <div className="amount">
+                <div className="amount" style={{ paddingRight: '20px', width: '70%', textAlign: "center" }}>
                   ₹{(test.pricePerUnit * test.quantity).toFixed(2)}
                 </div>
                 <div>

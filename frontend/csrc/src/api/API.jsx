@@ -23,7 +23,7 @@ API.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       console.error(error.response.data.message);
-      console.error(error.response.data.error);
+      console.error(error.response.data.error.message);
     }
     return Promise.reject(error);
   }

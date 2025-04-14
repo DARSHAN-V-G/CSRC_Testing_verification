@@ -18,10 +18,11 @@ const RejectedReportsPage = () => {
     try {
       setError('');
       const response = await reportAPI.fetchRejected();
+      response.data.reports.total_amount = String(response.data.reports.total_amount)
       setRejectedReports(response.data.reports);
     } catch (err) {
       console.error('Error fetching rejected reports:', err);
-      setError('Failed to load rejected reports. Please try again later.');
+      setError('No rejected Reports found');
     }
   };
 

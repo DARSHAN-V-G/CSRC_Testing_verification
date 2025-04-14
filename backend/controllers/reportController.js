@@ -357,7 +357,6 @@ const fetchReject = async (req, res) => {
         message: "No rejected reports found"
       });
     }
-
     return res.status(200).json({
       message: "Rejected reports fetched successfully",
       reports
@@ -365,7 +364,7 @@ const fetchReject = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Internal server error while fetching rejected reports",
-      error: error
+      error: error.message
     });
   }
 };
@@ -374,7 +373,7 @@ const updateRejectedReport = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!req.user) {
+    if (!req.user_id) {
       return res.status(401).json({
         message: "Unauthorized access"
       });

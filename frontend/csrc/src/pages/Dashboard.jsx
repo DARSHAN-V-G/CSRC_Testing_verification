@@ -50,11 +50,6 @@ const Dashboard = () => {
               Check Payment
             </button>
           )}
-          {user?.role === 'admin' && (
-            <button onClick={() => navigate('/admin')} className="dashboard-button">
-              Admin Panel
-            </button>
-          )}
         </div>
         <div className="footer-buttons">
           <button onClick={handleForgotPassword} className="forgot-password-button">
@@ -63,6 +58,11 @@ const Dashboard = () => {
           <button onClick={logout} className="logout-button">
             Logout
           </button>
+          {user?.role === 'staff' && (
+            <button onClick={() => navigate('/rejectedReports')} className="forgot-password-button">
+              View Rejected Reports
+            </button>
+          )}
         </div>
       </div>
     </div>
