@@ -9,8 +9,6 @@ const {
     verifyReport,
     rejectReport,
     fetchReportById,
-    addTest,
-    fetchTest
 } = require("../controllers/reportController");
 const {
     generateReport
@@ -19,8 +17,7 @@ const {
 const {userAuthMiddleware} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
-router.post('/addTest',addTest);
-router.get('/fetchTest',fetchTest);
+
 router.post('/create',upload.single("po_file"),createReport);
 // body is the reportSchema
 router.get('/fetch/:verified',fetchReports);

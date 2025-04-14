@@ -249,55 +249,7 @@ const fetchReportById = async(req,res)=>{
   }
 }
 
-const addTest = async(req,res)=>{
-  try{
-    const test = req.body;
-    const exists = await Test.find({title : test.title,department:test.department});
-    if(exists){
-      return res.status(400).json({
-        message : "Test Already exists"
-      })
-    }
-    const SaveTest = new Test(test);
-    await SaveTest.save();
-    return res.status(200).json({
-      message:"Test Saved successfully"
-    })
-  }catch(error){
-    res.status(500).json({
-      message:"Error while add Tests",
-      error: error
-    })
-  }
-}
 
-const fetchTest = async(req,res) =>{
-  try{
-    const dept = req.params.department;
-    if(!dept){
-      return res.status(404).json({
-        message : "Department is required for fetching Tests"
-      })
-    }
-    const test = await Test.find({
-      department:dept
-    })
-    if(!test){
-      return res.status(404).json({
-        message :"No Test found for the given department"
-      })
-    }
-    return res.status(200).json({
-      message : "Tests fetched successfully",
-      test
-    })
-  }catch(error){
-    return res.status(500).json({
-      message : "Internal Server While fetching Test",
-      error : error
-    })
-  }
-}
 
 module.exports = {
     createReport,
@@ -306,6 +258,4 @@ module.exports = {
     verifyReport,
     rejectReport,
     fetchReportById,
-    addTest,
-    fetchTest
 }
