@@ -83,6 +83,14 @@ const reportSchema = new mongoose.Schema({
     },
     rejected_by:{
         type:String
+    },
+    rejected_reason: {
+        type: String,
+        default : null
+    },
+    rejected_date : {
+        type : Date,
+        default:null
     }
 }, {
   timestamps: true

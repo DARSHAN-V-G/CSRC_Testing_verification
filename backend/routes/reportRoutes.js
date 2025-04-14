@@ -9,7 +9,8 @@ const {
     verifyReport,
     rejectReport,
     fetchReportById,
-    fetchReject
+    fetchReject,
+    updateRejectedReport
 } = require("../controllers/reportController");
 const {
     generateReport
@@ -18,6 +19,7 @@ const {
 const {userAuthMiddleware} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
+router.get('/fetchRejected',fetchReject);
 
 router.post('/create',upload.single("po_file"),createReport);
 // body is the reportSchema
@@ -30,5 +32,6 @@ router.post('/verify',verifyReport);
 router.post('/reject',rejectReport);
 //router.get('/fetch/po_file/:ref_no',fetchPoFile);
 router.get('/:id',fetchReportById);
-router.get('/fetchRejected',fetchReject);
+
+router.put('/update-rejected/:id', updateRejectedReport);
 module.exports = router;

@@ -210,6 +210,7 @@ const rejectReport = async (req, res) => {
   try {
     const user_id = req.user_id;
     const ref_no = req.body.ref_no;
+    const reason = req.body.reason;
     if (!ref_no) {
       return res.status(404).json({
         message: "Reference Number required for rejection"
@@ -224,6 +225,8 @@ const rejectReport = async (req, res) => {
 
     const report = await Report.findOne({ ref_no: ref_no });
     report.rejected_by = user.role;
+    report.rejected_reason = reason;
+    report.rejected_date = new Date(Date.now());
     report.verified_flag = 0;
     await report.save();
     return res.status(200).json({
@@ -261,60 +264,10 @@ const fetchReportById = async (req, res) => {
 }
 
 
-const addTest = async (req, res) => {
-  try {
-    const test = req.body;
-    const exists = await Test.find({ title: test.title, department: test.department });
-    if (exists) {
-      return res.status(400).json({
-        message: "Test Already exists"
-      })
-    }
-    const SaveTest = new Test(test);
-    await SaveTest.save();
-    return res.status(200).json({
-      message: "Test Saved successfully"
-    })
-  } catch (error) {
-    res.status(500).json({
-      message: "Error while add Tests",
-      error: error
-    })
-  }
-}
-
-const fetchTest = async (req, res) => {
-  try {
-    const dept = req.params.department;
-    if (!dept) {
-      return res.status(404).json({
-        message: "Department is required for fetching Tests"
-      })
-    }
-    const test = await Test.find({
-      department: dept
-    })
-    if (!test) {
-      return res.status(404).json({
-        message: "No Test found for the given department"
-      })
-    }
-    return res.status(200).json({
-      message: "Tests fetched successfully",
-      test
-    })
-  } catch (error) {
-    return res.status(500).json({
-      message: "Internal Server While fetching Test",
-      error: error
-    })
-  }
-}
-
 const fetchReject = async(req, res) => {
   try {
-    const reports = await Report.find({ rejected_by: { $ne: null } });
-    
+    console.log("In report fetching");
+    const reports = await Report.find({ rejected_by: { $ne: null } }); 
     if (!reports || reports.length === 0) {
       return res.status(404).json({
         message: "No rejected reports found"
@@ -325,6 +278,7 @@ const fetchReject = async(req, res) => {
       message: "Rejected reports fetched successfully",
       reports
     });
+
   } catch (error) {
     return res.status(500).json({
       message: "Internal server error while fetching rejected reports",
@@ -363,6 +317,8 @@ const updateRejectedReport = async (req, res) => {
     
     // Reset rejection status
     updateData.rejected_by = null;
+    updateData.rejection_reason = null;
+    updateData.rejection_date = null;
     updateData.verified_flag = 0; // Reset verification flag
     
     // Update the report
@@ -393,8 +349,6 @@ module.exports = {
   verifyReport,
   rejectReport,
   fetchReportById,
-  addTest,
-  fetchTest,
   fetchReject,
   updateRejectedReport
 };

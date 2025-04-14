@@ -9,6 +9,7 @@ import ProtectedRoute from './pages/ProtectedRoute.jsx';
 import ReportList from './components/fetchReport/ReportList.jsx';
 import ReportDetailPage from './components/fetchReport/ReportDetailPage.jsx';
 import TestPage from './pages/TestPage.jsx';
+import RejectedReportsPage from './pages/RejectedReportPage.jsx';
 const AppRouter = () => {
   return (
     <AuthProvider>
@@ -23,6 +24,7 @@ const AppRouter = () => {
 
           {/* Protected Routes for different roles */}
           <Route element={<ProtectedRoute />}>
+          <Route path="/rejectedReports" element={<RejectedReportsPage />} />
             <Route path="/reports" element={<ReportList />} />
             <Route path="/report/:id" element={<ReportDetailPage />} />
             <Route path="/createReport" element={<CreateReportPage />} />
