@@ -53,6 +53,7 @@ export const reportAPI = {
   verify: (ref_no) => API.post('/report/verify',{ref_no}),
   reject: (ref_no) => API.post('/report/reject',{ref_no}),
   generate: (ref_no) => API.get(`/report/generate/${ref_no}`, { responseType: 'blob' }),
+  fetchReject : () => API.get('/report/fetchReject'),
 };
 
 export const TestAPI = {

@@ -9,6 +9,7 @@ const {
     verifyReport,
     rejectReport,
     fetchReportById,
+    fetchReject
 } = require("../controllers/reportController");
 const {
     generateReport
@@ -29,4 +30,5 @@ router.post('/verify',verifyReport);
 router.post('/reject',rejectReport);
 //router.get('/fetch/po_file/:ref_no',fetchPoFile);
 router.get('/:id',fetchReportById);
+router.get('/fetchRejected',fetchReject);
 module.exports = router;

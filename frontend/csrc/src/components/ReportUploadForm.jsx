@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ReportUploadForm.css';
-import { useAuth } from '../context/authContext';
 import { reportAPI, TestAPI } from '../api/API';
 
 const ReportUploadForm = () => {
-  const { user } = useAuth();
   const [formData, setFormData] = useState({
     ref_no: '',
     department: '',
@@ -221,7 +219,7 @@ const ReportUploadForm = () => {
   };
 
   const generateRefNo = () => {
-    const userEmail = user?.email;
+    const userEmail = localStorage.getItem('userEmail');
     if (!userEmail) return '';
 
     const domainPart = userEmail.split('.')[1].split('@')[0].toUpperCase();
@@ -240,7 +238,7 @@ const ReportUploadForm = () => {
   };
 
   const findDepartment = () => {
-    let email = user?.email;
+    let email = localStorage.getItem('userEmail');
     if (!email) return "";
     email = email.toLowerCase();
     let part = email.split('.')[1];

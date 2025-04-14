@@ -217,7 +217,6 @@ const rejectReport = async (req, res) => {
     }
     const user = await userSchema.findById(user_id);
     if (user.role == "staff") {
-      console.log("Staff trying to verify report")
       return res.status(401).json({
         message: "Staff can't reject any reports"
       })
@@ -312,6 +311,81 @@ const fetchTest = async (req, res) => {
   }
 }
 
+const fetchReject = async(req, res) => {
+  try {
+    const reports = await Report.find({ rejected_by: { $ne: null } });
+    
+    if (!reports || reports.length === 0) {
+      return res.status(404).json({
+        message: "No rejected reports found"
+      });
+    }
+    
+    return res.status(200).json({
+      message: "Rejected reports fetched successfully",
+      reports
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error while fetching rejected reports",
+      error: error
+    });
+  }
+};
+
+const updateRejectedReport = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Unauthorized access"
+      });
+    }
+    
+    const report = await Report.findById(id);
+    
+    if (!report) {
+      return res.status(404).json({
+        message: "Report not found"
+      });
+    }
+    
+    // Check if report was actually rejected
+    if (report.rejected_by === null) {
+      return res.status(400).json({
+        message: "This report was not rejected"
+      });
+    }
+    
+    // Update the report data from request body
+    const updateData = req.body;
+    
+    // Reset rejection status
+    updateData.rejected_by = null;
+    updateData.verified_flag = 0; // Reset verification flag
+    
+    // Update the report
+    const updatedReport = await Report.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    );
+    
+    return res.status(200).json({
+      message: "Report updated successfully",
+      report: updatedReport
+    });
+    
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error while updating report",
+      error: error.message
+    });
+  }
+};
+
+// Export the function
 module.exports = {
   createReport,
   fetchReports,
@@ -320,5 +394,7 @@ module.exports = {
   rejectReport,
   fetchReportById,
   addTest,
-  fetchTest
-}
+  fetchTest,
+  fetchReject,
+  updateRejectedReport
+};

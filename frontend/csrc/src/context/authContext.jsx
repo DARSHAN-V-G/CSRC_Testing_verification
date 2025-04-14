@@ -80,6 +80,8 @@ export function AuthProvider({ children }) {
     try {
       const response = await userAPI.verify({ email, code });
       const { role } = response.data;
+      localStorage.setItem('userEmail', email);
+    localStorage.setItem('userRole', role);
       setIsAuthenticated(true);
       setUser({ email, role });
       return { success: true, role };
@@ -96,7 +98,8 @@ export function AuthProvider({ children }) {
       const response = await userAPI.login(credentials);
       const { email, role } = response.data.user;
       console.log(email,  role);
-      
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userRole', role);
       setIsAuthenticated(true);
       setUser({ email, role });
 
@@ -116,7 +119,9 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error('Logout API call failed:', error);
     } finally {
-
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userRole');
+    
       setIsAuthenticated(false);
       setUser(null);
     }
