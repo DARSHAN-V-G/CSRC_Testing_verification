@@ -9,6 +9,7 @@ const Register = () => {
 
   const [formData, setFormData] = useState({
     email: '',
+    username: '', // Add username field
     password: '',
     code: ''
   });
@@ -37,6 +38,7 @@ const Register = () => {
 
     const res = await signup({
       email: formData.email,
+      username: formData.username, // Include username in signup
       password: formData.password
     });
 
@@ -57,6 +59,7 @@ const Register = () => {
 
     const res = await verifyAndLogin({
       email: formData.email,
+      username: formData.username, // Include username in verification
       code: formData.code
     });
 
@@ -92,16 +95,29 @@ const Register = () => {
           </div>
 
           {step === 1 && (
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <>
+              <div className="form-group">
+                <label>Username</label>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your username"
+                />
+              </div>
+              <div className="form-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </>
           )}
 
           {step === 2 && (

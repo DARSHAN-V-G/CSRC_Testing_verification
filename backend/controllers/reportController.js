@@ -103,7 +103,6 @@ const fetchReports = async (req, res) => {
       const dept = findDepartment(user.email);
       reports = await Report.find({
         department: dept,
-        paid: false,
       });
     } else if (user.role == "faculty") {
       console.log('In fetchreports');
@@ -351,7 +350,7 @@ const fetchReportById = async (req, res) => {
 const fetchReject = async (req, res) => {
   try {
     const reports = await Report.find({ rejected_by: { $ne: null } });
-    
+
     if (!reports || reports.length === 0) {
       return res.status(404).json({
         message: "No rejected reports found"
@@ -421,6 +420,27 @@ const updateRejectedReport = async (req, res) => {
   }
 };
 
+const getUsername = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+    const name = user.username;
+    return res.status(200).json({
+      message: "Fetched username successfully",
+      username: name
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to fetch username"
+    });
+  }
+}
+
 // Export the function
 module.exports = {
   createReport,
@@ -432,5 +452,6 @@ module.exports = {
   rejectPayment,
   fetchReportById,
   fetchReject,
-  updateRejectedReport
+  updateRejectedReport,
+  getUsername,
 };

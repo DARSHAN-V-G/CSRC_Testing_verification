@@ -3,16 +3,17 @@ const multer = require("multer");
 const { storage } = require("../config/cloudinary");
 const upload = multer({ storage });
 const {
-    createReport,
-    fetchReports,
-    fetchPoFile,
-    verifyReport,
-    rejectReport,
-    verifyPayment,
-    rejectPayment,
-    fetchReportById,
-    fetchReject,
-    updateRejectedReport
+  createReport,
+  fetchReports,
+  fetchPoFile,
+  verifyReport,
+  rejectReport,
+  verifyPayment,
+  rejectPayment,
+  fetchReportById,
+  fetchReject,
+  updateRejectedReport,
+  getUsername
 } = require("../controllers/reportController");
 const {
   generateReport
@@ -21,8 +22,7 @@ const {
 const { userAuthMiddleware } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
-router.get('/fetchRejected',fetchReject);
-
+router.get('/fetchRejected', fetchReject);
 router.post('/create', upload.single("po_file"), createReport);
 // body is the reportSchema
 router.get('/fetch/:verified', fetchReports);
@@ -32,10 +32,12 @@ router.get('/generate/:ref_no', generateReport);
 router.post('/verify', verifyReport);
 //body has the ref_no
 router.post('/reject', rejectReport);
-//router.get('/fetch/po_file/:ref_no',fetchPoFile);
-router.get('/:id',fetchReportById);
+router.get('/getusername', getUsername);
 
 router.put('/update-rejected/:id', updateRejectedReport);
 router.post('/verify_payment', verifyPayment);
 router.post('/reject_payment', rejectPayment);
+
+router.get('/:id', fetchReportById);
+
 module.exports = router;

@@ -23,11 +23,11 @@ export function AuthProvider({ children }) {
     const checkAuth = async () => {
       try {
         console.log("Inside Authcontext");
-        
+
         // Get stored user info from localStorage
         const email = localStorage.getItem('userEmail');
         const role = localStorage.getItem('userRole');
-        
+
         if (email && role) {
           try {
             // Try to validate with server
@@ -38,15 +38,18 @@ export function AuthProvider({ children }) {
             if (error.response && error.response.status === 401) {
               try {
                 // Token expired, try to refresh
+                console.log('Token expired, trying to refresh...');
                 const refreshResponse = await userAPI.getnewaccesstoken();
                 setIsAuthenticated(true);
                 setUser({ email, role });
               } catch (refreshError) {
+                console.log('Token refresh failed:', refreshError);
                 console.error('Token refresh Failed:', refreshError);
                 setIsAuthenticated(false);
                 setUser(null);
               }
             } else {
+              console.log('Status check failed:', error);
               setIsAuthenticated(false);
               setUser(null);
             }
@@ -81,7 +84,7 @@ export function AuthProvider({ children }) {
       const response = await userAPI.verify({ email, code });
       const { role } = response.data;
       localStorage.setItem('userEmail', email);
-    localStorage.setItem('userRole', role);
+      localStorage.setItem('userRole', role);
       setIsAuthenticated(true);
       setUser({ email, role });
       return { success: true, role };
@@ -97,7 +100,7 @@ export function AuthProvider({ children }) {
     try {
       const response = await userAPI.login(credentials);
       const { email, role } = response.data.user;
-      console.log(email,  role);
+      console.log(email, role);
       localStorage.setItem('userEmail', email);
       localStorage.setItem('userRole', role);
       setIsAuthenticated(true);
@@ -121,7 +124,7 @@ export function AuthProvider({ children }) {
     } finally {
       localStorage.removeItem('userEmail');
       localStorage.removeItem('userRole');
-    
+
       setIsAuthenticated(false);
       setUser(null);
     }

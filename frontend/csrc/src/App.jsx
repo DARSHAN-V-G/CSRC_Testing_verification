@@ -29,7 +29,7 @@ const AppRouter = () => {
 
           {/* Protected Routes for different roles */}
           <Route element={<ProtectedRoute />}>
-          <Route path="/rejectedReports" element={<RejectedReportsPage />} />
+            <Route path="/rejectedReports" element={<RejectedReportsPage />} />
             <Route path="/reports" element={<ReportList />} />
             <Route path="/report/:id" element={<ReportDetailPage />} />
             <Route path="/createReport" element={<CreateReportPage />} />

@@ -23,7 +23,7 @@ const checkStatus = async (req, res) => {
 const registerController = async (req, res) => {
   const user = req.body;
   try {
-    if (!user.email || !user.password) {
+    if (!user.email || !user.username || !user.password) {
       return res.status(400).json({
         message: 'All fields are required'
       });
@@ -45,6 +45,7 @@ const registerController = async (req, res) => {
     }
     const newUser = new UserModel({
       email: user.email.toLowerCase(),
+      username: user.username,
       password: hashedPassword,
       role: role,
       isVerified: false
@@ -245,10 +246,17 @@ const resetPasswordController = async (req, res) => {
 
 const getNewAccessTokenController = async (req, res) => {
   try {
+    console.log('in get new access token controller');
     const refreshToken = req.cookies.refreshtoken;
+    if (!refreshToken) {
+      return res.status(401).json({
+        message: 'No refresh token provided'
+      });
+    }
     const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
     const user_id = typeof payload === 'object' && 'id' in payload ? payload.id : null;
     if (!user_id) {
+      console.log('Invalid token payload');
       return res.status(400).json({
         message: 'Invalid token payload'
       });
@@ -265,10 +273,12 @@ const getNewAccessTokenController = async (req, res) => {
       secure: true,
       sameSite: 'none'
     });
+    console.log('New access token generated');
     return res.status(201).json({
-      message: 'User logged in successfully'
+      message: 'Access token refreshed successfully'
     });
   } catch (err) {
+    console.error('Error in getNewAccessTokenController:', err);
     return res.status(500).json({
       message: 'Failed to get new access token'
     });
@@ -329,6 +339,7 @@ const verifyRegisterSecurityCodeController = async (req, res) => {
     });
   }
 }
+
 
 module.exports = {
   checkStatus,

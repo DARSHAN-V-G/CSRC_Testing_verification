@@ -1,5 +1,5 @@
 const express = require('express');
-const {userAuthMiddleware} = require("../middlewares/authMiddleware");
+const { userAuthMiddleware } = require("../middlewares/authMiddleware");
 const {
   checkStatus,
   registerController,
@@ -12,7 +12,7 @@ const {
   verifyRegisterSecurityCodeController
 } = require('../controllers/userController');
 const router = express.Router();
-router.get('/status',userAuthMiddleware,checkStatus);
+router.get('/status', userAuthMiddleware, checkStatus);
 router.post('/register', registerController);
 router.post('/register/verify', verifyRegisterSecurityCodeController);
 router.post('/login', loginController);

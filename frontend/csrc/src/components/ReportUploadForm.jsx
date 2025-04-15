@@ -15,7 +15,7 @@ const ReportUploadForm = () => {
     faculty_incharge: '',
     paid: false,
     payment_mode: '',
-    prepared_by: '',
+    prepared_by: '', // This will be fetched and set
     po_file: null,
     total_amount: 0,
     transaction_details: '',
@@ -45,13 +45,28 @@ const ReportUploadForm = () => {
   const dropdownRefs = useRef([]);
 
   useEffect(() => {
-    const generatedRefNo = generateRefNo();
-    const dept = findDepartment();
-    setFormData(prev => ({
-      ...prev,
-      ref_no: generatedRefNo,
-      department: dept
-    }));
+    const initializeForm = async () => {
+      try {
+        const generatedRefNo = generateRefNo();
+        const dept = findDepartment();
+
+        // Fetch the username for "Prepared By"
+        const response = await reportAPI.getUsername();
+        const username = response.data.username;
+
+        setFormData(prev => ({
+          ...prev,
+          ref_no: generatedRefNo,
+          department: dept,
+          prepared_by: username // Set the fetched username
+        }));
+      } catch (err) {
+        console.error('Error fetching username:', err);
+        setError('Failed to fetch username. Please try again.');
+      }
+    };
+
+    initializeForm();
 
     // Fetch available tests
     fetchAvailableTests();
@@ -634,8 +649,7 @@ const ReportUploadForm = () => {
                 id="prepared_by"
                 name="prepared_by"
                 value={formData.prepared_by}
-                onChange={handleChange}
-                required
+                readOnly // Make the field unchangeable
               />
             </div>
             <div className="form-group">
