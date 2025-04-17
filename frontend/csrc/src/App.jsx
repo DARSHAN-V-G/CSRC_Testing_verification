@@ -12,6 +12,7 @@ import TestPage from './pages/TestPage.jsx';
 import CheckPaymentPage from './components/checkPayment/CheckPaymentPage.jsx'; // Import the new page
 import PaymentDetailPage from './components/checkPayment/PaymentDetailPage.jsx';
 import Header from './components/common/Header.jsx';
+import ChangeUsernamePage from './pages/ChangeUsernamePage.jsx';
 
 import RejectedReportsPage from './pages/RejectedReportPage.jsx';
 const AppRouter = () => {
@@ -26,6 +27,7 @@ const AppRouter = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/change-username" element={<ChangeUsernamePage />} />
 
           {/* Protected Routes for different roles */}
           <Route element={<ProtectedRoute />}>
