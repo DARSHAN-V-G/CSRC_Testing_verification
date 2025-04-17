@@ -15,7 +15,9 @@ const {
   updateRejectedReport,
   getUsername,
   updateUsername,
-  addReceiptNo
+  addReceiptNo,
+  addPaymentDetails,
+  getUnpaidReports
 } = require("../controllers/reportController");
 const {
   generateReport
@@ -41,6 +43,9 @@ router.put('/update-rejected/:id', updateRejectedReport);
 router.post('/verify_payment', verifyPayment);
 router.post('/reject_payment', rejectPayment);
 router.post('/add_receipt_no', addReceiptNo);
+router.put('/:id/payment', addPaymentDetails);
+
+router.get('/unpaidreports', getUnpaidReports);
 
 router.get('/:id', fetchReportById);
 

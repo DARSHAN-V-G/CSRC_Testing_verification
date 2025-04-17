@@ -15,6 +15,8 @@ import Header from './components/common/Header.jsx';
 import ChangeUsernamePage from './pages/ChangeUsernamePage.jsx';
 import AddReceiptNumberPage from './pages/AddReceiptNumberPage.jsx';
 import RejectedReportsPage from './pages/RejectedReportPage.jsx';
+import AddPaymentDetailsPage from './components/AddPaymentDetails';
+
 const AppRouter = () => {
   return (
     <AuthProvider>
@@ -39,6 +41,7 @@ const AppRouter = () => {
             <Route path="/addReceiptNumber" element={<AddReceiptNumberPage />} />
             <Route path="/checkPayment" element={<CheckPaymentPage />} /> {/* New route */}
             <Route path="/checkPayment/report/:id" element={<PaymentDetailPage />} /> {/* New route for PaymentDetailPage */}
+            <Route path="/addPaymentDetails" element={<AddPaymentDetailsPage />} />
           </Route>
         </Routes>
       </Router>

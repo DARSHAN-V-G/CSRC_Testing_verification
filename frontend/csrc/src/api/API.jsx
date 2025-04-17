@@ -64,6 +64,8 @@ export const reportAPI = {
   getUsername: () => API.get('/report/getusername'),
   updateUsername: (username) => API.post('/report/updateusername', { username }),
   addReceiptNo: (payload) => API.post('/report/add_receipt_no', payload),
+  addPaymentDetails: (id, payload) => API.put(`/report/${id}/payment`, payload),
+  getUnpaidReports: () => API.get('/report/unpaidreports'),
 };
 
 export const TestAPI = {

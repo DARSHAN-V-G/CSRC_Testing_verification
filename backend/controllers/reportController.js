@@ -127,7 +127,6 @@ const fetchReports = async (req, res) => {
           paymentVerified: true,
         });
       }
-      console.log('Reports:', reports);
     } else {
       let flg = flag[user.role];
       if (verified) {
@@ -492,7 +491,7 @@ const updateUsername = async (req, res) => {
         message: "Username is required"
       });
     }
-    user.username = username;
+    user.username = name;
     await user.save();
     return res.status(200).json({
       message: "Username updated successfully",
@@ -510,7 +509,6 @@ const addReceiptNo = async (req, res) => {
     const user_id = req.user_id;
     const ref_no = req.body.ref_no;
     const receipt_no = req.body.receipt_no;
-    const receipt_date = req.body.receipt_date;
     const user = await userSchema.findById(user_id);
     if (!user) {
       return res.status(404).json({
@@ -533,21 +531,15 @@ const addReceiptNo = async (req, res) => {
         message: "Receipt Number required"
       });
     }
-    if (!receipt_date) {
-      return res.status(404).json({
-        message: "Receipt Date required"
-      });
-    }
     if (user.role != "office") {
       return res.status(401).json({
         message: "Only office can add receipt number"
       });
     }
     report.receipt_no = receipt_no;
-    report.receipt_date = receipt_date;
     await report.save();
     return res.status(200).json({
-      message: "Receipt number and date added successfully",
+      message: "Receipt number added successfully",
     });
   } catch (error) {
     return res.status(500).json({
@@ -556,6 +548,82 @@ const addReceiptNo = async (req, res) => {
     });
   }
 }
+
+const addPaymentDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!req.user_id) {
+      return res.status(401).json({
+        message: "Unauthorized access"
+      });
+    }
+
+    const report = await Report.findById(id);
+
+    if (!report) {
+      return res.status(404).json({
+        message: "Report not found"
+      });
+    }
+
+
+    // Update the report data from request body
+    const { paid, payment_mode, transaction_details, transaction_date } = req.body;
+    const paymentData = { paid, payment_mode, transaction_details, transaction_date };
+    // Update the report
+    const updatedReport = await Report.findByIdAndUpdate(
+      id,
+      paymentData,
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: "payment details added successfully",
+      report: updatedReport
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error while adding payment details",
+      error: error.message
+    });
+  }
+};
+
+const getUnpaidReports = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found"
+      })
+    }
+    const dept = findDepartment(user.email);
+    const reports = await Report.find({
+      department: dept,
+      rejected_by: { $in: [null, undefined] },
+      paid: false
+    });
+    if (!reports) {
+      return res.status(404).json({
+        message: "No reports found for the user"
+      });
+    }
+    return res.status(200).json({
+      message: "Reports fetched successfully",
+      reports
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal Server Error while fetching reports",
+      error: error
+    })
+  }
+}
+
+
 
 // Export the function
 module.exports = {
@@ -571,5 +639,7 @@ module.exports = {
   updateRejectedReport,
   getUsername,
   updateUsername,
-  addReceiptNo
+  addReceiptNo,
+  addPaymentDetails,
+  getUnpaidReports
 };
