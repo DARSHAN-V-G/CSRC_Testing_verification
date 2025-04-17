@@ -35,36 +35,54 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h2>Welcome to CSRC Testing Application!</h2>
-        <div className="menu-icon" onClick={toggleMenu}>
-          &#9776; {/* Hamburger icon */}
-        </div>
-        {menuOpen && (
-          <div className="menu-dropdown">
-            <button onClick={handleChangeUsername}>Change Username</button>
-            <button onClick={handleForgotPassword}>Forgot Password</button>
-            <button onClick={logout}>Logout</button>
-          </div>
-        )}
+      <div className="menu-icon" onClick={toggleMenu}>
+        &#9776; {/* Hamburger icon */}
       </div>
-      <div className="dashboard-card">
-        <h3>Buttons</h3>
-        <div className="dashboard-buttons">
+      {menuOpen && (
+        <div className="menu-dropdown">
+          <button onClick={handleChangeUsername}>Change Username</button>
+          <button onClick={handleForgotPassword}>Forgot Password</button>
+          <button onClick={logout}>Logout</button>
+        </div>
+      )}
+      <div className="dashboard-content">
+        <h2>Welcome, {user?.username || 'User'}!</h2>
+        <div className="dashboard-options">
           {user?.role === 'staff' && (
-            <button onClick={() => navigate('/createReport')} className="dashboard-button">
-              Create Report
-            </button>
+            <>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/createReport')}
+              >
+                <h3>Create Report</h3>
+                <p>Start creating a new report for testing purposes.</p>
+              </div>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/rejectedReports')}
+              >
+                <h3>Rejected Reports</h3>
+                <p>View and manage rejected reports.</p>
+              </div>
+            </>
           )}
-          {(user?.role === 'dean' || user?.role === 'office' || user?.role === 'hod' || user?.role === 'faculty') && (
-            <button onClick={() => navigate('/reports')} className="dashboard-button">
-              Check Reports
-            </button>
+          {(user?.role === 'staff' || user?.role === 'dean' || user?.role === 'office' || user?.role === 'hod' || user?.role === 'faculty') && (
+            <div
+              className="dashboard-option"
+              onClick={() => navigate('/reports')}
+            >
+              <h3>Check Reports</h3>
+              <p>View and manage all submitted reports.</p>
+            </div>
           )}
           {user?.role === 'office' && (
-            <button onClick={() => navigate('/checkPayment')} className="dashboard-button">
-              Check Payment
-            </button>
+            <div
+              className="dashboard-option"
+              onClick={() => navigate('/checkPayment')}
+            >
+              <h3>Check Payment</h3>
+              <p>Verify and manage payment details for reports.</p>
+            </div>
           )}
         </div>
       </div>

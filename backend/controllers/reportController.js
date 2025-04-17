@@ -101,9 +101,18 @@ const fetchReports = async (req, res) => {
       }
     } else if (user.role == "staff") {
       const dept = findDepartment(user.email);
-      reports = await Report.find({
-        department: dept,
-      });
+      if (!verified) {
+        reports = await Report.find({
+          department: dept,
+          verified_flag: 0,
+          rejected_by: { $exists: true, $ne: null }
+        });
+      } else {
+        reports = await Report.find({
+          department: dept,
+          rejected_by: { $in: [null, undefined] }
+        });
+      }
     } else if (user.role == "office") {
       console.log('In fetchreports');
       if (!verified) {
@@ -469,14 +478,16 @@ const getUsername = async (req, res) => {
 const updateUsername = async (req, res) => {
   try {
     const user_id = req.user_id;
-    const new_username = req.body.username;
+    const { username } = req.body;
+    const name = username.username;
+    console.log(name);
     const user = await userSchema.findById(user_id);
     if (!user) {
       return res.status(404).json({
         message: "User not found"
       });
     }
-    if (!new_username) {
+    if (!name) {
       return res.status(400).json({
         message: "Username is required"
       });

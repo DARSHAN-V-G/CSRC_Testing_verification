@@ -3,25 +3,25 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const testSchema = new Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    unit: {
-        type: String,
-        required: true,
-    },
-    pricePerUnit: {
-        type: Number,
-        required: true
-    },
-    quantity: {
-        type: Number
-    },
-    department : {
-        type:String
-    }
-},{timestamps: true});//as the name says, it adds timestamps to the schema
+  title: {
+    type: String,
+    required: true
+  },
+  unit: {
+    type: String,
+    required: true,
+  },
+  pricePerUnit: {
+    type: Number,
+    required: true
+  },
+  quantity: {
+    type: Number
+  },
+  department: {
+    type: String
+  }
+}, { timestamps: true });//as the name says, it adds timestamps to the schema
 
 
 
@@ -89,14 +89,14 @@ const reportSchema = new mongoose.Schema({
   },
   paymentVerified: {
     type: Boolean, default: false
-    },
-    rejected_reason: {
-        type: String,
-        default : null
-    },
-    rejected_date : {
-        type : Date,
-        default:null
+  },
+  rejected_reason: {
+    type: String,
+    default: null
+  },
+  rejected_date: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true

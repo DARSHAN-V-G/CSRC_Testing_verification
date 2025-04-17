@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { reportAPI } from '../../api/API';
 import ReportCard from './ReportCard';
 import './ReportList.css';
@@ -8,6 +9,7 @@ const ReportList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('pending'); // 'pending' or 'verified'
+  const navigate = useNavigate(); // Initialize navigate
 
   useEffect(() => {
     fetchReports();
@@ -30,6 +32,9 @@ const ReportList = () => {
 
   return (
     <div className="report-list-container">
+      <button className="back-button" onClick={() => navigate('/dashboard')}>
+        &larr; Back to Dashboard
+      </button>
       <h2>CSRC Testing Reports</h2>
 
       <div className="report-tabs">
@@ -63,7 +68,7 @@ const ReportList = () => {
         </div>
       ) : (
         <div className="reports-grid">
-          {reports.map(report => (
+          {reports.map((report) => (
             <ReportCard key={report._id} report={report} />
           ))}
         </div>
