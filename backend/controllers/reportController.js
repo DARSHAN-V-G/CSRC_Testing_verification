@@ -481,7 +481,7 @@ const updateUsername = async (req, res) => {
         message: "Username is required"
       });
     }
-    user.username = new_username;
+    user.username = new_username.username;
     await user.save();
     return res.status(200).json({
       message: "Username updated successfully",
@@ -499,6 +499,7 @@ const addReceiptNo = async (req, res) => {
     const user_id = req.user_id;
     const ref_no = req.body.ref_no;
     const receipt_no = req.body.receipt_no;
+    const receipt_date = req.body.receipt_date;
     const user = await userSchema.findById(user_id);
     if (!user) {
       return res.status(404).json({
@@ -521,15 +522,21 @@ const addReceiptNo = async (req, res) => {
         message: "Receipt Number required"
       });
     }
+    if (!receipt_date) {
+      return res.status(404).json({
+        message: "Receipt Date required"
+      });
+    }
     if (user.role != "office") {
       return res.status(401).json({
         message: "Only office can add receipt number"
       });
     }
     report.receipt_no = receipt_no;
+    report.receipt_date = receipt_date;
     await report.save();
     return res.status(200).json({
-      message: "Receipt number added successfully",
+      message: "Receipt number and date added successfully",
     });
   } catch (error) {
     return res.status(500).json({

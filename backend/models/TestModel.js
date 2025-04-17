@@ -57,7 +57,7 @@ const reportSchema = new mongoose.Schema({
     type: Boolean, default: false
   },
   payment_mode: {
-    type: String, required: true
+    type: String
   },
   prepared_by: {
     type: String, required: true
@@ -76,13 +76,16 @@ const reportSchema = new mongoose.Schema({
   },
   test: [testSchema],
   receipt_no: {
+    default:null,
     type: String
   },
-  bill_no: {
-    type: String
+  receipt_date: {
+    default:null,
+    type: Date
   },
   rejected_by: {
-    type: String
+    type: String,
+    default:null
   },
   paymentVerified: {
     type: Boolean, default: false

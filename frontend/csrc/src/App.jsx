@@ -13,7 +13,7 @@ import CheckPaymentPage from './components/checkPayment/CheckPaymentPage.jsx'; /
 import PaymentDetailPage from './components/checkPayment/PaymentDetailPage.jsx';
 import Header from './components/common/Header.jsx';
 import ChangeUsernamePage from './pages/ChangeUsernamePage.jsx';
-
+import AddReceiptNumberPage from './pages/AddReceiptNumberPage.jsx';
 import RejectedReportsPage from './pages/RejectedReportPage.jsx';
 const AppRouter = () => {
   return (
@@ -36,6 +36,7 @@ const AppRouter = () => {
             <Route path="/report/:id" element={<ReportDetailPage />} />
             <Route path="/createReport" element={<CreateReportPage />} />
             <Route path="/tests" element={<TestPage />} />
+            <Route path="/addReceiptNumber" element={<AddReceiptNumberPage />} />
             <Route path="/checkPayment" element={<CheckPaymentPage />} /> {/* New route */}
             <Route path="/checkPayment/report/:id" element={<PaymentDetailPage />} /> {/* New route for PaymentDetailPage */}
           </Route>

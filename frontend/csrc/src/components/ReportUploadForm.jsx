@@ -345,8 +345,6 @@ const ReportUploadForm = () => {
         total_amount: 0,
         transaction_details: '',
         transaction_date: '',
-        receipt_no: '',
-        bill_no: '',
         gst_percent: 18
       });
       setTests([{
@@ -623,23 +621,7 @@ const ReportUploadForm = () => {
                 required
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="payment_mode">Payment Mode*</label>
-              <select
-                id="payment_mode"
-                name="payment_mode"
-                value={formData.payment_mode}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Payment Mode</option>
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
-                <option value="NEFT">NEFT</option>
-                <option value="UPI">UPI</option>
-                <option value="Not Paid">Not Paid</option>
-              </select>
-            </div>
+            
           </div>
           <div className="form-row">
             <div className="form-group">
@@ -678,6 +660,23 @@ const ReportUploadForm = () => {
                 />
               </div>
               <div className="form-group">
+              <label htmlFor="payment_mode">Payment Mode*</label>
+              <select
+                id="payment_mode"
+                name="payment_mode"
+                value={formData.payment_mode}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Payment Mode</option>
+                <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option>
+                <option value="NEFT">NEFT</option>
+                <option value="UPI">UPI</option>
+                <option value="Not Paid">Not Paid</option>
+              </select>
+            </div>
+              <div className="form-group">
                 <label htmlFor="transaction_date">Transaction Date</label>
                 <input
                   type="date"
@@ -689,28 +688,7 @@ const ReportUploadForm = () => {
               </div>
             </div>
           )}
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="receipt_no">Receipt No</label>
-              <input
-                type="text"
-                id="receipt_no"
-                name="receipt_no"
-                value={formData.receipt_no}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="bill_no">Bill No</label>
-              <input
-                type="text"
-                id="bill_no"
-                name="bill_no"
-                value={formData.bill_no}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+          
         </div>
         <div className="form-actions">
           <button type="submit" className="submit-btn">Create Report</button>
