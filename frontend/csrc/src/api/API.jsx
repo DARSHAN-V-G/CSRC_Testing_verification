@@ -61,7 +61,9 @@ export const reportAPI = {
   generate: (ref_no) => API.get(`/report/generate/${ref_no}`, { responseType: 'blob' }),
   fetchRejected: () => API.get('/report/fetchRejected'),
   updateRejected: (id, data) => API.put(`/report/update-rejected/${id}`, data),
-  getUsername: () => API.get('/report/getusername')
+  getUsername: () => API.get('/report/getusername'),
+  updateUsername: (username) => API.post('/report/updateusername', { username }),
+  addReceiptNo: (payload) => API.post('/report/add_receipt_no', payload),
 };
 
 export const TestAPI = {

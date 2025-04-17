@@ -104,7 +104,7 @@ const fetchReports = async (req, res) => {
       reports = await Report.find({
         department: dept,
       });
-    } else if (user.role == "faculty") {
+    } else if (user.role == "office") {
       console.log('In fetchreports');
       if (!verified) {
         reports = await Report.find({
@@ -180,13 +180,19 @@ const verifyReport = async (req, res) => {
     }
     const user_id = req.user_id;
     const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
 
     const report = await Report.findOne({ ref_no: ref_no });
 
 
-    if (user.role == "staff" || user.role == 'faculty') {
+    if (user.role == "staff" || user.role == 'office') {
       return res.status(401).json({
-        message: "Staffs/faculty doesn't have permission to verify the reports"
+        message: "Staffs/office doesn't have permission to verify the reports"
       })
     }
     if (!report) {
@@ -221,9 +227,14 @@ const rejectReport = async (req, res) => {
       })
     }
     const user = await userSchema.findById(user_id);
-    if (user.role == "staff" || user.role == "faculty") {
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+    if (user.role == "staff" || user.role == "office") {
       return res.status(401).json({
-        message: "Staff/faculty can't reject any reports"
+        message: "Staff/office can't reject any reports"
       })
     }
 
@@ -257,7 +268,13 @@ const verifyPayment = async (req, res) => {
       })
     }
     const user = await userSchema.findById(user_id);
-    if (user.role != "faculty") {
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    if (user.role != "office") {
       console.log(`${user.role} trying to verify report`);
       return res.status(401).json({
         message: `${user.role} can't verify any reports`
@@ -295,7 +312,13 @@ const rejectPayment = async (req, res) => {
       })
     }
     const user = await userSchema.findById(user_id);
-    if (user.role != "faculty") {
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    if (user.role != "office") {
       console.log(`${user.role} trying to reject payments in report`);
       return res.status(401).json({
         message: `${user.role} can't reject any payments in reports`
@@ -308,6 +331,7 @@ const rejectPayment = async (req, res) => {
       });
     }
     report.rejected_by = user.role;
+    report.paymentVerified = false;
     report.verified_flag = 0;
 
     await report.save();
@@ -436,7 +460,81 @@ const getUsername = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Failed to fetch username"
+      message: "Failed to fetch username",
+      error: error.message
+    });
+  }
+}
+
+const updateUsername = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+    const new_username = req.body.username;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+    if (!new_username) {
+      return res.status(400).json({
+        message: "Username is required"
+      });
+    }
+    user.username = new_username;
+    await user.save();
+    return res.status(200).json({
+      message: "Username updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to update username",
+      error: error.message
+    });
+  }
+}
+
+const addReceiptNo = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+    const ref_no = req.body.ref_no;
+    const receipt_no = req.body.receipt_no;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+    if (!ref_no) {
+      return res.status(404).json({
+        message: "Reference Number required for rejection"
+      });
+    }
+    const report = await Report.findOne({ ref_no: ref_no });
+    if (!report) {
+      return res.status(404).json({
+        message: "Report not found"
+      });
+    }
+    if (!receipt_no) {
+      return res.status(404).json({
+        message: "Receipt Number required"
+      });
+    }
+    if (user.role != "office") {
+      return res.status(401).json({
+        message: "Only office can add receipt number"
+      });
+    }
+    report.receipt_no = receipt_no;
+    await report.save();
+    return res.status(200).json({
+      message: "Receipt number added successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to add receipt number",
+      error: error.message
     });
   }
 }
@@ -454,4 +552,6 @@ module.exports = {
   fetchReject,
   updateRejectedReport,
   getUsername,
+  updateUsername,
+  addReceiptNo
 };
