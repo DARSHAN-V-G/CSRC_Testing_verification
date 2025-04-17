@@ -492,7 +492,7 @@ const updateUsername = async (req, res) => {
         message: "Username is required"
       });
     }
-    user.username = new_username.username;
+    user.username = username;
     await user.save();
     return res.status(200).json({
       message: "Username updated successfully",

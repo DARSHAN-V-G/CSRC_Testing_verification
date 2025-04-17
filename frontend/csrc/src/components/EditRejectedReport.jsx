@@ -10,7 +10,6 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
     client_po_recieved_date: '',
     gst_no: '',
     faculty_incharge: '',
-    payment_mode: '',
     prepared_by: '',
     gst_percent: 18,
     total_amount: 0
@@ -257,7 +256,6 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
         <h2>Edit Rejected Report</h2>
         <div className="rejection-info">
           <p><strong>Rejected By:</strong> {report.rejected_by}</p>
-          <p><strong>Reason:</strong> {report.rejection_reason}</p>
         </div>
       </div>
       
@@ -493,23 +491,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
                 required
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="payment_mode">Payment Mode*</label>
-              <select
-                id="payment_mode"
-                name="payment_mode"
-                value={formData.payment_mode}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Payment Mode</option>
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
-                <option value="NEFT">NEFT</option>
-                <option value="UPI">UPI</option>
-                <option value="Not Paid">Not Paid</option>
-              </select>
-            </div>
+            
           </div>
           <div className="form-row">
             <div className="form-group">

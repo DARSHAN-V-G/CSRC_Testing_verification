@@ -28,7 +28,7 @@ const generateReport = async (req, res) => {
     // Header Section
     doc.y = doc.y-25
     doc.fontSize(16).font('Helvetica-Bold').text('PSG COLLEGE OF TECHNOLOGY - 641 004', { align: 'center' });
-    doc.fontSize(12).font('Helvetica').text('Phone: 0422-4344777 Extn : 4448', { align: 'center' });
+    doc.fontSize(12).font('Helvetica').text('Phone: 0422-4344777    Extn : 4448', { align: 'center' });
     doc.moveDown();
     
     // Department (right aligned)
@@ -57,36 +57,73 @@ const generateReport = async (req, res) => {
       ['Client\'s Name', report.client_name],
       ['Client Letter/PO No.', report.client_po_no],
       ['Client Letter / PO received on', new Date(report.client_po_recieved_date).toLocaleDateString()],
-      ['Bill to be sent to : ',report.bill_to_be_sent_mail_address],
+      ['Bill to be sent to : ', report.bill_to_be_sent_mail_address ? report.bill_to_be_sent_mail_address.replace(/[\r\n]+/g, ', ').replace(/,\s*,/g, ',').replace(/,\s*$/, '') : ''],
       ['GST No.', report.gst_no]
     ];
 
     let yPos = doc.y;
     const colWidth = 265;
     const tableWidth = colWidth * 2;
-    const tableHeight = clientDetails.length * 15;
-    
-    // Draw outer rectangle
-    doc.rect(50, yPos, tableWidth, tableHeight).stroke();
-    
-    // Draw vertical line between columns
-    doc.moveTo(colWidth-55, yPos).lineTo(colWidth-55, yPos + tableHeight).stroke();
-    
-    // Draw horizontal lines between rows
-    clientDetails.forEach((_, index) => {
+    let totalTableHeight = 0;
+    clientDetails.forEach(([label, value]) => {
+      let rowHeight = 15;
+      if (value && value.length > 70) {
+        const numberOfLines = Math.ceil(value.length / 70);
+        rowHeight = numberOfLines * 15;
+      }
+      totalTableHeight += rowHeight;
+    });
+
+    // Draw outer rectangle with updated height
+    doc.rect(50, yPos, tableWidth, totalTableHeight).stroke();
+
+    // Update vertical line
+    doc.moveTo(colWidth-55, yPos).lineTo(colWidth-55, yPos + totalTableHeight).stroke();
+
+    let currentYPos = yPos;
+
+    // Draw horizontal lines between rows with dynamic heights
+    clientDetails.forEach(([label, value], index) => {
+      // Determine row height based on value length
+      let rowHeight = 15; // Default height
+      
+      // If value length is greater than 75 characters, increase the row height
+      if (value && value.length > 70) {
+        // Calculate how many lines the text will occupy
+        const numberOfLines = Math.ceil(value.length / 70);
+        rowHeight = numberOfLines * 15;
+      }
+      
+      // Draw horizontal line after this row (except for the last row)
       if (index < clientDetails.length - 1) {
-        doc.moveTo(50, yPos + (index + 1) * 15)
-           .lineTo(50 + tableWidth, yPos + (index + 1) * 15)
+        currentYPos += rowHeight;
+        doc.moveTo(50, currentYPos)
+           .lineTo(50 + tableWidth, currentYPos)
            .stroke();
       }
     });
-    
-    // Add text
+
+    // Then update the text rendering part
+    currentYPos = yPos;
     clientDetails.forEach(([label, value], index) => {
-      const rowY = yPos + (index * 15) + 3;
+      // Determine row height based on value length
+      let rowHeight = 15; // Default height
+      
+      if (value && value.length > 70) {
+        const numberOfLines = Math.ceil(value.length / 70);
+        rowHeight = numberOfLines * 15;
+      }
+      
+      // Calculate text position in current row
+      const rowY = currentYPos + 3;
+      
+      // Render text
       doc.fontSize(11)
-      .text(label, 55, rowY, { width: colWidth - 20 });
-      doc.text(value,colWidth-50, rowY, { width: colWidth - 20 });
+        .text(label, 55, rowY, { width: colWidth - 20 });
+      doc.text(value, colWidth-50, rowY, { width: colWidth + 100 });
+      
+      // Update current Y position for next row
+      currentYPos += rowHeight;
     });
     
     doc.moveDown(1);
@@ -214,8 +251,7 @@ const generateReport = async (req, res) => {
     doc.x = 50;
     doc.moveDown(1);
     doc.fontSize(12).font('Helvetica')
-      .text(`Payment Status: ${report.paid ? 'Paid' : 'Not Paid'}`, { align: 'left' })
-      .text(`Mode of Payment: ${report.payment_mode}`, { align: 'left' })
+      .text(`Payment Status: ${report.paid ? 'Paid' : 'Not Paid'}                                                        Mode of Payment: ${report.payment_mode? report.payment_mode : '-'}`, { align: 'left' })
       .moveDown(0.5);
     
 
@@ -235,7 +271,7 @@ const generateReport = async (req, res) => {
 
     // Add content to the cells
     doc.font('Helvetica').fontSize(12);
-    doc.text(`Transaction Details : ${report.transaction_details}`, 60, specialTableY + 5, { 
+    doc.text(`Transaction Details : ${report.transaction_details? report.transaction_details : '-'}`, 60, specialTableY + 5, { 
       width: specialColWidth - 20,
       align: 'left'
     });
@@ -279,28 +315,31 @@ const generateReport = async (req, res) => {
     let xrect = doc.x
     let yrect = doc.y+10
     let columnwidth = 264
-    doc.rect(xrect,yrect,2*columnwidth,35).stroke();
+    doc.rect(xrect,yrect,2*columnwidth,20).stroke();
     doc.moveTo(xrect+120,yrect)
-      .lineTo(xrect+120,yrect+35)
-      .stroke();
-    doc.moveTo(xrect+120+150,yrect)
-      .lineTo(xrect+120+150,yrect+35)
-      .stroke();
-    doc.moveTo(xrect+120+150+100,yrect)
-      .lineTo(xrect+120+150+100,yrect+35)
+      .lineTo(xrect+120,yrect+20)
       .stroke();
     doc.font('Helvetica')
-    .text("Receipt No & Date : ",xrect+5,yrect+12);
+    .text("Receipt No & Date : ",xrect+5,yrect+6);
     doc.font('Helvetica')
-    .text("Bill No & Date : ",xrect+5+270,yrect+12);
+    .text(`${report.receipt_no} , ${new Date(report.receipt_date).toLocaleDateString()}`,xrect+5+120,yrect+6);
     doc.x = xrect;
-    doc.y = yrect + 55;
+    doc.y = yrect + 35;
     const flag = report.verified_flag;
     doc.text("Verified by :");
     const xflag = doc.x;
     const yflag = doc.y
-    for(let i =0;i<flag+2;i++){
-      doc.text(`${i+1}`);
+    for(let i =1;i<flag+1;i++){
+      let temp = ""
+      if(i==1){
+        doc.text(`${i}. HOD`);
+      }else if(i==2){
+        doc.text(`${i}. CSRC - Office`);
+      }else if(i==3){
+        doc.text(`${i}. CSRC - Faculty`);
+      }else if(i==4){
+        doc.text(`${i}. Dean`);
+      }
     }
     doc.end();
   } catch (err) {

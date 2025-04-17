@@ -6,6 +6,9 @@ const flag = {
   "dean": 4,
 
 }
+
+
+
 const findDepartment = (email) => {
   if (!email) return null;
 
@@ -36,11 +39,14 @@ const findDepartment = (email) => {
     'rae': 'ROBOTICS & AUTOMATION ENGINEERING',
     'textile': 'TEXTILE TECHNOLOGY',
     'ac': "Test department",
+    'com': "Test department",
   };
-
   // Check if the local part matches any key in the department map
   return departmentMap[part] || null;
 };
+
+
+
 
 module.exports = {
   flag,

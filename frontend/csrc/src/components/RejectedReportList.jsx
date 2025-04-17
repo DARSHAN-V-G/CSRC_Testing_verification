@@ -40,9 +40,6 @@ const RejectedReportsList = ({ reports, onEditClick }) => {
                 <th>Client</th>
                 <th>Department</th>
                 <th>Rejected By</th>
-                <th>Rejection Date</th>
-                <th>Reason</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -52,8 +49,6 @@ const RejectedReportsList = ({ reports, onEditClick }) => {
                   <td>{report.client_name}</td>
                   <td>{report.department}</td>
                   <td>{report.rejected_by}</td>
-                  <td>{report.rejection_date ? formatDate(report.rejection_date) : 'N/A'}</td>
-                  <td className="reason-cell">{report.rejection_reason}</td>
                   <td>
                     <button
                       className="edit-btn"
