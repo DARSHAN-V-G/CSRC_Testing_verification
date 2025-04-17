@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { reportAPI } from '../../api/API';
 import './CheckPaymentPage.css';
 
@@ -8,6 +8,7 @@ const CheckPaymentPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('pending'); // 'pending' or 'verified'
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchReports();
@@ -44,6 +45,9 @@ const CheckPaymentPage = () => {
 
   return (
     <div className="check-payment-page">
+      <button className="back-button" onClick={() => navigate('/dashboard')}>
+        &larr; Back to Dashboard
+      </button>
       <h2>Payment Verification</h2>
 
       <div className="payment-tabs">
