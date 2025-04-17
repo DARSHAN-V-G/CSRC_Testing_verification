@@ -64,6 +64,13 @@ const Dashboard = () => {
                 <h3>Rejected Reports</h3>
                 <p>View and manage rejected reports.</p>
               </div>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/addPaymentDetails')}
+              >
+                <h3>Add Payment Details</h3>
+                <p>Update payment details for reports.</p>
+              </div>
             </>
           )}
           {(user?.role === 'staff' || user?.role === 'dean' || user?.role === 'office' || user?.role === 'hod' || user?.role === 'faculty') && (

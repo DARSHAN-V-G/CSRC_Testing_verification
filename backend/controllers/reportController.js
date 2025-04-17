@@ -127,7 +127,6 @@ const fetchReports = async (req, res) => {
           paymentVerified: true,
         });
       }
-      console.log('Reports:', reports);
     } else {
       let flg = flag[user.role];
       if (verified) {
@@ -568,16 +567,10 @@ const addPaymentDetails = async (req, res) => {
       });
     }
 
-    // Check if report was actually rejected
-    if (report.rejected_by === null) {
-      return res.status(400).json({
-        message: "This report was not rejected"
-      });
-    }
 
     // Update the report data from request body
-    const { transaction_id, payment_mode } = req.body;
-    const paymentData = { transaction_id, payment_mode };
+    const { paid, payment_mode, transaction_details, transaction_date } = req.body;
+    const paymentData = { paid, payment_mode, transaction_details, transaction_date };
     // Update the report
     const updatedReport = await Report.findByIdAndUpdate(
       id,
@@ -598,6 +591,38 @@ const addPaymentDetails = async (req, res) => {
   }
 };
 
+const getUnpaidReports = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found"
+      })
+    }
+    const dept = findDepartment(user.email);
+    const reports = await Report.find({
+      department: dept,
+      rejected_by: { $in: [null, undefined] },
+      paid: false
+    });
+    if (!reports) {
+      return res.status(404).json({
+        message: "No reports found for the user"
+      });
+    }
+    return res.status(200).json({
+      message: "Reports fetched successfully",
+      reports
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal Server Error while fetching reports",
+      error: error
+    })
+  }
+}
+
 
 
 // Export the function
@@ -614,5 +639,7 @@ module.exports = {
   updateRejectedReport,
   getUsername,
   updateUsername,
-  addReceiptNo
+  addReceiptNo,
+  addPaymentDetails,
+  getUnpaidReports
 };
