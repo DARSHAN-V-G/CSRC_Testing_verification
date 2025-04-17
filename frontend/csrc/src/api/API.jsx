@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
 
 const API = axios.create({
-  baseURL: 'http://localhost:4000',
+  baseURL: 'https://csrc-testing-verification.onrender.com/',
   timeout: 30000,
   withCredentials: true,
 });
