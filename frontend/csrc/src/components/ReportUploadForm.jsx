@@ -416,17 +416,18 @@ const ReportUploadForm = () => {
             </div>
           </div>
           <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="bill_to_be_sent_mail_address">Billing Email Address*</label>
-              <input
-                type="email"
-                id="bill_to_be_sent_mail_address"
-                name="bill_to_be_sent_mail_address"
-                value={formData.bill_to_be_sent_mail_address}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="form-group">
+  <label htmlFor="bill_to_be_sent_mail_address">Billing Address*</label>
+  <textarea
+    id="bill_to_be_sent_mail_address"
+    name="bill_to_be_sent_mail_address"
+    value={formData.bill_to_be_sent_mail_address}
+    onChange={handleChange}
+    rows="4"
+    required
+    className="address-textarea"
+  ></textarea>
+</div>
             <div className="form-group">
               <label htmlFor="client_po_recieved_date">PO Received Date*</label>
               <input
