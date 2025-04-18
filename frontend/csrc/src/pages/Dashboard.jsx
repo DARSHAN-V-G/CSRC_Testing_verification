@@ -90,6 +90,14 @@ const Dashboard = () => {
               <h3>Check Payment</h3>
               <p>Verify and manage payment details for reports.</p>
             </div>
+          )}{user?.role === 'dean' && (
+            <div
+              className="dashboard-option"
+              onClick={() => navigate('/tests')}
+            >
+              <h3>Add Tests</h3>
+              <p>Add new test, Delete Existing test, Edit existing tests.</p>
+            </div>
           )}
         </div>
       </div>
