@@ -42,20 +42,20 @@ const ReportList = () => {
           className={`tab-button ${activeTab === 'pending' ? 'active' : ''}`}
           onClick={() => setActiveTab('pending')}
         >
-          Pending Reports
+          Pending Requests
         </button>
         <button
           className={`tab-button ${activeTab === 'verified' ? 'active' : ''}`}
           onClick={() => setActiveTab('verified')}
         >
-          Verified Reports
+          Verified Requests
         </button>
       </div>
 
       {loading ? (
         <div className="loading-spinner">
           <div className="spinner"></div>
-          <p>Loading reports...</p>
+          <p>Loading requests...</p>
         </div>
       ) : error ? (
         <div className="error-message">
@@ -64,7 +64,7 @@ const ReportList = () => {
         </div>
       ) : reports.length === 0 ? (
         <div className="no-reports">
-          <p>No {activeTab} reports found.</p>
+          <p>No {activeTab} test requests found.</p>
         </div>
       ) : (
         <div className="reports-grid">

@@ -12,7 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, login, getRedirectPath } = useAuth();
-  
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
@@ -34,7 +34,7 @@ const Login = () => {
 
     try {
       const result = await login(formData);
-      
+
       if (result.success) {
         // Navigate to the appropriate dashboard based on role
         navigate(getRedirectPath());
@@ -53,11 +53,11 @@ const Login = () => {
     <div className="login-container">
       <div className="login-card">
         <h2>PSG College of Technology</h2>
-        <h3>CSRC Testing Portal</h3>
-        
+        <h3>CSRC Testing/Consultancy Portal</h3>
+
         <form onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
-          
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -70,7 +70,7 @@ const Login = () => {
               required
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
@@ -83,24 +83,24 @@ const Login = () => {
               required
             />
           </div>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className="login-button"
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        
+
         <div className="login-footer">
-  <p className="register-link">
-    Don't have an account? <a href="/register">Register now</a>
-  </p>
-  <p className="forgot-password-link">
-    <a href="/forgot-password">Forgot Password?</a>
-  </p>
-</div>
+          <p className="register-link">
+            Don't have an account? <a href="/register">Register now</a>
+          </p>
+          <p className="forgot-password-link">
+            <a href="/forgot-password">Forgot Password?</a>
+          </p>
+        </div>
       </div>
     </div>
   );

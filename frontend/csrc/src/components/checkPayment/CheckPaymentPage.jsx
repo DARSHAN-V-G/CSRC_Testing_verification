@@ -55,7 +55,7 @@ const CheckPaymentPage = () => {
           className={`tab-button ${activeTab === 'pending' ? 'active' : ''}`}
           onClick={() => setActiveTab('pending')}
         >
-          Pending Payments
+          Pending Payment Verification
         </button>
         <button
           className={`tab-button ${activeTab === 'verified' ? 'active' : ''}`}

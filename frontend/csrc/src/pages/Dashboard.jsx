@@ -54,22 +54,22 @@ const Dashboard = () => {
                 className="dashboard-option"
                 onClick={() => navigate('/createReport')}
               >
-                <h3>Create Report</h3>
-                <p>Start creating a new report for testing purposes.</p>
+                <h3>New Test Request</h3>
+                <p>Create new test request</p>
               </div>
               <div
                 className="dashboard-option"
                 onClick={() => navigate('/rejectedReports')}
               >
-                <h3>Rejected Reports</h3>
-                <p>View and manage rejected reports.</p>
+                <h3>Rejected Tests</h3>
+                <p>View and manage rejected tests</p>
               </div>
               <div
                 className="dashboard-option"
                 onClick={() => navigate('/addPaymentDetails')}
               >
                 <h3>Add Payment Details</h3>
-                <p>Update payment details for reports.</p>
+                <p>Update payment details for tests</p>
               </div>
             </>
           )}
@@ -78,8 +78,8 @@ const Dashboard = () => {
               className="dashboard-option"
               onClick={() => navigate('/reports')}
             >
-              <h3>Check Reports</h3>
-              <p>View and manage all submitted reports.</p>
+              <h3>View Test requests</h3>
+              <p>View all submitted test requests</p>
             </div>
           )}
           {user?.role === 'office' && (
@@ -87,8 +87,8 @@ const Dashboard = () => {
               className="dashboard-option"
               onClick={() => navigate('/checkPayment')}
             >
-              <h3>Check Payment</h3>
-              <p>Verify and manage payment details for reports.</p>
+              <h3>Verify Payment</h3>
+              <p>Verify payment details for test requests</p>
             </div>
           )}{user?.role === 'dean' && (
             <div
