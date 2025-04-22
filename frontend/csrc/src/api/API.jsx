@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://csrc-testing-verification.onrender.com/',
+  baseURL: 'http://localhost:4000/',
   timeout: 30000,
   withCredentials: true,
 });
@@ -53,6 +53,7 @@ export const reportAPI = {
   // Add other report-related API methods here
   getById: (id) => API.get(`/report/${id}`), // You'll need to add this endpoint in your backend
   fetch: (verified) => API.get(`/report/fetch/${verified}`),
+  fetchWithoutReceipt: () => API.get('/report/fetchWithoutReceipt'),
   verify: (ref_no) => API.post('/report/verify', { ref_no }),
   reject: (ref_no) => API.post('/report/reject', { ref_no }),
   verifyPayment: (ref_no) => API.post('/report/verify_payment', { ref_no }),

@@ -5,6 +5,7 @@ const upload = multer({ storage });
 const {
   createReport,
   fetchReports,
+  fetchReportsWithoutReceipt,
   fetchPoFile,
   verifyReport,
   rejectReport,
@@ -30,6 +31,7 @@ router.get('/fetchRejected', fetchReject);
 router.post('/create', upload.single("po_file"), createReport);
 // body is the reportSchema
 router.get('/fetch/:verified', fetchReports);
+router.get('/fetchWithoutReceipt', fetchReportsWithoutReceipt);
 // params should include the variable , verified = true or false
 //verified = true, fetch the reports those are verified by the respective user and vice verse for verified = talse
 router.get('/generate/:ref_no', generateReport);

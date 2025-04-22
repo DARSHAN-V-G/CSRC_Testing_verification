@@ -42,25 +42,11 @@ const PaymentDetailPage = () => {
     fetchReportDetails();
   }, [id]);
 
-  const handleVerifyPayment = async () => {
-    try {
-      await reportAPI.verifyPayment(report.ref_no);
-      alert('Payment verified successfully!');
-      navigate('/checkPayment');
-    } catch (err) {
-      console.error('Error verifying payment:', err);
-      alert('Failed to verify payment. Please try again.');
-    }
-  };
-
-  const handleRejectPayment = async () => {
-    try {
-      await reportAPI.rejectPayment(report.ref_no);
-      alert('Payment rejected successfully!');
-      navigate('/checkPayment');
-    } catch (err) {
-      console.error('Error rejecting payment:', err);
-      alert('Failed to reject payment. Please try again.');
+  const handleViewPO = () => {
+    if (report?.po_file_url) {
+      window.open(report.po_file_url, '_blank');
+    } else {
+      alert('PO file not available.');
     }
   };
 
@@ -110,6 +96,28 @@ const PaymentDetailPage = () => {
     if (pdfUrl) {
       URL.revokeObjectURL(pdfUrl);
       setPdfUrl('');
+    }
+  };
+
+  const handleVerifyPayment = async () => {
+    try {
+      await reportAPI.verifyPayment(report.ref_no);
+      alert('Payment verified successfully!');
+      navigate('/checkPayment');
+    } catch (err) {
+      console.error('Error verifying payment:', err);
+      alert('Failed to verify payment. Please try again.');
+    }
+  };
+
+  const handleRejectPayment = async () => {
+    try {
+      await reportAPI.rejectPayment(report.ref_no);
+      alert('Payment rejected successfully!');
+      navigate('/checkPayment');
+    } catch (err) {
+      console.error('Error rejecting payment:', err);
+      alert('Failed to reject payment. Please try again.');
     }
   };
 
@@ -165,15 +173,72 @@ const PaymentDetailPage = () => {
         <>
           <div className="report-section">
             <h3>Client Information</h3>
-            <p><strong>Client Name:</strong> {report.client_name}</p>
-            <p><strong>Department:</strong> {report.department}</p>
-            <p><strong>Total Amount:</strong> ₹{report.total_amount}</p>
+            <div className="info-grid">
+              <div className="info-item">
+                <span className="label">Client Name:</span>
+                <span className="value">{report.client_name}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">PO Number:</span>
+                <span className="value">{report.client_po_no}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Billing Email:</span>
+                <span className="value">{report.bill_to_be_sent_mail_address}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">PO Received Date:</span>
+                <span className="value">{new Date(report.client_po_recieved_date).toLocaleDateString()}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">GST Number:</span>
+                <span className="value">{report.gst_no}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Department:</span>
+                <span className="value">{report.department}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="report-section">
+            <h3>Faculty Information</h3>
+            <div className="info-grid">
+              <div className="info-item">
+                <span className="label">Faculty Incharge:</span>
+                <span className="value">{report.faculty_incharge}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Prepared By:</span>
+                <span className="value">{report.prepared_by}</span>
+              </div>
+            </div>
           </div>
 
           <div className="report-section">
             <h3>Payment Information</h3>
-            <p><strong>Payment Status:</strong> {report.paid ? 'Paid' : 'Not Paid'}</p>
-            <p><strong>Payment Verified:</strong> {report.paymentVerified ? 'Yes' : 'No'}</p>
+            <div className="info-grid">
+              <div className="info-item">
+                <span className="label">Payment Status:</span>
+                <span className="value">{report.paid ? 'Paid' : 'Not Paid'}</span>
+              </div>
+              {report.paid && (
+                <>
+                  <div className="info-item">
+                    <span className="label">Payment Mode:</span>
+                    <span className="value">{report.payment_mode}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="label">Transaction Details:</span>
+                    <span className="value">{report.transaction_details}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="label">Transaction Date:</span>
+                    <span className="value">{new Date(report.transaction_date).toLocaleDateString()}</span>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="report-section">
@@ -199,7 +264,47 @@ const PaymentDetailPage = () => {
                   </tr>
                 ))}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="4" className="total-label">Total Amount</td>
+                  <td className="total-value">₹{report.total_amount}</td>
+                </tr>
+              </tfoot>
             </table>
+          </div>
+
+          <div className="report-section">
+            <h3>Status Information</h3>
+            <div className="info-grid">
+              <div className="info-item">
+                <span className="label">Reference Number:</span>
+                <span className="value">{report.ref_no}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Verification Status:</span>
+                <span className={`value status ${report.verified_flag > 0 ? 'verified' : 'pending'}`}>
+                  {report.verified_flag > 0 ? 'Verified' : 'Pending'}
+                </span>
+              </div>
+              <div className="info-item">
+                <span className="label">Verification Level:</span>
+                <span className="value">{report.verified_flag}</span>
+              </div>
+              {report.rejected_by && (
+                <div className="info-item">
+                  <span className="label">Rejected By:</span>
+                  <span className="value rejected">{report.rejected_by}</span>
+                </div>
+              )}
+              <div className="info-item">
+                <span className="label">Created At:</span>
+                <span className="value">{new Date(report.createdAt).toLocaleString()}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Last Updated:</span>
+                <span className="value">{new Date(report.updatedAt).toLocaleString()}</span>
+              </div>
+            </div>
           </div>
 
           <div className="payment-actions">
@@ -213,6 +318,9 @@ const PaymentDetailPage = () => {
                 </button>
               </>
             )}
+            <button className="view-po-button" onClick={handleViewPO}>
+              View PO File
+            </button>
             <button className="view-report-button" onClick={handleViewPDF}>
               View Report PDF
             </button>

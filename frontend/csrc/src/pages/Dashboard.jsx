@@ -73,7 +73,7 @@ const Dashboard = () => {
               </div>
             </>
           )}
-          {(user?.role === 'staff' || user?.role === 'dean'  || user?.role === 'hod' || user?.role === 'faculty') && (
+          {(user?.role === 'staff' || user?.role === 'dean' || user?.role === 'hod' || user?.role === 'faculty') && (
             <div
               className="dashboard-option"
               onClick={() => navigate('/reports')}
@@ -83,13 +83,23 @@ const Dashboard = () => {
             </div>
           )}
           {user?.role === 'office' && (
-            <div
-              className="dashboard-option"
-              onClick={() => navigate('/checkPayment')}
-            >
-              <h3>Verify Payment</h3>
-              <p>Verify payment details for test requests</p>
-            </div>
+            <>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/checkPayment')}
+              >
+                <h3>Verify Payment</h3>
+                <p>Verify payment details for test requests</p>
+              </div>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/addReceiptNumber')}
+              >
+                <h3>Add Receipt Number</h3>
+                <p>Add receipt number for verified tests</p>
+              </div>
+
+            </>
           )}{user?.role === 'dean' && (
             <div
               className="dashboard-option"
