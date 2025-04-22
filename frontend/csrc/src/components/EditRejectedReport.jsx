@@ -12,7 +12,11 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
     faculty_incharge: '',
     prepared_by: '',
     gst_percent: 18,
-    total_amount: 0
+    total_amount: 0,
+    paid: false,                  // Add this
+    payment_mode: '',             // Add this
+    transaction_details: '',      // Add this
+    transaction_date: ''       
   });
   
   const [tests, setTests] = useState([]);
@@ -41,9 +45,27 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
         payment_mode: report.payment_mode || '',
         prepared_by: report.prepared_by || '',
         gst_percent: report.gst_percent || 18,
-        total_amount: parseFloat(String(report.total_amount)) || 0
+        total_amount: parseFloat(String(report.total_amount)) || 0,
+        paid: report.paid || false,
+        transaction_details: report.transaction_details || '',
+        transaction_date: report.transaction_date ? new Date(report.transaction_date).toISOString().split('T')[0] : ''
       });
+      const fetchUsername = async () => {
+        try {
+          const response = await reportAPI.getUsername();
+          const username = response.data.username;
+          
+          setFormData(prev => ({
+            ...prev,
+            prepared_by: username // Set the fetched username
+          }));
+        } catch (error) {
+          console.error("Error fetching username:", error);
+        }
+      };
       
+      // Call the async function
+      fetchUsername();
       if (report.test && report.test.length > 0) {
         const initialTests = report.test.map(test => ({
           title: test.title || '',
@@ -86,6 +108,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
           setShowDropdowns(newShowDropdowns);
         }
       });
+      
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -304,9 +327,9 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="bill_to_be_sent_mail_address">Billing Email Address*</label>
+              <label htmlFor="bill_to_be_sent_mail_address">Address*</label>
               <input
-                type="email"
+                type="text"
                 id="bill_to_be_sent_mail_address"
                 name="bill_to_be_sent_mail_address"
                 value={formData.bill_to_be_sent_mail_address}
@@ -478,36 +501,88 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
         </div>
 
         <div className="form-section">
-          <h3>Faculty & Payment Details</h3>
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="faculty_incharge">Faculty In-charge*</label>
-              <input
-                type="text"
-                id="faculty_incharge"
-                name="faculty_incharge"
-                value={formData.faculty_incharge}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            
-          </div>
-          <div className="form-row">
-            <div className="form-group">
+  <h3>Faculty & Payment Details</h3>
+  <div className="form-row">
+    <div className="form-group">
+      <label htmlFor="faculty_incharge">Faculty In-charge*</label>
+      <input
+        type="text"
+        id="faculty_incharge"
+        name="faculty_incharge"
+        value={formData.faculty_incharge}
+        onChange={handleChange}
+        required
+      />
+    </div>
+  </div>
+  <div className="form-row">
+  <div className="form-group">
               <label htmlFor="prepared_by">Prepared By*</label>
               <input
                 type="text"
                 id="prepared_by"
                 name="prepared_by"
                 value={formData.prepared_by}
-                onChange={handleChange}
-                required
+                readOnly // Make the field unchangeable
               />
             </div>
-          </div>
-        </div>
-
+    <div className="form-group">
+      <div className="checkbox-group">
+        <input
+          type="checkbox"
+          id="paid"
+          name="paid"
+          checked={formData.paid}
+          onChange={handleChange}
+        />
+        <label htmlFor="paid">Payment Received</label>
+      </div>
+    </div>
+  </div>
+  
+  {/* Show payment details only if payment received is checked */}
+  {formData.paid && (
+    <div className="form-row">
+      <div className="form-group">
+        <label htmlFor="payment_mode">Payment Mode*</label>
+        <select
+          id="payment_mode"
+          name="payment_mode"
+          value={formData.payment_mode}
+          onChange={handleChange}
+          required={formData.paid}
+        >
+          <option value="">Select Payment Mode</option>
+          <option value="Cash">Cash</option>
+          <option value="Cheque">Cheque</option>
+          <option value="NEFT">NEFT</option>
+          <option value="UPI">UPI</option>
+        </select>
+      </div>
+      <div className="form-group">
+        <label htmlFor="transaction_details">Transaction Details</label>
+        <input
+          type="text"
+          id="transaction_details"
+          name="transaction_details"
+          value={formData.transaction_details}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="transaction_date">Transaction Date</label>
+        <input
+          type="date"
+          id="transaction_date"
+          name="transaction_date"
+          value={formData.transaction_date}
+          onChange={handleChange}
+          required={formData.paid}
+        />
+      </div>
+    </div>
+  )}
+</div>
         <div className="form-actions">
           <button
             type="submit"

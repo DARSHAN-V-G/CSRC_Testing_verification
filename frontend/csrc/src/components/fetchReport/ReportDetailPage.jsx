@@ -157,7 +157,8 @@ const ReportDetailPage = () => {
         <button className="back-button" onClick={() => navigate('/reports')}>
           &larr; Back to Reports
         </button>
-        <h2>Report Details: {report.ref_no}</h2>
+        <h2>{report.category}</h2>
+        <h4>{report.ref_no}</h4>
       </div>
 
       {showPdf ? (

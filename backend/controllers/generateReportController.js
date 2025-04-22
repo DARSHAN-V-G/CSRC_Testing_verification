@@ -36,7 +36,7 @@ const generateReport = async (req, res) => {
     doc.moveDown();
 
     // Testing/Consultancy Details (centered and underlined)
-    const consultancyText = 'Testing/Consultancy Details';
+    const consultancyText = report.category || "Testing"; 
     const textWidth = doc.widthOfString(consultancyText);
     const pageCenter = (doc.page.width - 2 * doc.page.margins.left) / 2;
     const startX = pageCenter - (textWidth /2 ) + 30;

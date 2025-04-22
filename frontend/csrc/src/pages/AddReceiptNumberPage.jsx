@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { reportAPI } from '../api/API';
+import { useNavigate } from 'react-router-dom';
 import ReportsList from '../components/ReceiptComponents/ReportsList';
 import AddReceiptForm from '../components/ReceiptComponents/AddReceiptForm';
 import './AddReceiptNumberPage.css';
@@ -10,7 +11,7 @@ const AddReceiptNumberPage = () => {
   const [error, setError] = useState('');
   const [selectedReport, setSelectedReport] = useState(null);
   const [formVisible, setFormVisible] = useState(false);
-
+ const navigate = useNavigate();
   useEffect(() => {
     fetchVerifiedReports();
   }, []);
@@ -54,6 +55,9 @@ const AddReceiptNumberPage = () => {
 
   return (
     <div className="add-receipt-page">
+      <button className="back-button" onClick={() => navigate('/dashboard')}>
+        &larr; Back to Dashboard
+      </button>
       <h1>Add Receipt Number</h1>
       
       {error && <div className="error-message">{error}</div>}

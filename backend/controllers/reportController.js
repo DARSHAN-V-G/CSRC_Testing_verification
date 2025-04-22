@@ -31,6 +31,8 @@ const createReport = async (req, res) => {
       faculty_incharge,
       paid,
       payment_mode,
+      transaction_details,
+      transaction_date,
       prepared_by,
       total_amount,
       test
@@ -54,6 +56,8 @@ const createReport = async (req, res) => {
       faculty_incharge,
       paid,
       payment_mode,
+      transaction_details,
+      transaction_date,
       prepared_by,
       po_file_url,
       total_amount,
@@ -544,9 +548,10 @@ const addReceiptNo = async (req, res) => {
       message: "Receipt number added successfully",
     });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       message: "Failed to add receipt number",
-      error: error.message
+      error: error
     });
   }
 }

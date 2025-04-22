@@ -83,6 +83,7 @@ const Dashboard = () => {
             </div>
           )}
           {user?.role === 'office' && (
+            <>
             <div
               className="dashboard-option"
               onClick={() => navigate('/checkPayment')}
@@ -90,6 +91,14 @@ const Dashboard = () => {
               <h3>Verify Payment</h3>
               <p>Verify payment details for test requests</p>
             </div>
+             <div
+             className="dashboard-option"
+             onClick={() => navigate('/addReceiptNumber')}
+           >
+             <h3>Add Receipt Number </h3>
+             <p>Adding receipt number for verified reports</p>
+           </div>
+           </>
           )}{user?.role === 'dean' && (
             <div
               className="dashboard-option"
