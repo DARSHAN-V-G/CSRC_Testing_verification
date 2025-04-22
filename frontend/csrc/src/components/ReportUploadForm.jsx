@@ -4,6 +4,7 @@ import { reportAPI, TestAPI } from '../api/API';
 
 const ReportUploadForm = () => {
   const [formData, setFormData] = useState({
+    category:'',
     ref_no: '',
     department: '',
     verified_flag: 0,
@@ -387,6 +388,22 @@ const ReportUploadForm = () => {
               <input type="hidden" name="department" value={formData.department} />
             </div>
           </div>
+          <div className="form-row">
+    <div className="form-group">
+      <label htmlFor="category">Category*</label>
+      <select
+        id="category"
+        name="category"
+        value={formData.category}
+        onChange={handleChange}
+        required
+      >
+        <option value="">Select Category</option>
+        <option value="Testing">Testing</option>
+        <option value="Testing and Consultancy">Testing and Consultancy</option>
+      </select>
+    </div>
+  </div>
         </div>
 
         <div className="form-section">

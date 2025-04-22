@@ -26,6 +26,9 @@ const testSchema = new Schema({
 
 
 const reportSchema = new mongoose.Schema({
+  category:{
+    type: String, required : true
+  },
   ref_no: {
     type: String, unique: true, required: true
   },

@@ -19,6 +19,7 @@ const createReport = async (req, res) => {
       })
     }
     const {
+      category,
       ref_no,
       department,
       verified_flag,
@@ -41,6 +42,7 @@ const createReport = async (req, res) => {
 
     // Create new Report
     const report = new Report({
+      category,
       ref_no,
       department,
       verified_flag,
