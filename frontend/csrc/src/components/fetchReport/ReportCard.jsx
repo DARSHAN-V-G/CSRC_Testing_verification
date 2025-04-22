@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './ReportCard.css';
 
-const ReportCard = ({ report }) => {
+const ReportCard = ({ report,isFromVerifiedTab }) => {
   const { _id, ref_no, client_name, department, test } = report;
   
   // Get test titles
@@ -25,7 +25,7 @@ const ReportCard = ({ report }) => {
       </div>
       
       <div className="report-card-footer">
-        <Link to={`/report/${_id}`} className="view-button">
+        <Link to={`/report/${_id}?fromVerifiedTab=${isFromVerifiedTab}`} className="view-button">
           View Details
         </Link>
       </div>

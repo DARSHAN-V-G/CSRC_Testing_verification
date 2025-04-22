@@ -73,7 +73,7 @@ const Dashboard = () => {
               </div>
             </>
           )}
-          {(user?.role === 'staff' || user?.role === 'dean' || user?.role === 'office' || user?.role === 'hod' || user?.role === 'faculty') && (
+          {(user?.role === 'staff' || user?.role === 'dean'  || user?.role === 'hod' || user?.role === 'faculty') && (
             <div
               className="dashboard-option"
               onClick={() => navigate('/reports')}

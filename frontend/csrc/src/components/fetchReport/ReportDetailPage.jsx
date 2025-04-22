@@ -6,18 +6,24 @@ import './ReportDetailPage.css';
 
 const ReportDetailPage = () => {
   const { id } = useParams();
+  const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
+  const isFromVerifiedTab = searchParams.get('fromVerifiedTab') === 'true';
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pdfUrl, setPdfUrl] = useState('');
   const [showPdf, setShowPdf] = useState(false);
-
+  const [user, setUser] = useState(null);
   useEffect(() => {
     const fetchReportDetails = async () => {
       try {
         const response = await reportAPI.getById(id);
         setReport(response.data.report);
+        const userRole = localStorage.getItem('userRole');
+        if ( userRole) {
+          setUser({ role: userRole });
+        }
       } catch (err) {
         console.error('Error fetching report details:', err);
         setError('Failed to load report details. Please try again.');
@@ -186,12 +192,17 @@ const ReportDetailPage = () => {
         </div>
 
         <div className="verification-actions">
-          <button className="verify-button" onClick={handleVerify}>
-            Verify Report
-          </button>
-          <button className="reject-button" onClick={handleReject}>
-            Reject Report
-          </button>
+          
+    {!isFromVerifiedTab && user && user.role !== 'staff'  && user.role !== 'office'  && (
+      <>
+        <button className="reject-button" onClick={handleReject}>
+          Reject Report
+        </button>
+        <button className="verify-button" onClick={handleVerify}>
+          Verify Report
+        </button>
+      </>
+    )}
         </div>
       </div>
     </div>

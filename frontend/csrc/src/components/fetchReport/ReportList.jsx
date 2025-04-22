@@ -69,7 +69,7 @@ const ReportList = () => {
       ) : (
         <div className="reports-grid">
           {reports.map((report) => (
-            <ReportCard key={report._id} report={report} />
+            <ReportCard key={report._id} report={report} isFromVerifiedTab={activeTab === 'verified'}  />
           ))}
         </div>
       )}
