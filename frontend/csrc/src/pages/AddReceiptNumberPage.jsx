@@ -20,13 +20,13 @@ const AddReceiptNumberPage = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await reportAPI.fetch('true');
-      
+      const response = await reportAPI.fetchWithoutReceipt();
+
       // Filter reports that don't have a receipt number
-      const filteredReports = response.data.reports.filter(report => 
+      const filteredReports = response.data.reports.filter(report =>
         !report.receipt_no || report.receipt_no === ''
       );
-      
+
       setReports(filteredReports);
     } catch (err) {
       console.error('Error fetching reports:', err);
@@ -59,23 +59,23 @@ const AddReceiptNumberPage = () => {
         &larr; Back to Dashboard
       </button>
       <h1>Add Receipt Number</h1>
-      
+
       {error && <div className="error-message">{error}</div>}
-      
+
       {loading ? (
         <div className="loading">Loading reports...</div>
       ) : (
         <>
           {formVisible && selectedReport ? (
-            <AddReceiptForm 
-              report={selectedReport} 
-              onClose={handleFormClose} 
-              onSuccess={handleAddReceiptSuccess} 
+            <AddReceiptForm
+              report={selectedReport}
+              onClose={handleFormClose}
+              onSuccess={handleAddReceiptSuccess}
             />
           ) : (
-            <ReportsList 
-              reports={reports} 
-              onReportSelect={handleReportSelect} 
+            <ReportsList
+              reports={reports}
+              onReportSelect={handleReportSelect}
             />
           )}
         </>

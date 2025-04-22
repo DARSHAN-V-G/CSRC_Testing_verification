@@ -96,7 +96,8 @@ const fetchReports = async (req, res) => {
       if (!verified) {
         reports = await Report.find({
           department: dept,
-          verified_flag: 0
+          verified_flag: 0,
+          rejected_by: { $in: [null, undefined] }
         });
       }
       else {
@@ -120,7 +121,6 @@ const fetchReports = async (req, res) => {
         });
       }
     } else if (user.role == "office") {
-      console.log('In fetchreports');
       if (!verified) {
         reports = await Report.find({
           verified_flag: { $gte: 1 },
@@ -160,6 +160,37 @@ const fetchReports = async (req, res) => {
       message: "Internal Server Error while fetching reports",
       error: error
     })
+  }
+}
+
+const fetchReportsWithoutReceipt = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(404).json({
+        message: "User Not Found !"
+      });
+    }
+    if (user.role != "office") {
+      return res.status(401).json({
+        message: "Only office can fetch reports without receipt number"
+      });
+    }
+    let reports = null;
+    reports = await Report.find({
+      verified_flag: { $gte: 4 },
+      receipt_no: { $in: [null, "", undefined] }
+    });
+    return res.status(200).json({
+      message: "Reports fetched successfully",
+      reports
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error while fetching reports without receipt number",
+      error: error
+    });
   }
 }
 
@@ -289,7 +320,6 @@ const verifyPayment = async (req, res) => {
     }
 
     if (user.role != "office") {
-      console.log(`${user.role} trying to verify report`);
       return res.status(401).json({
         message: `${user.role} can't verify any reports`
       })
@@ -302,7 +332,9 @@ const verifyPayment = async (req, res) => {
     }
 
     report.paymentVerified = true;
-    report.verified_flag += 1;
+    if (!report.receipt_no) {
+      report.verified_flag += 1;
+    }
     await report.save();
 
     return res.status(200).json({
@@ -515,6 +547,7 @@ const addReceiptNo = async (req, res) => {
     const user_id = req.user_id;
     const ref_no = req.body.ref_no;
     const receipt_no = req.body.receipt_no;
+    const receipt_date = req.body.receipt_date;
     const user = await userSchema.findById(user_id);
     if (!user) {
       return res.status(404).json({
@@ -523,7 +556,7 @@ const addReceiptNo = async (req, res) => {
     }
     if (!ref_no) {
       return res.status(404).json({
-        message: "Reference Number required for rejection"
+        message: "Reference Number required for adding receipt number"
       });
     }
     const report = await Report.findOne({ ref_no: ref_no });
@@ -537,12 +570,18 @@ const addReceiptNo = async (req, res) => {
         message: "Receipt Number required"
       });
     }
+    if (!receipt_date) {
+      return res.status(404).json({
+        message: "Receipt date required"
+      });
+    }
     if (user.role != "office") {
       return res.status(401).json({
         message: "Only office can add receipt number"
       });
     }
     report.receipt_no = receipt_no;
+    report.receipt_date = receipt_date;
     await report.save();
     return res.status(200).json({
       message: "Receipt number added successfully",
@@ -611,7 +650,8 @@ const getUnpaidReports = async (req, res) => {
     const reports = await Report.find({
       department: dept,
       rejected_by: { $in: [null, undefined] },
-      paid: false
+      paid: false,
+      receipt_no: { $exists: true, $ne: null }
     });
     if (!reports) {
       return res.status(404).json({
@@ -636,6 +676,7 @@ const getUnpaidReports = async (req, res) => {
 module.exports = {
   createReport,
   fetchReports,
+  fetchReportsWithoutReceipt,
   fetchPoFile,
   verifyReport,
   rejectReport,
