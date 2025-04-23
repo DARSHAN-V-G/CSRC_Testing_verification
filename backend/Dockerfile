@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm ci
+RUN npm install
 
 EXPOSE 4000
 
