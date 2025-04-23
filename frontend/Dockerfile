@@ -2,7 +2,7 @@ FROM node:18-slim
 WORKDIR /app
 
 COPY csrc/package.json csrc/package-lock.json ./
-RUN npm ci
+RUN npm install
 
 COPY csrc/ ./
 
