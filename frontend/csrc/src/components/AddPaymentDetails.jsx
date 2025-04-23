@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { reportAPI } from '../api/API';
 import './AddPaymentDetails.css';
-
+import { useNavigate } from 'react-router-dom';
 const AddPaymentDetails = () => {
   const [reports, setReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
@@ -15,6 +15,7 @@ const AddPaymentDetails = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const navigate = useNavigate();
   // Fetch unpaid reports
   useEffect(() => {
     const fetchUnpaidReports = async () => {
@@ -108,6 +109,11 @@ const AddPaymentDetails = () => {
 
   return (
     <div className="add-payment-details">
+      
+      <button className="back-button" onClick={() => navigate('/dashboard')}>
+        &larr; Back to Dashboard
+      </button>
+      
       <div className="header">
         <h2>Add Payment Details</h2>
       </div>

@@ -10,8 +10,12 @@ const ReportList = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('pending'); // 'pending' or 'verified'
   const navigate = useNavigate(); // Initialize navigate
-
+  const [isStaff,setStaff] = useState(false);
   useEffect(() => {
+    const userrole = localStorage.getItem('userRole');
+    console.log(userrole)
+  setStaff(userrole==='staff')
+  console.log(isStaff);
     fetchReports();
   }, [activeTab]);
 
@@ -42,13 +46,13 @@ const ReportList = () => {
           className={`tab-button ${activeTab === 'pending' ? 'active' : ''}`}
           onClick={() => setActiveTab('pending')}
         >
-          Pending Requests
+          {isStaff ? 'Rejected Requests' : 'Pending Requests'}
         </button>
         <button
           className={`tab-button ${activeTab === 'verified' ? 'active' : ''}`}
           onClick={() => setActiveTab('verified')}
         >
-          Verified Requests
+          {isStaff ? 'Created Requests' : 'Verified Requests'}
         </button>
       </div>
 

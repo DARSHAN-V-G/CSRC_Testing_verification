@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ReportUploadForm.css';
 import { reportAPI, TestAPI } from '../api/API';
-
+import { useNavigate } from 'react-router-dom';
 const ReportUploadForm = () => {
   const [formData, setFormData] = useState({
     category:'',
@@ -44,7 +44,7 @@ const ReportUploadForm = () => {
   const [filteredTests, setFilteredTests] = useState([[]]);
   const searchInputRefs = useRef([]);
   const dropdownRefs = useRef([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const initializeForm = async () => {
       try {
@@ -367,11 +367,15 @@ const ReportUploadForm = () => {
 
   return (
     <div className="report-form-container">
+      <button className="back-button" onClick={() => navigate('/dashboard')}>
+        &larr; Back to Dashboard
+      </button>
       <h2>CSRC Testing Report Form</h2>
 
       {error && <div className="form-error">{error}</div>}
 
       <form onSubmit={handleSubmit}>
+      
         <div className="form-section">
           <h3>Report Details</h3>
           <div className="form-row">
