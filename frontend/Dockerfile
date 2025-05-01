@@ -5,7 +5,8 @@ COPY csrc/package.json csrc/package-lock.json ./
 RUN npm install
 
 COPY csrc/ ./
-
+ARG VITE_BASE_API_URL
+ENV VITE_BASE_API_URL=$VITE_BASE_API_URL
 RUN npm run build
 
 
