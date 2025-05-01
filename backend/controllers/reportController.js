@@ -163,6 +163,39 @@ const fetchReports = async (req, res) => {
   }
 }
 
+const fetchAll = async (req, res) => {
+  try {
+    const user_id = req.user_id;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(404).json({
+        message: "User Not Found !"
+      });
+    }
+    if (user.role != 'dean') {
+      return res.status(401).json({
+        message: "Only dean can fetch all reports"
+      });
+    }
+    const reports = await Report.find();
+    if (!reports) {
+      return res.status(404).json({
+        message: "No reports found!"
+      });
+    }
+
+    return res.status(200).json({
+      message: "Reports fetched successfully",
+      reports
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error while fetching all reports",
+      error: error
+    });
+  }
+}
+
 const fetchReportsWithoutReceipt = async (req, res) => {
   try {
     const user_id = req.user_id;
@@ -676,6 +709,7 @@ const getUnpaidReports = async (req, res) => {
 module.exports = {
   createReport,
   fetchReports,
+  fetchAll,
   fetchReportsWithoutReceipt,
   fetchPoFile,
   verifyReport,
