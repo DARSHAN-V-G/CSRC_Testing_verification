@@ -85,32 +85,41 @@ const Dashboard = () => {
           {user?.role === 'office' && (
             <>
               <>
-            <div
-                className="dashboard-option"
-                onClick={() => navigate('/checkPayment')}
-              >
-                <h3>Verify Payment</h3>
-                <p>Verify payment details for test requests</p>
-              </div>
-              
+                <div
+                  className="dashboard-option"
+                  onClick={() => navigate('/checkPayment')}
+                >
+                  <h3>Verify Payment</h3>
+                  <p>Verify payment details for test requests</p>
+                </div>
 
+
+              </>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/addReceiptNumber')}
+              >
+                <h3>Add Receipt Number </h3>
+                <p>Adding receipt number for verified reports</p>
+              </div>
             </>
-             <div
-             className="dashboard-option"
-             onClick={() => navigate('/addReceiptNumber')}
-           >
-             <h3>Add Receipt Number </h3>
-             <p>Adding receipt number for verified reports</p>
-           </div>
-           </>
           )}{user?.role === 'dean' && (
-            <div
-              className="dashboard-option"
-              onClick={() => navigate('/tests')}
-            >
-              <h3>Add Tests</h3>
-              <p>Add new test, Delete Existing test, Edit existing tests.</p>
-            </div>
+            <>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/tests')}
+              >
+                <h3>Add Tests</h3>
+                <p>Add new test, Delete Existing test, Edit existing tests.</p>
+              </div>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/allReports')}
+              >
+                <h3>View All Reports</h3>
+                <p>View all reports submitted to CSRC</p>
+              </div>
+            </>
           )}
         </div>
       </div>

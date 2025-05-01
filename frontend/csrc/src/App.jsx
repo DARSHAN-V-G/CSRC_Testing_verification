@@ -16,6 +16,8 @@ import ChangeUsernamePage from './pages/ChangeUsernamePage.jsx';
 import AddReceiptNumberPage from './pages/AddReceiptNumberPage.jsx';
 import RejectedReportsPage from './pages/RejectedReportPage.jsx';
 import AddPaymentDetailsPage from './components/AddPaymentDetails';
+import AllReportsPage from './pages/AllReportsPage.jsx';
+import AllReportDetailPage from './components/fetchAllReports/AllReportDetailPage';
 
 const AppRouter = () => {
   return (
@@ -42,6 +44,8 @@ const AppRouter = () => {
             <Route path="/checkPayment" element={<CheckPaymentPage />} /> {/* New route */}
             <Route path="/checkPayment/report/:id" element={<PaymentDetailPage />} /> {/* New route for PaymentDetailPage */}
             <Route path="/addPaymentDetails" element={<AddPaymentDetailsPage />} />
+            <Route path="/allReports" element={<AllReportsPage />} />
+            <Route path="/allReports/:id" element={<AllReportDetailPage />} />
           </Route>
         </Routes>
       </Router>

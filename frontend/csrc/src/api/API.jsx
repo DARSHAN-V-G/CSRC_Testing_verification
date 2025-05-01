@@ -53,6 +53,7 @@ export const reportAPI = {
   // Add other report-related API methods here
   getById: (id) => API.get(`/report/${id}`), // You'll need to add this endpoint in your backend
   fetch: (verified) => API.get(`/report/fetch/${verified}`),
+  fetchAll: () => API.get('/report/fetchAll'),
   fetchWithoutReceipt: () => API.get('/report/fetchWithoutReceipt'),
   verify: (ref_no) => API.post('/report/verify', { ref_no }),
   reject: (ref_no) => API.post('/report/reject', { ref_no }),
