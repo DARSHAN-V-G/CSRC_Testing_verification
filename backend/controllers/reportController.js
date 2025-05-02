@@ -61,7 +61,8 @@ const createReport = async (req, res) => {
       prepared_by,
       po_file_url,
       total_amount,
-      test: JSON.parse(test)
+      test: JSON.parse(test),
+      createdAt: new Date()
     });
     console.log("Saving Report");
     console.log(req.file);
@@ -177,8 +178,12 @@ const fetchAll = async (req, res) => {
         message: "Only dean can fetch all reports"
       });
     }
-    const reports = await Report.find();
-    if (!reports) {
+    const reports = await Report.find({
+      verified_flag: { $gte: 4 },
+      paid: true,
+      paymentVerified: true
+    });
+      if (!reports) {
       return res.status(404).json({
         message: "No reports found!"
       });
