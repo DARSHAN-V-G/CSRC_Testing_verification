@@ -26,7 +26,7 @@ app.use('/test', userAuthMiddleware, testRoutes);
 connectDB();
 
 app.get('/', (req, res) => {
-  res.status(200).json({ message: "Time for deepun to evolve" });
+  res.status(200).json({ message: "Created by 23N213 & 23N216" });
 })
 
 app.listen(process.env.PORT, () => {
