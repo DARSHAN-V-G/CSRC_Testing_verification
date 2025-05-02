@@ -39,7 +39,7 @@ const AllReportDetailPage = () => {
     try {
       await reportAPI.verify(report.ref_no);
       alert('Report verified successfully!');
-      navigate('/reports');
+      navigate('/allReports');
     } catch (err) {
       console.error('Error verifying report:', err);
       alert('Failed to verify report. Please try again.');
@@ -50,7 +50,7 @@ const AllReportDetailPage = () => {
     try {
       await reportAPI.reject(report.ref_no);
       alert('Report rejected successfully!');
-      navigate('/reports');
+      navigate('/allReports');
     } catch (err) {
       console.error('Error rejecting report:', err);
       alert('Failed to reject report. Please try again.');
@@ -136,7 +136,7 @@ const AllReportDetailPage = () => {
       <div className="error-container">
         <h3>Error</h3>
         <p>{error}</p>
-        <button onClick={() => navigate('/reports')}>Back to Reports</button>
+        <button onClick={() => navigate('/allReports')}>Back to Reports</button>
       </div>
     );
   }
@@ -146,7 +146,7 @@ const AllReportDetailPage = () => {
       <div className="not-found-container">
         <h3>Report Not Found</h3>
         <p>The report you're looking for doesn't exist or has been removed.</p>
-        <button onClick={() => navigate('/reports')}>Back to Reports</button>
+        <button onClick={() => navigate('/allReports')}>Back to Reports</button>
       </div>
     );
   }
@@ -154,7 +154,7 @@ const AllReportDetailPage = () => {
   return (
     <div className="report-detail-page">
       <div className="report-detail-header">
-        <button className="back-button" onClick={() => navigate('/reports')}>
+        <button className="back-button" onClick={() => navigate('/allReports')}>
           &larr; Back to Reports
         </button>
         <h2>{report.category}</h2>
