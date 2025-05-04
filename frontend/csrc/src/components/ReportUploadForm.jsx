@@ -37,7 +37,7 @@ const ReportUploadForm = () => {
   const [availableTests, setAvailableTests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   // For search dropdown
   const [searchTerms, setSearchTerms] = useState(['']);
   const [showDropdowns, setShowDropdowns] = useState([false]);
@@ -301,7 +301,7 @@ const ReportUploadForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsSubmitting(true);
     try {
       const formDataToSend = new FormData();
 
@@ -362,6 +362,9 @@ const ReportUploadForm = () => {
     } catch (error) {
       console.error('Error submitting form:', error);
       alert(`Error: ${error.response?.data?.message || 'Failed to create report'}`);
+    }finally {
+      // Set submitting state back to false regardless of success or failure
+      setIsSubmitting(false);
     }
   };
 
@@ -713,7 +716,20 @@ const ReportUploadForm = () => {
           
         </div>
         <div className="form-actions">
-          <button type="submit" className="submit-btn">Create Report</button>
+        <button 
+  type="submit" 
+  className="submit-btn" 
+  disabled={isSubmitting}
+>
+  {isSubmitting ? (
+    <>
+      <span className="spinner-small"></span>
+      Creating...
+    </>
+  ) : (
+    'Create Report'
+  )}
+</button>
           <button type="button" className="reset-btn" onClick={() => window.location.reload()}>
             Reset Form
           </button>

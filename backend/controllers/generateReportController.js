@@ -2,7 +2,8 @@ const PDFDocument = require("pdfkit");
 const {
   Report
 } = require("../models/TestModel");
-
+const {findDepartment} = require("../utils/reportUtils");
+const UserModel = require("../models/UserModel")
 function formatCurrency(num) {
     return Number(num).toFixed(2);
 }
@@ -17,6 +18,20 @@ const generateReport = async (req, res) => {
     }
     const report = await Report.findOne({ ref_no: ref_no });
     if (!report) return res.status(404).json({ message: "Report not found" });
+
+    let hod_name = ""; 
+    const hodUsers = await UserModel.find({ role: "hod" });
+    
+    for (const hodUser of hodUsers) {
+      const hodDepartment = findDepartment(hodUser.email);
+      
+      
+      if (hodDepartment && hodDepartment === report.department) {
+        hod_name = hodUser.username;
+        break; 
+      }
+    }
+  
 
     const doc = new PDFDocument({ margin: 50 });
 
@@ -329,16 +344,20 @@ const generateReport = async (req, res) => {
     doc.text("Verified by :");
     const xflag = doc.x;
     const yflag = doc.y
+
+    const csrcOffice = await UserModel.findOne({role:"office"});
+    const csrcFaculty = await UserModel.findOne({role:"faculty"});
+    const dean = await UserModel.findOne({role:"dean"});
     for(let i =1;i<flag+1;i++){
       let temp = ""
       if(i==1){
-        doc.text(`${i}. HOD`);
+        doc.text(`${i}. ${hod_name} (HOD)`);
       }else if(i==2){
-        doc.text(`${i}. CSRC - Office`);
+        doc.text(`${i}. ${csrcOffice.username} (CSRC - Office)`);
       }else if(i==3){
-        doc.text(`${i}. CSRC - Faculty`);
+        doc.text(`${i}. ${csrcFaculty.username} (CSRC - Faculty)`);
       }else if(i==4){
-        doc.text(`${i}. Dean`);
+        doc.text(`${i}. ${dean.username} (Dean)`);
       }
     }
     doc.end();
