@@ -28,7 +28,7 @@ const AppRouter = () => {
           {/* Public Routes */}
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/testing/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/change-username" element={<ChangeUsernamePage />} />
