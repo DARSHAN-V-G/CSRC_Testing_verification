@@ -6,7 +6,9 @@ const SENDER_PASSWORD = process.env.SENDER_PASSWORD;
 
 const sendSecurityCodeEmail = (to, code) => {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // use TLS
     auth: {
       user: SENDER_EMAIL,
       pass: SENDER_PASSWORD
