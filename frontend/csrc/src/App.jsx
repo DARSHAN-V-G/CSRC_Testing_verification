@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/authContext.jsx';
 import CreateReportPage from './pages/CreatReport.jsx';
 import LoginPage from './pages/LoginPage.jsx';
