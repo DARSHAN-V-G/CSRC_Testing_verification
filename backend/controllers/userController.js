@@ -30,7 +30,7 @@ const registerController = async (req, res) => {
     }
 
     const existingUser = await UserModel.findOne({ email: user.email.toLowerCase() });
-    if (existingUser) {
+    if (existingUser && existingUser.isVerified) {
       return res.status(400).json({
         message: 'User already exists'
       });
@@ -43,24 +43,52 @@ const registerController = async (req, res) => {
         message: "Invalid "
       })
     }
-    const newUser = new UserModel({
-      email: user.email.toLowerCase(),
-      username: user.username,
-      password: hashedPassword,
-      role: role,
-      isVerified: false
-    });
+    let newUser;
 
-    await newUser.save();
+    if (existingUser && !existingUser.isVerified) {
+      // Update unverified user
+      existingUser.username = user.username;
+      existingUser.password = hashedPassword;
+      existingUser.role = role;
+      await existingUser.save();
+      newUser = existingUser;
+    } else {
+      // Create new user
+      newUser = new UserModel({
+        email: user.email.toLowerCase(),
+        username: user.username,
+        password: hashedPassword,
+        role: role,
+        isVerified: false
+      });
+      await newUser.save();
+    }
+
 
     const code = generateSecurityCode();
-    const newSecurityRecord = new UserSecurityCodeModel({
-      user_id: newUser._id,
-      code: code,
-      updatedAt: new Date()
-    });
-    await newSecurityRecord.save();
-    sendSecurityCodeEmail(user.email.toLowerCase(), code);
+
+    const existingSecurity = await UserSecurityCodeModel.findOne({ user_id: newUser._id });
+
+    if (existingSecurity) {
+      existingSecurity.code = code;
+      existingSecurity.updatedAt = new Date();
+      await existingSecurity.save();
+    } else {
+      const newSecurityRecord = new UserSecurityCodeModel({
+        user_id: newUser._id,
+        code: code,
+        updatedAt: new Date()
+      });
+      await newSecurityRecord.save();
+    }
+
+    try {
+      await sendSecurityCodeEmail(user.email.toLowerCase(), code);
+    } catch (mailErr) {
+      return res.status(500).json({
+        message: 'Registration failed: unable to send verification email'
+      });
+    }
 
     return res.status(201).json({
       message: 'verification code sent to your email. Please verifiy to complete sign up',
@@ -167,7 +195,13 @@ const generateSecurityCodeController = async (req, res) => {
       userSecurityRecord.updatedAt = new Date();
       await userSecurityRecord.save();
     }
-    sendSecurityCodeEmail(email, code);
+    try {
+      await sendSecurityCodeEmail(email.toLowerCase(), code);
+    } catch (mailErr) {
+      return res.status(500).json({
+        message: 'Failed to send security code email'
+      });
+    }
     return res.status(200).json({
       message: 'Security code created and mailed successfully'
     });

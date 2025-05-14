@@ -26,8 +26,8 @@ const testSchema = new Schema({
 
 
 const reportSchema = new mongoose.Schema({
-  category:{
-    type: String, required : true
+  category: {
+    type: String, required: true
   },
   ref_no: {
     type: String, unique: true, required: true
@@ -79,16 +79,16 @@ const reportSchema = new mongoose.Schema({
   },
   test: [testSchema],
   receipt_no: {
-    default:null,
+    default: null,
     type: String
   },
   receipt_date: {
-    default:null,
+    default: null,
     type: Date
   },
   rejected_by: {
     type: String,
-    default:null
+    default: null
   },
   paymentVerified: {
     type: Boolean, default: false
