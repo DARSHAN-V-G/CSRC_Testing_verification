@@ -16,15 +16,15 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
     paid: false,                  // Add this
     payment_mode: '',             // Add this
     transaction_details: '',      // Add this
-    transaction_date: ''       
+    transaction_date: ''
   });
-  
+
   const [tests, setTests] = useState([]);
   const [availableTests, setAvailableTests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // For the search dropdown functionality
   const [searchTerms, setSearchTerms] = useState([]);
   const [showDropdowns, setShowDropdowns] = useState([]);
@@ -54,7 +54,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
         try {
           const response = await reportAPI.getUsername();
           const username = response.data.username;
-          
+
           setFormData(prev => ({
             ...prev,
             prepared_by: username // Set the fetched username
@@ -63,7 +63,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
           console.error("Error fetching username:", error);
         }
       };
-      
+
       // Call the async function
       fetchUsername();
       if (report.test && report.test.length > 0) {
@@ -74,13 +74,13 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
           quantity: test.quantity || 0,
           testId: test.testId || ''
         }));
-        
+
         setTests(initialTests);
         // Initialize search terms for each test
         setSearchTerms(initialTests.map(test => test.title || ''));
         setShowDropdowns(Array(initialTests.length).fill(false));
       }
-      
+
       // Fetch available tests
       fetchAvailableTests();
     }
@@ -90,7 +90,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
   useEffect(() => {
     const newFilteredTests = searchTerms.map((term, index) => {
       if (!term.trim()) return availableTests;
-      return availableTests.filter(test => 
+      return availableTests.filter(test =>
         test.title.toLowerCase().includes(term.toLowerCase())
       );
     });
@@ -101,14 +101,14 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       dropdownRefs.current.forEach((ref, index) => {
-        if (ref && !ref.contains(event.target) && 
-            searchInputRefs.current[index] && !searchInputRefs.current[index].contains(event.target)) {
+        if (ref && !ref.contains(event.target) &&
+          searchInputRefs.current[index] && !searchInputRefs.current[index].contains(event.target)) {
           const newShowDropdowns = [...showDropdowns];
           newShowDropdowns[index] = false;
           setShowDropdowns(newShowDropdowns);
         }
       });
-      
+
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -121,7 +121,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
     try {
       setLoading(true);
       setError('');
-      const response = await TestAPI.fetchAll();
+      const response = await TestAPI.fetchByDepartment();
       setAvailableTests(response.data.tests);
     } catch (err) {
       setError('Failed to load available tests');
@@ -133,7 +133,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     if (name === 'gst_percent') {
       // Update GST percentage and recalculate total
       const newGstPercent = parseFloat(value) || 0;
@@ -153,23 +153,23 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
   const handleTestChange = (index, e) => {
     const { name, value } = e.target;
     const updatedTests = [...tests];
-    
+
     updatedTests[index] = {
       ...updatedTests[index],
       [name]: name === 'pricePerUnit' || name === 'quantity' ? Number(value) : value
     };
-    
+
     setTests(updatedTests);
     calculateTotalAmount(updatedTests, formData.gst_percent);
   };
 
   const handleTestSearch = (index, e) => {
     const term = e.target.value;
-    
+
     const newSearchTerms = [...searchTerms];
     newSearchTerms[index] = term;
     setSearchTerms(newSearchTerms);
-    
+
     const newShowDropdowns = [...showDropdowns];
     newShowDropdowns[index] = true;
     setShowDropdowns(newShowDropdowns);
@@ -185,14 +185,14 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
       testId: test._id,
       quantity: updatedTests[index].quantity || 1
     };
-    
+
     setTests(updatedTests);
     calculateTotalAmount(updatedTests, formData.gst_percent);
-    
+
     const newSearchTerms = [...searchTerms];
     newSearchTerms[index] = test.title;
     setSearchTerms(newSearchTerms);
-    
+
     const newShowDropdowns = [...showDropdowns];
     newShowDropdowns[index] = false;
     setShowDropdowns(newShowDropdowns);
@@ -212,7 +212,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
       quantity: 0,
       testId: ''
     }]);
-    
+
     setSearchTerms([...searchTerms, '']);
     setShowDropdowns([...showDropdowns, false]);
     setFilteredTests([...filteredTests, availableTests]);
@@ -221,16 +221,16 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
   const removeTest = (index) => {
     const updatedTests = tests.filter((_, i) => i !== index);
     setTests(updatedTests);
-    
+
     const newSearchTerms = searchTerms.filter((_, i) => i !== index);
     setSearchTerms(newSearchTerms);
-    
+
     const newShowDropdowns = showDropdowns.filter((_, i) => i !== index);
     setShowDropdowns(newShowDropdowns);
-    
+
     const newFilteredTests = filteredTests.filter((_, i) => i !== index);
     setFilteredTests(newFilteredTests);
-    
+
     calculateTotalAmount(updatedTests, formData.gst_percent);
   };
 
@@ -262,7 +262,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
 
       // Update the rejected report
       await reportAPI.updateRejected(report._id, reportData);
-      
+
       // Notify parent component
       onUpdateSuccess();
     } catch (err) {
@@ -281,9 +281,9 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
           <p><strong>Rejected By:</strong> {report.rejected_by}</p>
         </div>
       </div>
-      
+
       {error && <div className="error-message">{error}</div>}
-      
+
       <form onSubmit={handleSubmit}>
         <div className="form-section">
           <h3>Report Details</h3>
@@ -390,14 +390,14 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
                     required
                   />
                   {showDropdowns[index] && filteredTests[index] && (
-                    <div 
-                      className="dropdown-menu test-dropdown" 
+                    <div
+                      className="dropdown-menu test-dropdown"
                       ref={el => dropdownRefs.current[index] = el}
                     >
                       {filteredTests[index]?.length > 0 ? (
                         filteredTests[index].map((availableTest) => (
-                          <div 
-                            key={availableTest._id} 
+                          <div
+                            key={availableTest._id}
                             className={`dropdown-item ${test.testId === availableTest._id ? 'selected' : ''}`}
                             onClick={() => handleTestSelect(index, availableTest)}
                           >
@@ -501,22 +501,22 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
         </div>
 
         <div className="form-section">
-  <h3>Faculty & Payment Details</h3>
-  <div className="form-row">
-    <div className="form-group">
-      <label htmlFor="faculty_incharge">Faculty In-charge*</label>
-      <input
-        type="text"
-        id="faculty_incharge"
-        name="faculty_incharge"
-        value={formData.faculty_incharge}
-        onChange={handleChange}
-        required
-      />
-    </div>
-  </div>
-  <div className="form-row">
-  <div className="form-group">
+          <h3>Faculty & Payment Details</h3>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="faculty_incharge">Faculty In-charge*</label>
+              <input
+                type="text"
+                id="faculty_incharge"
+                name="faculty_incharge"
+                value={formData.faculty_incharge}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
               <label htmlFor="prepared_by">Prepared By*</label>
               <input
                 type="text"
@@ -526,63 +526,63 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
                 readOnly // Make the field unchangeable
               />
             </div>
-    <div className="form-group">
-      <div className="checkbox-group">
-        <input
-          type="checkbox"
-          id="paid"
-          name="paid"
-          checked={formData.paid}
-          onChange={handleChange}
-        />
-        <label htmlFor="paid">Payment Received</label>
-      </div>
-    </div>
-  </div>
-  
-  {/* Show payment details only if payment received is checked */}
-  {formData.paid && (
-    <div className="form-row">
-      <div className="form-group">
-        <label htmlFor="payment_mode">Payment Mode*</label>
-        <select
-          id="payment_mode"
-          name="payment_mode"
-          value={formData.payment_mode}
-          onChange={handleChange}
-          required={formData.paid}
-        >
-          <option value="">Select Payment Mode</option>
-          <option value="Cash">Cash</option>
-          <option value="Cheque">Cheque</option>
-          <option value="NEFT">NEFT</option>
-          <option value="UPI">UPI</option>
-        </select>
-      </div>
-      <div className="form-group">
-        <label htmlFor="transaction_details">Transaction Details</label>
-        <input
-          type="text"
-          id="transaction_details"
-          name="transaction_details"
-          value={formData.transaction_details}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="form-group">
-        <label htmlFor="transaction_date">Transaction Date</label>
-        <input
-          type="date"
-          id="transaction_date"
-          name="transaction_date"
-          value={formData.transaction_date}
-          onChange={handleChange}
-          required={formData.paid}
-        />
-      </div>
-    </div>
-  )}
-</div>
+            <div className="form-group">
+              <div className="checkbox-group">
+                <input
+                  type="checkbox"
+                  id="paid"
+                  name="paid"
+                  checked={formData.paid}
+                  onChange={handleChange}
+                />
+                <label htmlFor="paid">Payment Received</label>
+              </div>
+            </div>
+          </div>
+
+          {/* Show payment details only if payment received is checked */}
+          {formData.paid && (
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="payment_mode">Payment Mode*</label>
+                <select
+                  id="payment_mode"
+                  name="payment_mode"
+                  value={formData.payment_mode}
+                  onChange={handleChange}
+                  required={formData.paid}
+                >
+                  <option value="">Select Payment Mode</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="NEFT">NEFT</option>
+                  <option value="UPI">UPI</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="transaction_details">Transaction Details</label>
+                <input
+                  type="text"
+                  id="transaction_details"
+                  name="transaction_details"
+                  value={formData.transaction_details}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="transaction_date">Transaction Date</label>
+                <input
+                  type="date"
+                  id="transaction_date"
+                  name="transaction_date"
+                  value={formData.transaction_date}
+                  onChange={handleChange}
+                  required={formData.paid}
+                />
+              </div>
+            </div>
+          )}
+        </div>
         <div className="form-actions">
           <button
             type="submit"

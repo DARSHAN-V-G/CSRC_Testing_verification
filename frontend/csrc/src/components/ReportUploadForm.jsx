@@ -4,7 +4,7 @@ import { reportAPI, TestAPI } from '../api/API';
 import { useNavigate } from 'react-router-dom';
 const ReportUploadForm = () => {
   const [formData, setFormData] = useState({
-    category:'',
+    category: '',
     ref_no: '',
     department: '',
     verified_flag: 0,
@@ -107,7 +107,7 @@ const ReportUploadForm = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await TestAPI.fetchAll();
+      const response = await TestAPI.fetchByDepartment();
       setAvailableTests(response.data.tests);
     } catch (err) {
       setError('Failed to load available tests');
@@ -362,7 +362,7 @@ const ReportUploadForm = () => {
     } catch (error) {
       console.error('Error submitting form:', error);
       alert(`Error: ${error.response?.data?.message || 'Failed to create report'}`);
-    }finally {
+    } finally {
       // Set submitting state back to false regardless of success or failure
       setIsSubmitting(false);
     }
@@ -378,7 +378,7 @@ const ReportUploadForm = () => {
       {error && <div className="form-error">{error}</div>}
 
       <form onSubmit={handleSubmit}>
-      
+
         <div className="form-section">
           <h3>Report Details</h3>
           <div className="form-row">
@@ -396,21 +396,21 @@ const ReportUploadForm = () => {
             </div>
           </div>
           <div className="form-row">
-    <div className="form-group">
-      <label htmlFor="category">Category*</label>
-      <select
-        id="category"
-        name="category"
-        value={formData.category}
-        onChange={handleChange}
-        required
-      >
-        <option value="">Select Category</option>
-        <option value="Testing">Testing</option>
-        <option value="Testing and Consultancy">Testing and Consultancy</option>
-      </select>
-    </div>
-  </div>
+            <div className="form-group">
+              <label htmlFor="category">Category*</label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Category</option>
+                <option value="Testing">Testing</option>
+                <option value="Testing and Consultancy">Testing and Consultancy</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <div className="form-section">
@@ -440,18 +440,18 @@ const ReportUploadForm = () => {
             </div>
           </div>
           <div className="form-row">
-          <div className="form-group">
-  <label htmlFor="bill_to_be_sent_mail_address">Billing Address*</label>
-  <textarea
-    id="bill_to_be_sent_mail_address"
-    name="bill_to_be_sent_mail_address"
-    value={formData.bill_to_be_sent_mail_address}
-    onChange={handleChange}
-    rows="4"
-    required
-    className="address-textarea"
-  ></textarea>
-</div>
+            <div className="form-group">
+              <label htmlFor="bill_to_be_sent_mail_address">Billing Address*</label>
+              <textarea
+                id="bill_to_be_sent_mail_address"
+                name="bill_to_be_sent_mail_address"
+                value={formData.bill_to_be_sent_mail_address}
+                onChange={handleChange}
+                rows="4"
+                required
+                className="address-textarea"
+              ></textarea>
+            </div>
             <div className="form-group">
               <label htmlFor="client_po_recieved_date">PO Received Date*</label>
               <input
@@ -646,7 +646,7 @@ const ReportUploadForm = () => {
                 required
               />
             </div>
-            
+
           </div>
           <div className="form-row">
             <div className="form-group">
@@ -685,22 +685,22 @@ const ReportUploadForm = () => {
                 />
               </div>
               <div className="form-group">
-              <label htmlFor="payment_mode">Payment Mode*</label>
-              <select
-                id="payment_mode"
-                name="payment_mode"
-                value={formData.payment_mode}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Payment Mode</option>
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
-                <option value="NEFT">NEFT</option>
-                <option value="UPI">UPI</option>
-                <option value="Not Paid">Not Paid</option>
-              </select>
-            </div>
+                <label htmlFor="payment_mode">Payment Mode*</label>
+                <select
+                  id="payment_mode"
+                  name="payment_mode"
+                  value={formData.payment_mode}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Payment Mode</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="NEFT">NEFT</option>
+                  <option value="UPI">UPI</option>
+                  <option value="Not Paid">Not Paid</option>
+                </select>
+              </div>
               <div className="form-group">
                 <label htmlFor="transaction_date">Transaction Date</label>
                 <input
@@ -713,23 +713,23 @@ const ReportUploadForm = () => {
               </div>
             </div>
           )}
-          
+
         </div>
         <div className="form-actions">
-        <button 
-  type="submit" 
-  className="submit-btn" 
-  disabled={isSubmitting}
->
-  {isSubmitting ? (
-    <>
-      <span className="spinner-small"></span>
-      Creating...
-    </>
-  ) : (
-    'Create Report'
-  )}
-</button>
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <span className="spinner-small"></span>
+                Creating...
+              </>
+            ) : (
+              'Create Report'
+            )}
+          </button>
           <button type="button" className="reset-btn" onClick={() => window.location.reload()}>
             Reset Form
           </button>

@@ -73,7 +73,8 @@ export const TestAPI = {
   fetchAll: () => API.get('/test/all'),
   addTest: (testData) => API.post('/test/add', testData),
   updateTest: (id, testData) => API.put(`/test/update/${id}`, testData),
-  deleteTest: (id) => API.delete(`/test/delete/${id}`)
+  deleteTest: (id) => API.delete(`/test/delete/${id}`),
+  fetchByDepartment: () => API.get(`/test/department/`),
 }
 
 export default API;
