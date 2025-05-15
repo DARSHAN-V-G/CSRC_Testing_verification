@@ -38,6 +38,12 @@ const findDepartment = (email) => {
     'prod': 'PRODUCTION ENGINEERING',
     'rae': 'ROBOTICS & AUTOMATION ENGINEERING',
     'textile': 'TEXTILE TECHNOLOGY',
+    'phy': 'PHYSICS',
+    'chem': 'CHEMISTRY',
+    'maths': 'MATHEMATICS',
+    'english': 'ENGLISH',
+    'hum': 'HUMANITIES',
+    'ped': 'PHYSICAL EDUCATION',
     'ac': "Test department",
     'com': "Test department",
   };
