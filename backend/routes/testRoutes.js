@@ -5,14 +5,16 @@ const {
   addTest,
   updateTest,
   deleteTest,
-  fetchByDepartment
+  fetchByDepartment,
+  fetchLabByDepartment
 } = require("../controllers/testController");
 
 
 
 // Get all tests
 router.get('/all', fetchAll);
-router.get('/department/', fetchByDepartment);
+router.post('/fetchLabByDepartment',fetchLabByDepartment);
+router.get('/department/:lab', fetchByDepartment);
 
 // Add a new test
 router.post('/add', addTest);

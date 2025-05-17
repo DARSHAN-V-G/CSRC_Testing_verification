@@ -19,16 +19,23 @@ const {
   updateUsername,
   addReceiptNo,
   addPaymentDetails,
-  getUnpaidReports
+  getUnpaidReports,
+  fetchLab,
+  fetchAllLabs,
+  deleteLab,
+  addLabs
 } = require("../controllers/reportController");
 const {
   generateReport
 } = require("../controllers/generateReportController");
 
-const { userAuthMiddleware } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 router.get('/fetchRejected', fetchReject);
+router.post('/addLabs',addLabs);
+router.get('/fetchAllLabs',fetchAllLabs);
+router.post('/deleteLab',deleteLab);
+router.get('/fetchlab',fetchLab);
 router.post('/create', upload.single("po_file"), createReport);
 // body is the reportSchema
 router.get('/fetch/:verified', fetchReports);

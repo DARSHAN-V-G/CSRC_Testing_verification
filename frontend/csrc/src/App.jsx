@@ -18,7 +18,7 @@ import RejectedReportsPage from './pages/RejectedReportPage.jsx';
 import AddPaymentDetailsPage from './components/AddPaymentDetails';
 import AllReportsPage from './pages/AllReportsPage.jsx';
 import AllReportDetailPage from './components/fetchAllReports/AllReportDetailPage';
-
+import LabsPage from './pages/LabsPage.jsx';
 const AppRouter = () => {
   return (
     <AuthProvider>
@@ -40,6 +40,7 @@ const AppRouter = () => {
             <Route path="/report/:id" element={<ReportDetailPage />} />
             <Route path="/createReport" element={<CreateReportPage />} />
             <Route path="/tests" element={<TestPage />} />
+            <Route path="/labs" element={<LabsPage />} />
             <Route path="/addReceiptNumber" element={<AddReceiptNumberPage />} />
             <Route path="/checkPayment" element={<CheckPaymentPage />} /> {/* New route */}
             <Route path="/checkPayment/report/:id" element={<PaymentDetailPage />} /> {/* New route for PaymentDetailPage */}

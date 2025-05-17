@@ -7,13 +7,23 @@ const UpdateTest = ({ test, onCancel, onUpdateSuccess }) => {
     title: '',
     unit: '',
     pricePerUnit: '',
-    department: ''
+    department: '',
+    lab: '' // Added lab field
   });
   
+  // UI state variables
+  const [labs, setLabs] = useState([]);
+  const [labsLoading, setLabsLoading] = useState(false);
+  const [showLabDropdown, setShowLabDropdown] = useState(false);
+  const [labSearchTerm, setLabSearchTerm] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [showDepartmentDropdown, setShowDepartmentDropdown] = useState(false);
+  
+  // Refs for dropdown handling
+  const labInputRef = useRef(null);
+  const labDropdownRef = useRef(null);
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
 
@@ -37,7 +47,13 @@ const UpdateTest = ({ test, onCancel, onUpdateSuccess }) => {
     'METALLURGICAL ENGINEERING',
     'PRODUCTION ENGINEERING',
     'ROBOTICS & AUTOMATION ENGINEERING',
-    'TEXTILE TECHNOLOGY'
+    'TEXTILE TECHNOLOGY',
+    'PHYSICS',
+    'CHEMISTRY',
+    'MATHEMATICS',
+    'ENGLISH',
+    'HUMANITIES',
+    'PHYSICAL EDUCATION'
   ];
 
   // Filter departments based on search term
@@ -52,18 +68,32 @@ const UpdateTest = ({ test, onCancel, onUpdateSuccess }) => {
         title: test.title || '',
         unit: test.unit || '',
         pricePerUnit: test.pricePerUnit ? test.pricePerUnit.toString() : '',
-        department: test.department || ''
+        department: test.department || '',
+        lab: test.lab || '' // Initialize lab field
       });
       setSearchTerm(test.department || '');
+      setLabSearchTerm(test.lab || '');
+      
+      // Fetch labs for the current department
+      if (test.department) {
+        fetchLabsByDepartment(test.department);
+      }
     }
   }, [test]);
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Close department dropdown
       if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
           searchInputRef.current && !searchInputRef.current.contains(event.target)) {
         setShowDepartmentDropdown(false);
+      }
+      
+      // Close lab dropdown
+      if (labDropdownRef.current && !labDropdownRef.current.contains(event.target) &&
+          labInputRef.current && !labInputRef.current.contains(event.target)) {
+        setShowLabDropdown(false);
       }
     };
 
@@ -93,6 +123,38 @@ const UpdateTest = ({ test, onCancel, onUpdateSuccess }) => {
     }));
   };
 
+  // Fetch labs for the selected department
+  const fetchLabsByDepartment = async (departmentName) => {
+    if (!departmentName) return;
+    
+    setLabsLoading(true);
+    setError('');
+    
+    try {
+      const response = await TestAPI.fetchLabByDepartment({ department: departmentName });
+      if (response.data && response.data.lab) {
+        setLabs(response.data.lab);
+      } else {
+        setLabs([]);
+        // If changing department, reset lab field
+        if (departmentName !== test.department) {
+          setFormData(prev => ({
+            ...prev,
+            lab: ''
+          }));
+          setLabSearchTerm('');
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching labs:', err);
+      setLabs([]);
+      setError('Failed to load labs for this department. Please try again.');
+    } finally {
+      setLabsLoading(false);
+    }
+  };
+
+  // Department selection handlers
   const handleDepartmentSearch = (e) => {
     setSearchTerm(e.target.value);
     setShowDepartmentDropdown(true);
@@ -101,34 +163,66 @@ const UpdateTest = ({ test, onCancel, onUpdateSuccess }) => {
   const handleDepartmentSelect = (department) => {
     setFormData(prev => ({
       ...prev,
-      department
+      department,
+      lab: '' // Reset lab when department changes
     }));
     setSearchTerm(department);
     setShowDepartmentDropdown(false);
+    setLabSearchTerm('');
+    
+    // Fetch labs for the selected department
+    fetchLabsByDepartment(department);
   };
 
   const handleDepartmentInputFocus = () => {
     setShowDepartmentDropdown(true);
   };
 
+  // Lab selection handlers
+  const handleLabSearch = (e) => {
+    setLabSearchTerm(e.target.value);
+    setShowLabDropdown(true);
+  };
+
+  const handleLabSelect = (lab) => {
+    setFormData(prev => ({
+      ...prev,
+      lab
+    }));
+    setLabSearchTerm(lab);
+    setShowLabDropdown(false);
+  };
+
+  const handleLabInputFocus = () => {
+    setShowLabDropdown(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate the form
-    if (!formData.title || !formData.unit || !formData.pricePerUnit || !formData.department) {
+    // Clear previous errors
+    setError('');
+    
+    // Validate required fields
+    if (!formData.title || !formData.unit || !formData.pricePerUnit || !formData.department || !formData.lab) {
       setError('All fields are required');
       return;
     }
     
-    // Validate that department is one of the options
+    // Validate department selection
     if (!departmentOptions.includes(formData.department)) {
       setError('Please select a valid department from the list');
       return;
     }
     
+    // Validate lab selection
+    if (!labs.includes(formData.lab)) {
+      setError('Please select a valid lab from the list');
+      return;
+    }
+    
     try {
       setIsSubmitting(true);
-      setError('');
       
       // Convert pricePerUnit to a number with 2 decimal places
       const testData = {
@@ -147,7 +241,7 @@ const UpdateTest = ({ test, onCancel, onUpdateSuccess }) => {
       }
       
     } catch (err) {
-      setError(err.message || 'Failed to update test');
+      setError(err.response?.data?.message || err.message || 'Failed to update test');
       console.error('Error updating test:', err);
     } finally {
       setIsSubmitting(false);
@@ -241,6 +335,57 @@ const UpdateTest = ({ test, onCancel, onUpdateSuccess }) => {
             )}
           </div>
         </div>
+        
+        {formData.department && (
+          <div className="form-group">
+            <label htmlFor="labSearch">Lab*</label>
+            <div className="searchable-dropdown">
+              {labsLoading ? (
+                <div className="lab-loading">Loading labs...</div>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    id="labSearch"
+                    ref={labInputRef}
+                    value={labSearchTerm}
+                    onChange={handleLabSearch}
+                    onFocus={handleLabInputFocus}
+                    placeholder="Search or select lab"
+                    required
+                    autoComplete="off"
+                  />
+                  <input 
+                    type="hidden" 
+                    name="lab" 
+                    value={formData.lab} 
+                    required 
+                  />
+                  
+                  {showLabDropdown && (
+                    <div className="dropdown-menu" ref={labDropdownRef}>
+                      {labs.length > 0 ? (
+                        labs
+                          .filter(lab => lab.toLowerCase().includes(labSearchTerm.toLowerCase()))
+                          .map((lab, index) => (
+                            <div 
+                              key={index} 
+                              className={`dropdown-item ${formData.lab === lab ? 'selected' : ''}`}
+                              onClick={() => handleLabSelect(lab)}
+                            >
+                              {lab}
+                            </div>
+                          ))
+                      ) : (
+                        <div className="dropdown-no-results">No labs found for this department</div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        )}
         
         <div className="form-actions">
           <button

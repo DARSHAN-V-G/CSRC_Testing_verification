@@ -119,7 +119,22 @@ const Dashboard = () => {
                 <h3>View All Reports</h3>
                 <p>View all reports submitted to CSRC</p>
               </div>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/labs')}
+              >
+                <h3>Add Labs</h3>
+                <p>Add new labs to existing Departments, Delete Existing labs</p>
+              </div>
+              <div
+                className="dashboard-option"
+                onClick={() => navigate('/allReports')}
+              >
+                <h3>View All Reports</h3>
+                <p>View all reports submitted to CSRC</p>
+              </div>
             </>
+            
           )}
         </div>
       </div>

@@ -35,6 +35,10 @@ const ReportDetailView = ({ report }) => {
             <span className="value">{report.department}</span>
           </div>
           <div className="info-item">
+            <span className="label">Lab:</span>
+            <span className="value">{report.lab}</span>
+          </div>
+          <div className="info-item">
             <span className="label">Address :</span>
             <span className="value">{report.bill_to_be_sent_mail_address}</span>
           </div>

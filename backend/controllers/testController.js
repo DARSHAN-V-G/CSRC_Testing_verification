@@ -1,5 +1,5 @@
-const { Test } = require('../models/TestModel');
-const UserModel = require('../models/UserModel');
+const { Test,Lab } = require('../models/TestModel');
+const UserSchema = require('../models/UserModel');
 const { findDepartment } = require('../utils/reportUtils');
 
 const fetchAll = async (req, res) => {
@@ -14,19 +14,21 @@ const fetchAll = async (req, res) => {
 
 const addTest = async (req, res) => {
   try {
-    const { title, unit, pricePerUnit, department } = req.body;
+    const { title, unit, pricePerUnit, department,lab } = req.body;
 
     // Validate required fields
     if (!title || !unit || !pricePerUnit || !department) {
       return res.status(400).json({ message: 'All fields are required' });
     }
-
+    
+    console.log(lab)
     // Create new test
     const newTest = new Test({
       title,
       unit,
       pricePerUnit,
       department,
+      lab,
       quantity: null
     });
 
@@ -47,17 +49,17 @@ const addTest = async (req, res) => {
 const updateTest = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, unit, pricePerUnit, department } = req.body;
+    const { title, unit, pricePerUnit, department,lab } = req.body;
 
     // Validate required fields
-    if (!title || !unit || !pricePerUnit || !department) {
+    if (!title || !unit || !pricePerUnit || !department || !lab) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
     // Find and update test
     const updatedTest = await Test.findByIdAndUpdate(
       id,
-      { title, unit, pricePerUnit, department },
+      { title, unit, pricePerUnit, department,lab },
       { new: true } // Return the updated document
     );
 
@@ -100,15 +102,62 @@ const deleteTest = async (req, res) => {
 
 const fetchByDepartment = async (req, res) => {
   try {
+    const lab = req.params.lab;
     const user_id = req.user_id;
-    const user = await UserModel.findById(user_id);
-    const dept = findDepartment(user.email);
+    const user = await UserSchema.findById(user_id);
+    if (!user){
+      return res.status(404).json({message : "User not found"});
 
-    const tests = await Test.find({ department: dept }).sort({ title: 1 });
+    }
+    const dept = findDepartment(user.email);
+    const departmentLabs = await Lab.findOne({department: dept});
+    
+    if (!departmentLabs) {
+      return res.status(404).json({
+        message: "No labs available for the user department"
+      });
+    }
+    
+    // Check if the requested lab exists in the available labs for this department
+    if (lab && !departmentLabs.labs.includes(lab)) {
+      return res.status(400).json({
+        message: "The specified lab does not exist in your department",
+        availableLabs: departmentLabs.labs
+      });
+    }
+
+    const tests = await Test.find({ department: dept,lab : lab }).sort({ title: 1 });
     res.status(200).json({ message: 'Tests fetched successfully', tests });
 
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch tests by department' });
+    console.log(error);
+  }
+}
+
+const fetchLabByDepartment = async(req,res) =>{
+  try{
+    console.log(req.body)
+    const {department}= req.body;
+    console.log(department);
+    if (!department){
+      return res.status(401).json({
+        message : "Department name is reqiured"
+      })
+    }
+    const lab = await Lab.findOne({department:department});
+    if (!lab){
+      return res.status(401).json({
+        message : "No records found for the given department"
+      });
+    }
+    return res.status(200).json({
+      message : "Labs fetched succefully",
+      lab : lab.labs
+    })
+  }catch(error){
+    res.status(500).json({ message: 'Failed to fetch tests by department' });
+    console.log(error);
   }
 }
 
@@ -117,5 +166,6 @@ module.exports = {
   addTest,
   updateTest,
   deleteTest,
-  fetchByDepartment
+  fetchByDepartment,
+  fetchLabByDepartment
 }

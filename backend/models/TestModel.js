@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+
+
 const testSchema = new Schema({
   title: {
     type: String,
@@ -20,6 +22,9 @@ const testSchema = new Schema({
   },
   department: {
     type: String
+  },
+  lab:{
+    type:String
   }
 }, { timestamps: true });//as the name says, it adds timestamps to the schema
 
@@ -33,6 +38,9 @@ const reportSchema = new mongoose.Schema({
     type: String, unique: true, required: true
   },
   department: {
+    type: String, required: true
+  },
+  lab: {
     type: String, required: true
   },
   verified_flag: {
@@ -105,11 +113,27 @@ const reportSchema = new mongoose.Schema({
   timestamps: true
 });
 
+const labSchema = new Schema({
+  department: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+  labs: [{
+    type: String,
+    trim: true
+  }]
+}, {
+  timestamps: true
+});
+
 const Test = mongoose.model("Test", testSchema);
 const Report = mongoose.model("Report", reportSchema);
-
+const Lab = mongoose.model("Lab", labSchema);
 // Export both models as an object
 module.exports = {
   Test,
-  Report
+  Report,
+  Lab
 };

@@ -67,6 +67,10 @@ export const reportAPI = {
   addReceiptNo: (payload) => API.post('/report/add_receipt_no', payload),
   addPaymentDetails: (id, payload) => API.put(`/report/${id}/payment`, payload),
   getUnpaidReports: () => API.get('/report/unpaidreports'),
+  fetchLab: () => API.get('/report/fetchlab'),
+  fetchAllLabs: () => API.get('/report/fetchAllLabs'),
+  addLabs: (data)=>API.post('/report/addLabs',data),
+  deleteLab: (data) => API.post(`/report/deleteLab`,data),
 };
 
 export const TestAPI = {
@@ -74,7 +78,8 @@ export const TestAPI = {
   addTest: (testData) => API.post('/test/add', testData),
   updateTest: (id, testData) => API.put(`/test/update/${id}`, testData),
   deleteTest: (id) => API.delete(`/test/delete/${id}`),
-  fetchByDepartment: () => API.get(`/test/department/`),
+  fetchByDepartment: (data) => API.get(`/test/department/${data}`,),
+  fetchLabByDepartment: (data) => API.post(`/test/fetchLabByDepartment`,data)
 }
 
 export default API;

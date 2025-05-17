@@ -121,7 +121,7 @@ const EditRejectedReport = ({ report, onCancel, onUpdateSuccess }) => {
     try {
       setLoading(true);
       setError('');
-      const response = await TestAPI.fetchByDepartment();
+      const response = await TestAPI.fetchByDepartment(report.lab);
       setAvailableTests(response.data.tests);
     } catch (err) {
       setError('Failed to load available tests');

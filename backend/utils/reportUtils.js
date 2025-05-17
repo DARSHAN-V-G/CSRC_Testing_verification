@@ -44,8 +44,8 @@ const findDepartment = (email) => {
     'english': 'ENGLISH',
     'hum': 'HUMANITIES',
     'ped': 'PHYSICAL EDUCATION',
-    'ac': "CHEMISTRY",
-    'com': "CHEMISTRY",
+    'ac': "PHYSICS",
+    'com': "PHYSICS",
   };
   // Check if the local part matches any key in the department map
   return departmentMap[part] || null;

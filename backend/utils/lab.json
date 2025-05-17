@@ -1,0 +1,107 @@
+[
+  {
+    "department": "APPAREL AND FASHION DESIGN",
+    "labs": ["APPAREL AND FASHION DESIGN - LAB"]
+  },
+  {
+    "department": "APPLIED MATHEMATICS AND COMPUTATIONAL SCIENCES",
+    "labs": ["APPLIED MATHEMATICS AND COMPUTATIONAL SCIENCES - LAB"]
+  },
+  {
+    "department": "APPLIED SCIENCE",
+    "labs": ["APPLIED SCIENCE - LAB"]
+  },
+  {
+    "department": "AUTOMOBILE ENGINEERING",
+    "labs": ["AUTOMOBILE ENGINEERING - LAB"]
+  },
+  {
+    "department": "BIOMEDICAL ENGINEERING",
+    "labs": ["BIOMEDICAL ENGINEERING - LAB"]
+  },
+  {
+    "department": "BIOTECHNOLOGY",
+    "labs": ["BIOTECHNOLOGY - LAB"]
+  },
+  {
+    "department": "CIVIL ENGINEERING",
+    "labs": ["ADVANCED CONCRETE RESEARCH LABORATORY", 
+            "ENVIRONMENTAL ENGINEERING LABORATORY",
+            "SUSTAINABLE PAVEMENT MATERIALS LABORATORY",
+            "MATERIALS & STRUCTURES LABORATORY",
+            "SURVEY LABORATORY"
+        ]
+  },
+  {
+    "department": "COMPUTER APPLICATIONS",
+    "labs": ["COMPUTER APPLICATIONS - LAB"]
+  },
+  {
+    "department": "COMPUTER SCIENCE & ENGINEERING",
+    "labs": ["COMPUTER SCIENCE & ENGINEERING - LAB"]
+  },
+  {
+    "department": "ELECTRICAL & ELECTRONICS ENGINEERING",
+    "labs": ["ELECTRICAL & ELECTRONICS ENGINEERING - LAB"]
+  },
+  {
+    "department": "ELECTRONICS & COMMUNICATION ENGINEERING",
+    "labs": ["ELECTRONICS & COMMUNICATION ENGINEERING - LAB"]
+  },
+  {
+    "department": "FASHION TECHNOLOGY",
+    "labs": ["FASHION TECHNOLOGY - LAB"]
+  },
+  {
+    "department": "INFORMATION TECHNOLOGY",
+    "labs": ["INFORMATION TECHNOLOGY - LAB"]
+  },
+  {
+    "department": "INSTRUMENTATION & CONTROL ENGINEERING",
+    "labs": ["INSTRUMENTATION & CONTROL ENGINEERING - LAB"]
+  },
+  {
+    "department": "MECHANICAL ENGINEERING",
+    "labs": ["MECHANICAL ENGINEERING - LAB"]
+  },
+  {
+    "department": "METALLURGICAL ENGINEERING",
+    "labs": ["METALLURGICAL ENGINEERING - LAB"]
+  },
+  {
+    "department": "PRODUCTION ENGINEERING",
+    "labs": ["PRODUCTION ENGINEERING - LAB"]
+  },
+  {
+    "department": "ROBOTICS & AUTOMATION ENGINEERING",
+    "labs": ["ROBOTICS & AUTOMATION ENGINEERING - LAB"]
+  },
+  {
+    "department": "TEXTILE TECHNOLOGY",
+    "labs": ["TEXTILE TECHNOLOGY - LAB"]
+  },
+  {
+    "department": "PHYSICS",
+    "labs": ["PHYSICS - LAB"]
+  },
+  {
+    "department": "CHEMISTRY",
+    "labs": ["CHEMISTRY - LAB"]
+  },
+  {
+    "department": "MATHEMATICS",
+    "labs": ["MATHEMATICS - LAB"]
+  },
+  {
+    "department": "ENGLISH",
+    "labs": ["ENGLISH - LAB"]
+  },
+  {
+    "department": "HUMANITIES",
+    "labs": ["HUMANITIES - LAB"]
+  },
+  {
+    "department": "PHYSICAL EDUCATION",
+    "labs": ["PHYSICAL EDUCATION - LAB"]
+  }
+]

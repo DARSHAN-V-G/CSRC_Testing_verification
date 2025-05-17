@@ -1,14 +1,16 @@
 
 const userSchema = require("../models/UserModel");
+const {validateEmail} = require("../utils/userUtils");
 const {
   Report,
-  Test
+  Lab
 } = require("../models/TestModel");
 const { report } = require("../routes/userRoutes");
 const {
   flag,
   findDepartment
 } = require("../utils/reportUtils");
+const UserModel = require("../models/UserModel");
 const createReport = async (req, res) => {
   try {
     const user_id = req.user_id;
@@ -22,6 +24,7 @@ const createReport = async (req, res) => {
       category,
       ref_no,
       department,
+      lab,
       verified_flag,
       client_name,
       client_po_no,
@@ -47,6 +50,7 @@ const createReport = async (req, res) => {
       category,
       ref_no,
       department,
+      lab,
       verified_flag,
       client_name,
       client_po_no,
@@ -708,6 +712,165 @@ const getUnpaidReports = async (req, res) => {
   }
 }
 
+const addLabs = async (req, res) => {
+  try {
+    const { department, labs } = req.body;
+
+    if (!department) {
+      return res.status(400).json({
+        message: "Department name is required"
+      });
+    }
+
+    if (!labs || !Array.isArray(labs) || labs.length === 0) {
+      return res.status(400).json({
+        message: "Labs array is required and must not be empty"
+      });
+    }
+
+    // Check if department already exists
+    let existingDepartment = await Lab.findOne({ department });
+
+    if (existingDepartment) {
+      // Update existing department with new labs
+      // Use $addToSet to avoid duplicates
+      existingDepartment = await Lab.findOneAndUpdate(
+        { department },
+        { $addToSet: { labs: { $each: labs } } },
+        { new: true }
+      );
+
+      return res.status(200).json({
+        message: "Labs added to existing department successfully",
+        data: existingDepartment
+      });
+    } else {
+      // Create new department with labs
+      const newDepartment = new Lab({
+        department,
+        labs
+      });
+
+      await newDepartment.save();
+
+      return res.status(201).json({
+        message: "Department with labs created successfully",
+        data: newDepartment
+      });
+    }
+  } catch (error) {
+    console.error("Error adding labs:", error);
+    return res.status(500).json({
+      message: "Internal server error while adding labs",
+      error: error.message
+    });
+  }
+};
+
+const fetchLab = async(req,res) =>{
+  try{
+    const user_id = req.user_id;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found"
+      })
+    }
+    const dept = findDepartment(user.email);
+    const lab = await Lab.findOne({department:dept});
+    if (!lab){
+      return res.status(401).json({
+        message:"No labs for the user Department"
+      })
+    }
+    return res.status(201).json({
+      message:"Labs fetched successfully",
+      labs : lab
+    });
+  }catch(error){
+      res.status(500).json({
+      message: "Internal Server Error while fetching reports",
+      error: error
+    })
+  }
+}
+
+const fetchAllLabs = async(req,res)=>{
+  try{
+    const user_id = req.user_id;
+    const user = await userSchema.findById(user_id);
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found"
+      })
+    }
+    if(validateEmail(user.email) !== "dean"){
+      return res.status(401).json({
+        message: "Only dean can fetch all labs"
+      })
+    }
+    const lab = await Lab.find();
+    if (!lab){
+      return res.status(404).json({
+        message: "No labs available"
+      })
+    }
+    return res.status(200).json({
+      message : "Lab details fetched successfully",
+      lab : lab
+    });
+
+  }catch(error){
+    res.status(500).json({
+      message: "Internal Server Error while fetching reports",
+      error: error
+    })
+  }
+}
+
+const deleteLab = async (req, res) => {
+  try {
+    const { department, lab } = req.body;
+    
+    if (!department || !lab) {
+      return res.status(400).json({
+        message: "Department name and lab name are required"
+      });
+    }
+    
+    // Find the department
+    const departmentDoc = await Lab.findOne({ department });
+    
+    if (!departmentDoc) {
+      return res.status(404).json({
+        message: "Department not found"
+      });
+    }
+    
+    // Check if lab exists in this department
+    if (!departmentDoc.labs.includes(lab)) {
+      return res.status(404).json({
+        message: "Lab not found in this department"
+      });
+    }
+    
+    // Remove the lab
+    departmentDoc.labs = departmentDoc.labs.filter(labName => labName !== lab);
+    
+    await departmentDoc.save();
+    
+    return res.status(200).json({
+      message: "Lab deleted successfully",
+      department: departmentDoc
+    });
+  } catch (error) {
+    console.error("Error deleting lab:", error);
+    return res.status(500).json({
+      message: "Internal Server Error while deleting lab",
+      error: error.message
+    });
+  }
+};
 
 
 // Export the function
@@ -728,5 +891,9 @@ module.exports = {
   updateUsername,
   addReceiptNo,
   addPaymentDetails,
-  getUnpaidReports
+  getUnpaidReports,
+  fetchLab,
+  addLabs,
+  fetchAllLabs,
+  deleteLab
 };

@@ -15,6 +15,7 @@
   },
   "homepage": "https://github.com/DARSHAN-V-G/CSRC_Testing_verification#readme",
   "dependencies": {
+    "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",

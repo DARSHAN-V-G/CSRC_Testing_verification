@@ -1,0 +1,542 @@
+[
+  {
+    "title": "Yarn Count",
+    "unit": "sample",
+    "pricePerUnit": 200,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Digital fabric thickness test",
+    "unit": "sample",
+    "pricePerUnit": 200,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Fabric GSM",
+    "unit": "sample",
+    "pricePerUnit": 200,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Fabric Crease recovery test",
+    "unit": "sample",
+    "pricePerUnit": 550,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Fabric Stiffness test",
+    "unit": "sample",
+    "pricePerUnit": 400,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Elmendorf mechanical fabric tearing strength test",
+    "unit": "sample",
+    "pricePerUnit": 400,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Fabric Drape coefficient",
+    "unit": "sample",
+    "pricePerUnit": 400,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Fabric Flammability test",
+    "unit": "sample",
+    "pricePerUnit": 1000,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Dimensional stability test(Fabric & Apparel)",
+    "unit": "sample",
+    "pricePerUnit": 300,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Rubbing Fastness for fabric",
+    "unit": "sample",
+    "pricePerUnit": 250,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Sublimation test for fabric – 3 heads(Dry, Wet & Damp)",
+    "unit": "sample",
+    "pricePerUnit": 500,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Fabric air permeability test",
+    "unit": "sample",
+    "pricePerUnit": 400,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Wash Fastness for dyed fabrics",
+    "unit": "sample",
+    "pricePerUnit": 400,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Fabric Perspiration Test",
+    "unit": "sample",
+    "pricePerUnit": 500,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Fabric Tensile strength",
+    "unit": "sample",
+    "pricePerUnit": 550,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Fabric Pilling & snagging test",
+    "unit": "sample",
+    "pricePerUnit": 500,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "Martindale abrasion test for fabrics",
+    "unit": "sample",
+    "pricePerUnit": 500,
+    "department": "FASHION TECHNOLOGY"
+  },
+  {
+    "title": "High Temperature Furnace",
+    "unit": "unit",
+    "pricePerUnit": 1500,
+    "department": "PHYSICS"
+  },
+  {
+    "title": "Contact Poling Unit",
+    "unit": "unit",
+    "pricePerUnit": 750,
+    "department": "PHYSICS"
+  },
+  {
+    "title": "Non Contact Poling Unit",
+    "unit": "unit",
+    "pricePerUnit": 750,
+    "department": "PHYSICS"
+  },
+  {
+    "title": "Piezometer",
+    "unit": "unit",
+    "pricePerUnit": 350,
+    "department": "PHYSICS"
+  },
+  {
+    "title": "UV VIS Spectrophotometer",
+    "unit": "unit",
+    "pricePerUnit": 100,
+    "department": "PHYSICS"
+  },
+  {
+    "title": "RF magnetron sputtering",
+    "unit": "unit",
+    "pricePerUnit": 3000,
+    "department": "PHYSICS"
+  },
+  {
+    "title": "Robotic Metal Additive Machine (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 3581,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Robotic Metal Additive Machine (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 3879,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Robotic Metal Additive Machine (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 4178,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Fanuc Arc Mate 100ic Robot (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 1399,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Fanuc Arc Mate 100ic Robot (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 1516,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Fanuc Arc Mate 100ic Robot (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 1632,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Gantry Welding Machine (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 1735,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Gantry Welding Machine (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 1880,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Gantry Welding Machine (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 2024,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Turbo TIG Welding Machine (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 998,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Turbo TIG Welding Machine (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 1082,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "Turbo TIG Welding Machine (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 1165,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "ABB IRB 1600 Robot (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 1002,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "ABB IRB 1600 Robot (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 1086,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "ABB IRB 1600 Robot (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 1169,
+    "department": "ROBOTICS & AUTOMATION ENGINEERING"
+  },
+  {
+    "title": "DMG 835 VMC (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 645,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "DMG 835 VMC (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 710,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "DMG 835 VMC (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 774,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "DMG VLCTX310 Eco Turning Centre (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 424,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "DMG VLCTX310 Eco Turning Centre (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 466,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "DMG VLCTX310 Eco Turning Centre (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 509,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "DMG V3CTX310 Eco Turning Centre (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 431,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "DMG V3CTX310 Eco Turning Centre (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 474,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "DMG V3CTX310 Eco Turning Centre (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 517,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Jyoti VMC (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 463,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Jyoti VMC (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 509,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Jyoti VMC (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 556,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Midas0 Turning Centre (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 288,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Midas0 Turning Centre (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 317,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Midas0 Turning Centre (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 346,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Midas6 Turning Centre (PSG Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 355,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Midas6 Turning Centre (Other Academic Institutions)",
+    "unit": "machine hour",
+    "pricePerUnit": 391,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Midas6 Turning Centre (Industry)",
+    "unit": "machine hour",
+    "pricePerUnit": 426,
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Co-ordinate Measuring Machine - ZEISS",
+    "unit": "hour",
+    "pricePerUnit": "1000",
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Universal Testing Machine",
+    "unit": "sample",
+    "pricePerUnit": "400",
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Pin on Disc Wear Test Rig",
+    "unit": "sample",
+    "pricePerUnit": "400",
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Reciprocating Friction Monitor (Academic/Internal)",
+    "unit": "sample",
+    "pricePerUnit": "1000",
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Reciprocating Friction Monitor (External/Industry user)",
+    "unit": "sample",
+    "pricePerUnit": "2000",
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Four Ball Tester (Academic/Internal)",
+    "unit": "sample",
+    "pricePerUnit": "1000",
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Four Ball Tester (External/Industry user)",
+    "unit": "sample",
+    "pricePerUnit": "2000",
+    "department": "MECHANICAL ENGINEERING"
+  },
+  {
+    "title": "Electrochemical Workstation (Biologic-SP200 & PARSTAT 2275) (Internal PSG Institutions)",
+    "unit": "sample",
+    "pricePerUnit": "300",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Electrochemical Workstation (Biologic-SP200 & PARSTAT 2275) (External Colleges & Universities)",
+    "unit": "sample",
+    "pricePerUnit": "800",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Electrochemical Workstation (Biologic-SP200 & PARSTAT 2275) (Private Industries or R&D Laboratories)",
+    "unit": "sample",
+    "pricePerUnit": "1500",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Shimadzu – UV Visible Spectrophotometer (1700) (Internal PSG Institutions)",
+    "unit": "sample",
+    "pricePerUnit": "200",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Shimadzu – UV Visible Spectrophotometer (1700) (External Colleges & Universities)",
+    "unit": "sample",
+    "pricePerUnit": "250",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Shimadzu – UV Visible Spectrophotometer (1700) (Private Industries or R&D Laboratories)",
+    "unit": "sample",
+    "pricePerUnit": "500",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Jasco-Diffuse reflectance spectrophotometer (V-750) (Internal PSG Institutions)",
+    "unit": "sample",
+    "pricePerUnit": "200",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Jasco-Diffuse reflectance spectrophotometer (V-750) (External Colleges & Universities)",
+    "unit": "sample",
+    "pricePerUnit": "250",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Jasco-Diffuse reflectance spectrophotometer (V-750) (Private Industries or R&D Laboratories)",
+    "unit": "sample",
+    "pricePerUnit": "500",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Bomb calorimeter (Internal PSG Institutions)",
+    "unit": "sample",
+    "pricePerUnit": "500",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Bomb calorimeter (External Colleges & Universities)",
+    "unit": "sample",
+    "pricePerUnit": "1000",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Bomb calorimeter (Private Industries or R&D Laboratories)",
+    "unit": "sample",
+    "pricePerUnit": "1500",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Shimadzu – FT IR spectrophotometer (8400S) (Internal PSG Institutions)",
+    "unit": "sample",
+    "pricePerUnit": "200",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Shimadzu – FT IR spectrophotometer (8400S) (External Colleges & Universities)",
+    "unit": "sample",
+    "pricePerUnit": "400",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Shimadzu – FT IR spectrophotometer (8400S) (Private Industries or R&D Laboratories)",
+    "unit": "sample",
+    "pricePerUnit": "800",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Viscometers / Flash point / Fire point apparatus (Internal PSG Institutions)",
+    "unit": "sample",
+    "pricePerUnit": "500",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Viscometers / Flash point / Fire point apparatus (External Colleges & Universities)",
+    "unit": "sample",
+    "pricePerUnit": "1000",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Viscometers / Flash point / Fire point apparatus (Private Industries or R&D Laboratories)",
+    "unit": "sample",
+    "pricePerUnit": "1500",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Preparative facilities (UV Reactor / Vacuum oven / Muffle Furnace / Nephelometer / Double distillation unit / TDS meter) (Internal PSG Institutions)",
+    "unit": "sample",
+    "pricePerUnit": "200",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Preparative facilities (UV Reactor / Vacuum oven / Muffle Furnace / Nephelometer / Double distillation unit / TDS meter) (External Colleges & Universities)",
+    "unit": "sample",
+    "pricePerUnit": "500",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Preparative facilities (UV Reactor / Vacuum oven / Muffle Furnace / Nephelometer / Double distillation unit / TDS meter) (Private Industries or R&D Laboratories)",
+    "unit": "sample",
+    "pricePerUnit": "1000",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Water Analysis – pH, Conductivity, TDS, Hardness, Alkalinity, DO, COD, ions – chloride, fluoride, sulphate, calcium, Mg, etc (Internal PSG Institutions)",
+    "unit": "sample",
+    "pricePerUnit": "2000",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Water Analysis – pH, Conductivity, TDS, Hardness, Alkalinity, DO, COD, ions – chloride, fluoride, sulphate, calcium, Mg, etc (External Colleges & Universities)",
+    "unit": "sample",
+    "pricePerUnit": "2500",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Water Analysis – pH, Conductivity, TDS, Hardness, Alkalinity, DO, COD, ions – chloride, fluoride, sulphate, calcium, Mg, etc (Private Industries or R&D Laboratories)",
+    "unit": "sample",
+    "pricePerUnit": "3000",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Muffle Furnace (Internal PSG Institutions)",
+    "unit": "sample",
+    "pricePerUnit": "100",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Muffle Furnace (External Colleges & Universities)",
+    "unit": "sample",
+    "pricePerUnit": "200",
+    "department": "CHEMISTRY"
+  },
+  {
+    "title": "Muffle Furnace (Private Industries or R&D Laboratories)",
+    "unit": "sample",
+    "pricePerUnit": "300",
+    "department": "CHEMISTRY"
+  }
+]

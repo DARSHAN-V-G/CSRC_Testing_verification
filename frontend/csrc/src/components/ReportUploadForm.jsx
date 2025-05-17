@@ -7,6 +7,7 @@ const ReportUploadForm = () => {
     category: '',
     ref_no: '',
     department: '',
+    lab: '',
     verified_flag: 0,
     client_name: '',
     client_po_no: '',
@@ -42,6 +43,7 @@ const ReportUploadForm = () => {
   const [searchTerms, setSearchTerms] = useState(['']);
   const [showDropdowns, setShowDropdowns] = useState([false]);
   const [filteredTests, setFilteredTests] = useState([[]]);
+  const [labs, setLabs] = useState([]);
   const searchInputRefs = useRef([]);
   const dropdownRefs = useRef([]);
   const navigate = useNavigate();
@@ -60,7 +62,9 @@ const ReportUploadForm = () => {
           ref_no: generatedRefNo,
           department: dept,
           prepared_by: username // Set the fetched username
+          
         }));
+        await fetchLabs();
       } catch (err) {
         console.error('Error fetching username:', err);
         setError('Failed to fetch username. Please try again.');
@@ -68,10 +72,28 @@ const ReportUploadForm = () => {
     };
 
     initializeForm();
-
     // Fetch available tests
-    fetchAvailableTests();
+
   }, []);
+
+  // Add this useEffect
+useEffect(() => {
+  if (formData.lab) {
+    // Clear current test selections when lab changes
+    setTests([{
+      title: '',
+      unit: '',
+      pricePerUnit: 0,
+      quantity: 0,
+      testId: ''
+    }]);
+    setSearchTerms(['']);
+    setFilteredTests([[]]);
+    
+    // Fetch tests for the selected lab
+    fetchAvailableTests(formData.lab);
+  }
+}, [formData.lab]); // This effect runs when lab selection changes
 
   // Filter tests when search term changes
   useEffect(() => {
@@ -103,23 +125,31 @@ const ReportUploadForm = () => {
     };
   }, [showDropdowns]);
 
-  const fetchAvailableTests = async () => {
-    try {
-      setLoading(true);
-      setError('');
-      const response = await TestAPI.fetchByDepartment();
-      setAvailableTests(response.data.tests);
-    } catch (err) {
-      setError('Failed to load available tests');
-      console.error('Error fetching tests:', err);
-    } finally {
-      setLoading(false);
+  const fetchAvailableTests = async (selectedLab = formData.lab) => {
+  try {
+    setLoading(true);
+    setError('');
+    
+    // Only fetch tests if a lab is selected
+    if (!selectedLab) {
+      setAvailableTests([]);
+      return;
     }
-  };
+    
+    // Pass the lab name to the API
+    const response = await TestAPI.fetchByDepartment(selectedLab);
+    setAvailableTests(response.data.tests);
+  } catch (err) {
+    setError('Failed to load available tests');
+    console.error('Error fetching tests:', err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
-
+    
     if (name === 'gst_percent') {
       // Update GST percentage and recalculate total
       const newGstPercent = parseFloat(value) || 0;
@@ -138,6 +168,25 @@ const ReportUploadForm = () => {
       });
     }
   };
+  const fetchLabs = async () => {
+  try {
+    const response = await reportAPI.fetchLab();
+    if (response.data && response.data.labs && response.data.labs.labs) {
+      setLabs(response.data.labs.labs);
+      
+      // Set the first lab as the default selected value
+      if (response.data.labs.labs.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          lab: response.data.labs.labs[0]
+        }));
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching labs:', err);
+    setError(prevError => prevError || 'Failed to fetch labs');
+  }
+};
 
   const handleTestChange = (index, e) => {
     const { name, value } = e.target;
@@ -286,8 +335,8 @@ const ReportUploadForm = () => {
     'english': 'ENGLISH',
     'hum': 'HUMANITIES',
     'ped': 'PHYSICAL EDUCATION',
-    'ac': "CHEMISTRY",
-    'com': "CHEMISTRY",
+    'ac': "PHYSICS",
+    'com': "PHYSICS",
     };
     return departmentMap[part] || null;
   };
@@ -416,7 +465,37 @@ const ReportUploadForm = () => {
                 <option value="Testing">Testing</option>
                 <option value="Testing and Consultancy">Testing and Consultancy</option>
               </select>
+              
             </div>
+            <div className="form-group">
+                <label htmlFor="lab">Lab*</label>
+                <select
+                  id="lab"
+                  name="lab"
+                  value={formData.lab || ''}
+                  onChange={(e) => {
+      // First update the formData state with the new lab value
+      handleChange(e);
+      
+      // Then manually call fetchAvailableTests with the new lab value
+      fetchAvailableTests(e.target.value);
+    }}
+                  required
+                >
+                  {labs.length === 0 ? (
+                    <option value="">Loading labs...</option>
+                  ) : (
+                    <>
+                      <option value="">Select Lab</option>
+                      {labs.map((lab, index) => (
+                        <option key={index} value={lab}>
+                          {lab}
+                        </option>
+                      ))}
+                    </>
+                  )}
+                </select>
+              </div>
           </div>
         </div>
 

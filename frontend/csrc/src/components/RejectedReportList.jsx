@@ -39,6 +39,7 @@ const RejectedReportsList = ({ reports, onEditClick }) => {
                 <th>Ref No</th>
                 <th>Client</th>
                 <th>Department</th>
+                <th>Lab</th>
                 <th>Rejected By</th>
               </tr>
             </thead>
@@ -48,6 +49,7 @@ const RejectedReportsList = ({ reports, onEditClick }) => {
                   <td>{report.ref_no}</td>
                   <td>{report.client_name}</td>
                   <td>{report.department}</td>
+                  <td>{report.lab}</td>
                   <td>{report.rejected_by}</td>
                   <td>
                     <button
