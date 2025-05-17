@@ -48,8 +48,8 @@ const generateReport = async (req, res) => {
     
     // Department (right aligned)
     doc.fontSize(12).text(`DEPARTMENT: ${report.department}`, { align: 'left' });
+    doc.fontSize(12).text(`LAB: ${report.lab}`, { align: 'left' });
     doc.moveDown();
-
     // Testing/Consultancy Details (centered and underlined)
     const consultancyText = report.category || "Testing"; 
     const textWidth = doc.widthOfString(consultancyText);
