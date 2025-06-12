@@ -64,7 +64,11 @@ const generateReport = async (req, res) => {
     const refDate = doc.y;
     doc.fontSize(11).font('Helvetica')
       .text(`Ref: ${report.ref_no}`, { align: 'left' })
-      .text(`Date: ${new Date(report.createdAt).toLocaleDateString()}`, doc.x + 425, refDate);
+      .text(`Date: ${new Date(report.createdAt).toLocaleDateString('en-GB', { 
+  day: '2-digit', 
+  month: '2-digit', 
+  year: 'numeric' 
+})}`, doc.x + 425, refDate);
     doc.moveDown(0.5);
 
     // Client Details Table with vertical lines
@@ -290,10 +294,14 @@ const generateReport = async (req, res) => {
       width: specialColWidth - 20,
       align: 'left'
     });
-    doc.text(`Dated : ${new Date(report.transaction_date).toLocaleDateString()}`, 170 + specialColWidth + 5, specialTableY + 5, {
-      width: specialColWidth - 20,
-      align: 'left'
-    });
+    doc.text(`Dated : ${report.transaction_date ? new Date(report.transaction_date).toLocaleDateString('en-GB', { 
+  day: '2-digit', 
+  month: '2-digit', 
+  year: 'numeric' 
+}) : '-'}`, 170 + specialColWidth + 5, specialTableY + 5, {
+  width: specialColWidth - 20,
+  align: 'left'
+});
 
     // Update the y position after the table
     doc.y = specialTableY + specialRowHeight;
@@ -337,7 +345,7 @@ const generateReport = async (req, res) => {
     doc.font('Helvetica')
     .text("Receipt No & Date : ",xrect+5,yrect+6);
     doc.font('Helvetica')
-    .text(`${report.receipt_no} , ${new Date(report.receipt_date).toLocaleDateString()}`,xrect+5+120,yrect+6);
+    .text(`${report.receipt_no ? report.receipt_no : '-'} ${report.receipt_date ? ', ' + new Date(report.receipt_date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}`,xrect+5+120,yrect+6);
     doc.x = xrect;
     doc.y = yrect + 35;
     const flag = report.verified_flag;
