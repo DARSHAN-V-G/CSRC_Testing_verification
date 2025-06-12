@@ -21,14 +21,17 @@ const addTest = async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' });
     }
     
-    console.log(lab)
+    const uppercaseLab = lab ? lab.toUpperCase() : lab;
+    
+    console.log(uppercaseLab);
+    
     // Create new test
     const newTest = new Test({
       title,
       unit,
       pricePerUnit,
       department,
-      lab,
+      lab: uppercaseLab,
       quantity: null
     });
 
