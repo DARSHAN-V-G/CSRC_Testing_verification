@@ -26,7 +26,20 @@ const ReportUploadForm = () => {
     bill_no: '',
     gst_percent: 18 // Default GST percentage
   });
-
+  const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const [customerFormData, setCustomerFormData] = useState({
+    name: '',
+    address: '',
+    gstno: '',
+    department: ''
+  });
+  const [customers, setCustomers] = useState([]);
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
+  const [customerSearchTerm, setCustomerSearchTerm] = useState('');
+  const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
+  const [customerLoading, setCustomerLoading] = useState(false);
+  const customerSearchRef = useRef(null);
+  const customerDropdownRef = useRef(null);
   const [tests, setTests] = useState([{
     title: '',
     unit: '',
@@ -124,6 +137,26 @@ useEffect(() => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showDropdowns]);
+
+  // Add this useEffect after your existing useEffects
+useEffect(() => {
+  fetchCustomers();
+}, []);
+
+// Add click outside handler for customer dropdown
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (customerDropdownRef.current && !customerDropdownRef.current.contains(event.target) &&
+        customerSearchRef.current && !customerSearchRef.current.contains(event.target)) {
+      setShowCustomerDropdown(false);
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
 
   const fetchAvailableTests = async (selectedLab = formData.lab) => {
   try {
@@ -283,24 +316,23 @@ useEffect(() => {
     calculateTotalAmount(updatedTests, formData.gst_percent);
   };
 
-  const generateRefNo = () => {
-    const userEmail = localStorage.getItem('userEmail');
-    if (!userEmail) return '';
+  const generateRefNo = async () => {
+  const userEmail = localStorage.getItem('userEmail');
+  if (!userEmail) return '';
 
-    const domainPart = userEmail.split('.')[1].split('@')[0].toUpperCase();
-
-    const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const dateString = `${year}${month}${day}`;
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    const milli = String(now.getMilliseconds()).padStart(2, '0');
-    const timeString = `${hours}${minutes}${seconds}${milli}`;
-    return `REF_${domainPart}_${dateString}${timeString}`;
-  };
+  const domainPart = userEmail.split('.')[1].split('@')[0].toUpperCase();
+  
+  try {
+    const response = await reportAPI.getReportCount(findDepartment());
+    const count = response.data.count || 0;
+    const formattedCount = String(count+1).padStart(6, '0');
+    
+    return `REF_${domainPart}_${formattedCount}`;
+  } catch (error) {
+    console.error('Error fetching report count:', error);
+    return `REF_${domainPart}_000001`;
+  }
+};
 
   const findDepartment = () => {
     let email = localStorage.getItem('userEmail');
@@ -404,6 +436,9 @@ useEffect(() => {
         transaction_date: '',
         gst_percent: 18
       });
+      setCustomerSearchTerm('');
+setShowCustomerDropdown(false);
+setFilteredCustomers(customers);
       setTests([{
         title: '',
         unit: '',
@@ -424,6 +459,126 @@ useEffect(() => {
     }
   };
 
+
+  // Fetch customers by department
+const fetchCustomers = async () => {
+  try {
+    setCustomerLoading(true);
+    const department = findDepartment();
+    if (department) {
+      const response = await reportAPI.getCustomer(department);
+      setCustomers(response.data.data || []);
+      setFilteredCustomers(response.data.data || []);
+    }
+  } catch (error) {
+    console.error('Error fetching customers:', error);
+    setError('Failed to fetch customers');
+  } finally {
+    setCustomerLoading(false);
+  }
+};
+
+// Handle customer form changes
+const handleCustomerFormChange = (e) => {
+  const { name, value } = e.target;
+  setCustomerFormData(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
+
+// Handle customer search
+// Handle customer search - similar to test search
+const handleCustomerSearch = (e) => {
+  const term = e.target.value;
+  setCustomerSearchTerm(term);
+  setShowCustomerDropdown(true);
+  
+  // Clear the form data when searching (similar to test behavior)
+  setFormData(prev => ({
+    ...prev,
+    client_name: '',
+    bill_to_be_sent_mail_address: '',
+    gst_no: ''
+  }));
+  
+  if (!term.trim()) {
+    setFilteredCustomers(customers);
+  } else {
+    const filtered = customers.filter(customer =>
+      customer.name.toLowerCase().includes(term.toLowerCase()) ||
+      customer.gstno.toLowerCase().includes(term.toLowerCase())
+    );
+    setFilteredCustomers(filtered);
+  }
+};
+
+// Handle customer selection
+// Handle customer selection - similar to test selection
+const handleCustomerSelect = (customer) => {
+  setFormData(prev => ({
+    ...prev,
+    client_name: customer.name,
+    bill_to_be_sent_mail_address: customer.address,
+    gst_no: customer.gstno
+  }));
+  
+  // Set the search term to show the selected customer name
+  setCustomerSearchTerm(customer.name);
+  setShowCustomerDropdown(false);
+};
+
+const resetCustomerSelection = () => {
+  setCustomerSearchTerm('');
+  setFormData(prev => ({
+    ...prev,
+    client_name: '',
+    bill_to_be_sent_mail_address: '',
+    gst_no: ''
+  }));
+  setShowCustomerDropdown(false);
+};
+
+// Save new customer
+const handleSaveCustomer = async (e) => {
+  e.preventDefault();
+  try {
+    const customerData = {
+      ...customerFormData,
+      department: findDepartment()
+    };
+
+    console.log("sample",customerData);
+    await reportAPI.createCustomer(customerData);
+    alert('Customer created successfully!');
+    
+    // Reset form and close modal
+    setCustomerFormData({
+      name: '',
+      address: '',
+      gstno: '',
+      department: ''
+    });
+    setShowCustomerModal(false);
+    
+    // Refresh customers list
+    await fetchCustomers();
+  } catch (error) {
+    console.error('Error creating customer:', error);
+    alert(`Error: ${error.response?.data?.message || 'Failed to create customer'}`);
+  }
+};
+
+// Handle modal open
+const handleAddCustomerClick = () => {
+  setCustomerFormData({
+    name: '',
+    address: '',
+    gstno: '',
+    department: findDepartment()
+  });
+  setShowCustomerModal(true);
+};
   return (
     <div className="report-form-container">
       <button className="back-button" onClick={() => navigate('/dashboard')}>
@@ -500,80 +655,137 @@ useEffect(() => {
         </div>
 
         <div className="form-section">
-          <h3>Client Information</h3>
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="client_name">Client Name*</label>
-              <input
-                type="text"
-                id="client_name"
-                name="client_name"
-                value={formData.client_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="client_po_no">Client PO No*</label>
-              <input
-                type="text"
-                id="client_po_no"
-                name="client_po_no"
-                value={formData.client_po_no}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="bill_to_be_sent_mail_address">Billing Address*</label>
-              <textarea
-                id="bill_to_be_sent_mail_address"
-                name="bill_to_be_sent_mail_address"
-                value={formData.bill_to_be_sent_mail_address}
-                onChange={handleChange}
-                rows="4"
-                required
-                className="address-textarea"
-              ></textarea>
-            </div>
-            <div className="form-group">
-              <label htmlFor="client_po_recieved_date">PO Received Date*</label>
-              <input
-                type="date"
-                id="client_po_recieved_date"
-                name="client_po_recieved_date"
-                value={formData.client_po_recieved_date}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="gst_no">GST No*</label>
-              <input
-                type="text"
-                id="gst_no"
-                name="gst_no"
-                value={formData.gst_no}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="po_file">PO File</label>
-              <input
-                type="file"
-                id="po_file"
-                name="po_file"
-                onChange={handleChange}
-                className="file-input"
-              />
-            </div>
-          </div>
+  <h3>Client Information</h3>
+  
+  {/* Add Customer Button */}
+  <div className="form-row">
+    <div className="form-group">
+      <button 
+        type="button" 
+        className="add-customer-btn"
+        onClick={handleAddCustomerClick}
+      >
+        + Add New Customer
+      </button>
+    </div>
+  </div>
+
+<div className="form-row">
+  <div className="form-group">
+    <label htmlFor="client_name">Client Name*</label>
+    <div className="searchable-customer-dropdown">
+      <input
+        type="text"
+        id="client_name"
+        name="client_name"
+        placeholder="Search for customer..."
+        value={customerSearchTerm}
+        onChange={handleCustomerSearch}
+        onFocus={() => setShowCustomerDropdown(true)}
+        ref={customerSearchRef}
+        required
+      />
+      {showCustomerDropdown && (
+        <div 
+          className="dropdown-menu customer-dropdown"
+          ref={customerDropdownRef}
+        >
+          {customerLoading ? (
+            <div className="dropdown-loading">Loading customers...</div>
+          ) : filteredCustomers.length > 0 ? (
+            filteredCustomers.map((customer) => (
+              <div
+                key={customer._id}
+                className={`dropdown-item ${formData.client_name === customer.name ? 'selected' : ''}`}
+                onClick={() => handleCustomerSelect(customer)}
+              >
+                <div className="customer-item">
+                  <div className="customer-name">{customer.name}</div>
+                  <div className="customer-gst">GST: {customer.gstno}</div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="dropdown-no-results">No customers found</div>
+          )}
         </div>
+      )}
+      {/* Hidden input to store the selected customer data */}
+      <input
+        type="hidden"
+        name="client_name"
+        value={formData.client_name || ''}
+      />
+    </div>
+  </div>
+  <div className="form-group">
+    <label htmlFor="client_po_no">Client PO No*</label>
+    <input
+      type="text"
+      id="client_po_no"
+      name="client_po_no"
+      value={formData.client_po_no}
+      onChange={handleChange}
+      required
+    />
+  </div>
+</div>
+  
+  {/* Rest of your existing client information fields remain the same */}
+  <div className="form-row">
+  <div className="form-group">
+    <label htmlFor="bill_to_be_sent_mail_address">Billing Address*</label>
+    <textarea
+      id="bill_to_be_sent_mail_address"
+      name="bill_to_be_sent_mail_address"
+      value={formData.bill_to_be_sent_mail_address}
+      onChange={handleChange}
+      rows="4"
+      required
+      readOnly // Make it read-only since it's auto-filled
+      className="address-textarea readonly-textarea"
+      placeholder="Address will be auto-filled when customer is selected"
+    ></textarea>
+  </div>
+  <div className="form-group">
+    <label htmlFor="client_po_recieved_date">PO Received Date*</label>
+    <input
+      type="date"
+      id="client_po_recieved_date"
+      name="client_po_recieved_date"
+      value={formData.client_po_recieved_date}
+      onChange={handleChange}
+      required
+    />
+  </div>
+</div>
+<div className="form-row">
+  <div className="form-group">
+    <label htmlFor="gst_no">GST No*</label>
+    <input
+      type="text"
+      id="gst_no"
+      name="gst_no"
+      value={formData.gst_no}
+      onChange={handleChange}
+      required
+      readOnly // Make it read-only since it's auto-filled
+      className="readonly-input"
+      placeholder="GST will be auto-filled when customer is selected"
+    />
+  </div>
+  <div className="form-group">
+    <label htmlFor="po_file">PO File</label>
+    <input
+      type="file"
+      id="po_file"
+      name="po_file"
+      onChange={handleChange}
+      className="file-input"
+    />
+  </div>
+</div>
+</div>
 
         <div className="form-section">
           <h3>Test Details</h3>
@@ -827,6 +1039,94 @@ useEffect(() => {
           <p>Loading tests...</p>
         </div>
       )}
+      {/* Customer Modal */}
+{showCustomerModal && (
+  <div className="modal-overlay">
+    <div className="modal-content customer-modal">
+      <div className="modal-header">
+        <h3>Add New Customer</h3>
+        <button 
+          type="button" 
+          className="modal-close-btn"
+          onClick={() => setShowCustomerModal(false)}
+        >
+          ×
+        </button>
+      </div>
+      
+      <form onSubmit={handleSaveCustomer} className="customer-form">
+        <div className="modal-body">
+          <div className="form-group">
+            <label htmlFor="customer_name">Customer Name*</label>
+            <input
+              type="text"
+              id="customer_name"
+              name="name"
+              value={customerFormData.name}
+              onChange={handleCustomerFormChange}
+              required
+              placeholder="Enter customer name"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="customer_address">Address*</label>
+            <textarea
+              id="customer_address"
+              name="address"
+              value={customerFormData.address}
+              onChange={handleCustomerFormChange}
+              required
+              rows="4"
+              placeholder="Enter complete address"
+            ></textarea>
+          </div>
+          
+          <div className="form-group">
+  <label htmlFor="customer_gst">GST Number*</label>
+  <input
+    type="text"
+    id="customer_gst"
+    name="gstno"
+    value={customerFormData.gstno}
+    onChange={handleCustomerFormChange}
+    required
+    placeholder="Enter GST number"
+  />
+</div>
+          
+          <div className="form-group">
+            <label htmlFor="customer_department">Department</label>
+            <input
+              type="text"
+              id="customer_department"
+              name="department"
+              value={customerFormData.department}
+              readOnly
+              className="readonly-input"
+            />
+          </div>
+        </div>
+        
+        <div className="modal-footer">
+          <button 
+            type="button" 
+            className="btn-secondary"
+            onClick={() => setShowCustomerModal(false)}
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            className="btn-primary"
+          >
+            Save Customer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
     </div>
   );
 };

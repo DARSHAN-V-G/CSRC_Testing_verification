@@ -23,7 +23,8 @@ const {
   fetchLab,
   fetchAllLabs,
   deleteLab,
-  addLabs
+  addLabs,
+  getDepartmentWiseCount
 } = require("../controllers/reportController");
 const {
   generateReport
@@ -31,6 +32,7 @@ const {
 
 
 const router = express.Router();
+router.get('/getcount/:dept',getDepartmentWiseCount);
 router.get('/fetchRejected', fetchReject);
 router.post('/addLabs',addLabs);
 router.get('/fetchAllLabs',fetchAllLabs);

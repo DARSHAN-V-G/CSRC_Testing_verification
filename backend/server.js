@@ -3,6 +3,7 @@ const userRoutes = require('./routes/userRoutes');
 const { userAuthMiddleware } = require('./middlewares/authMiddleware');
 const reportRoutes = require("./routes/reportRoutes");
 const testRoutes = require('./routes/testRoutes');
+const customerRoutes = require('./routes/customerRoutes');
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use('/auth/user', userRoutes);
 app.use('/report',userAuthMiddleware, reportRoutes);
 app.use('/test',userAuthMiddleware,testRoutes);
+app.use('/customer',userAuthMiddleware,customerRoutes);
 connectDB();
 
 app.get('/', (req, res) => {

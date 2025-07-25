@@ -71,6 +71,9 @@ export const reportAPI = {
   fetchAllLabs: () => API.get('/report/fetchAllLabs'),
   addLabs: (data)=>API.post('/report/addLabs',data),
   deleteLab: (data) => API.post(`/report/deleteLab`,data),
+  getCustomer : (data) => API.get(`/customer/details/${data}`),
+  createCustomer: (data) => API.post('/customer/create',{data}),
+  getReportCount:(data) => API.get(`/report/getcount/${data}`),
 };
 
 export const TestAPI = {

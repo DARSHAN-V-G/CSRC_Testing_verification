@@ -872,7 +872,24 @@ const deleteLab = async (req, res) => {
   }
 };
 
+const getDepartmentWiseCount = async (req,res) => {
+  try{
+    const department = req.params.dept;
+    if (!department){
+      return res.status(400).json({
+        message : "Department is required"
+      });
+    }
+    const count = await Report.countDocuments({department:department});
+    return res.status(200).json({
+      message : "count fetched successfully",
+      count : count
+    })
+  }catch(error){
+    res.status(500).json({message : "Error while fetching count",error:error.message});
 
+  }
+}
 // Export the function
 module.exports = {
   createReport,
@@ -895,5 +912,6 @@ module.exports = {
   fetchLab,
   addLabs,
   fetchAllLabs,
-  deleteLab
+  deleteLab,
+  getDepartmentWiseCount
 };
