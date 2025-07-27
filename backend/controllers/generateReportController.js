@@ -446,7 +446,16 @@ const generateReport = async (req, res) => {
     .text("Receipt No & Date : ",xrect+5,yrect+6);
     doc.font('Helvetica')
     .text(`${report.receipt_no ? report.receipt_no : '-'} ${report.receipt_date ? ', ' + new Date(report.receipt_date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}`,xrect+5+120,yrect+6);
-    
+    xrect = doc.x - 125
+    yrect = doc.y+10
+    doc.rect(xrect,yrect,2*columnwidth,20).stroke();
+    doc.moveTo(xrect+120,yrect)
+      .lineTo(xrect+120,yrect+20)
+      .stroke();
+    doc.font('Helvetica')
+    .text("Bill No & Date : ",xrect+5,yrect+6);
+    doc.font('Helvetica')
+    .text(`${report.receipt_no ? report.receipt_no : '-'} ${report.receipt_date ? ', ' + new Date(report.receipt_date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}`,xrect+5+120,yrect+6);
     doc.x = xrect;
     doc.y = yrect + 35;
     const flag = report.verified_flag;
@@ -469,6 +478,11 @@ const generateReport = async (req, res) => {
         doc.text(`${i}. ${dean.username} (Dean)`);
       }
     }
+    let x = doc.x;
+    let y = doc.y;
+    doc.text("Coordinator, CSRC",x,y+50);
+    doc.text("Associate Dean, CSRC",x+387,y+50);
+    doc.text("HOD",x+387,y);
     doc.end();
   } catch (err) {
     console.error("PDF generation error:", err);
