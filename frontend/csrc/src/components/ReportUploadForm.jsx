@@ -63,7 +63,7 @@ const ReportUploadForm = () => {
   useEffect(() => {
     const initializeForm = async () => {
       try {
-        const generatedRefNo = generateRefNo();
+        const generatedRefNo = await generateRefNo();
         const dept = findDepartment();
 
         // Fetch the username for "Prepared By"
@@ -326,7 +326,7 @@ useEffect(() => {
     const response = await reportAPI.getReportCount(findDepartment());
     const count = response.data.count || 0;
     const formattedCount = String(count+1).padStart(6, '0');
-    
+    console.log(`REF_${domainPart}_${formattedCount}`);
     return `REF_${domainPart}_${formattedCount}`;
   } catch (error) {
     console.error('Error fetching report count:', error);
@@ -415,10 +415,10 @@ useEffect(() => {
 
       alert('Report created successfully!');
       console.log(response.data);
-
+      const newRefNo = await generateRefNo();
       // Reset form
       setFormData({
-        ref_no: generateRefNo(),
+        ref_no: newRefNo,
         department: findDepartment(),
         verified_flag: 0,
         client_name: '',

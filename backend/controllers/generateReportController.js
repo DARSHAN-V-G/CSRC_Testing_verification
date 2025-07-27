@@ -461,11 +461,11 @@ const generateReport = async (req, res) => {
     for(let i = 1; i < flag + 1; i++){
       if(i==1){
         doc.text(`${i}. ${hod_name} (HOD)`);
-      }else if(i==2){
+      }else if(i==2 && csrcOffice){
         doc.text(`${i}. ${csrcOffice.username} (CSRC - Office)`);
-      }else if(i==3){
+      }else if(i==3 && csrcFaculty){
         doc.text(`${i}. ${csrcFaculty.username} (CSRC - Faculty)`);
-      }else if(i==4){
+      }else if(i==4 && dean){
         doc.text(`${i}. ${dean.username} (Dean)`);
       }
     }
