@@ -455,7 +455,7 @@ const generateReport = async (req, res) => {
     doc.font('Helvetica')
     .text("Bill No & Date : ",xrect+5,yrect+6);
     doc.font('Helvetica')
-    .text(`${report.receipt_no ? report.receipt_no : '-'} ${report.receipt_date ? ', ' + new Date(report.receipt_date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}`,xrect+5+120,yrect+6);
+    .text(`${report.bill_no ? report.bill_no : '-'} ${report.bill_date ? ', ' + new Date(report.bill_date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}`,xrect+5+120,yrect+6);
     doc.x = xrect;
     doc.y = yrect + 35;
     const flag = report.verified_flag;

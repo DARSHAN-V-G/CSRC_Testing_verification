@@ -590,6 +590,8 @@ const addReceiptNo = async (req, res) => {
     const ref_no = req.body.ref_no;
     const receipt_no = req.body.receipt_no;
     const receipt_date = req.body.receipt_date;
+    const bill_no = req.body.bill_no;
+    const bill_date = req.body.bill_date;
     const user = await userSchema.findById(user_id);
     if (!user) {
       return res.status(404).json({
@@ -617,6 +619,16 @@ const addReceiptNo = async (req, res) => {
         message: "Receipt date required"
       });
     }
+    if (!bill_no) {
+      return res.status(404).json({
+        message: "Bill Number required"
+      });
+    }
+    if (!bill_date) {
+      return res.status(404).json({
+        message: "Bill date required"
+      });
+    }
     if (user.role != "office") {
       return res.status(401).json({
         message: "Only office can add receipt number"
@@ -624,14 +636,16 @@ const addReceiptNo = async (req, res) => {
     }
     report.receipt_no = receipt_no;
     report.receipt_date = receipt_date;
+    report.bill_date = bill_date;
+    report.bill_no = bill_no;
     await report.save();
     return res.status(200).json({
-      message: "Receipt number added successfully",
+      message: "Receipt number and Bill number added successfully",
     });
   } catch (error) {
     console.log(error)
     return res.status(500).json({
-      message: "Failed to add receipt number",
+      message: "Failed to add receipt number and bill number",
       error: error
     });
   }

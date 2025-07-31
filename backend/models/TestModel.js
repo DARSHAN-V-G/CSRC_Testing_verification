@@ -94,6 +94,14 @@ const reportSchema = new mongoose.Schema({
     default: null,
     type: Date
   },
+  bill_no: {
+    default: null,
+    type: String
+  },
+  bill_date: {
+    default: null,
+    type: Date
+  },
   rejected_by: {
     type: String,
     default: null
